@@ -38,14 +38,38 @@ class Application(Frame):
         self.course_maxcreds_entry = Entry(self, width=50)
         self.course_maxcreds_entry.grid(row=2, column=5, sticky=W)
 
-        self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup)
+        self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42)
         self.submit_course_info_bttn.grid(row=3, column=5, sticky=W)
 
+        self.setup_error_lbl = Label(self, font="Helvetica 12", fg="red")
+
     def close_setup(self):
-        courseData = (mainApp.course_name_entry.get(), mainApp.course_maxcreds_entry.get())
-        f_writeCourseData = open(direct + "courseData.dat", "wb")
-        pickle.dump(courseData, f_writeCourseData)
-        f_writeCourseData.close()
+        if len(self.course_name_entry.get()) < 41:
+            try:
+                courseData = (self.course_name_entry.get(), int(self.course_maxcreds_entry.get()))
+                f_writeCourseData = open(direct + "courseData.dat", "wb")
+                pickle.dump(courseData, f_writeCourseData)
+                f_writeCourseData.close()
+                self.wel_lbl.grid_remove()
+                self.course_name_entry.grid_remove()
+                self.course_name_entry_lbl.grid_remove()
+                self.course_maxcreds_entry_lbl.grid_remove()
+                self.course_maxcreds_entry.grid_remove()
+                self.submit_course_info_bttn.grid_remove()
+                self.setup_error_lbl.grid_remove()
+            except ValueError:
+                self.setup_entry_error("credits_error")
+        else:
+            self.setup_entry_error("name_error")
+
+    def setup_entry_error(self, errortype):
+
+        if errortype == "credits_error":
+            self.setup_error_lbl.config(text="Maximum Credits must be an integer value")
+            self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
+        elif errortype == "name_error":
+            self.setup_error_lbl.config(text="Degree name must be 40 characters or less")
+            self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
 # main program
 
 # create directory
