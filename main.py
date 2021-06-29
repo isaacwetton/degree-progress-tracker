@@ -13,6 +13,7 @@ class Application(Frame):
         self.grid()
 
     def first_time(self):
+        """Initiates first time setup menu"""
         self.wel_lbl = Label(self,
                              text="I've noticed this is your first time using my Degree Progress Tracker.\n" +
                                   "Please input your degree information below:",
@@ -22,7 +23,7 @@ class Application(Frame):
 
         self.course_name_entry_lbl = Label(self,
                                            text="Course Name",
-                                           font="Helvetica 14"
+                                           font="Helvetica 13"
                                            )
         self.course_name_entry_lbl.grid(row=1, column=4, sticky=W)
 
@@ -31,7 +32,7 @@ class Application(Frame):
 
         self.course_maxcreds_entry_lbl = Label(self,
                                                text="Maximum Course Credits",
-                                               font="Helvetica 14"
+                                               font="Helvetica 13"
                                                )
         self.course_maxcreds_entry_lbl.grid(row=2, column=4, sticky=W)
 
@@ -44,32 +45,38 @@ class Application(Frame):
         self.setup_error_lbl = Label(self, font="Helvetica 12", fg="red")
 
     def close_setup(self):
+        """Validates inputs, saves data and closes setup menu"""
         if len(self.course_name_entry.get()) < 41:
-            try:
-                courseData = (self.course_name_entry.get(), int(self.course_maxcreds_entry.get()))
-                f_writeCourseData = open(direct + "courseData.dat", "wb")
-                pickle.dump(courseData, f_writeCourseData)
-                f_writeCourseData.close()
-                self.wel_lbl.grid_remove()
-                self.course_name_entry.grid_remove()
-                self.course_name_entry_lbl.grid_remove()
-                self.course_maxcreds_entry_lbl.grid_remove()
-                self.course_maxcreds_entry.grid_remove()
-                self.submit_course_info_bttn.grid_remove()
-                self.setup_error_lbl.grid_remove()
-            except ValueError:
-                self.setup_entry_error("credits_error")
+            if self.course_name_entry.get() == "":
+                self.setup_entry_error("nameblank_error")
+            else:
+                try:
+                    courseData = (self.course_name_entry.get(), int(self.course_maxcreds_entry.get()))
+                    f_writeCourseData = open(direct + "courseData.dat", "wb")
+                    pickle.dump(courseData, f_writeCourseData)
+                    f_writeCourseData.close()
+                    self.wel_lbl.grid_remove()
+                    self.course_name_entry.grid_remove()
+                    self.course_name_entry_lbl.grid_remove()
+                    self.course_maxcreds_entry_lbl.grid_remove()
+                    self.course_maxcreds_entry.grid_remove()
+                    self.submit_course_info_bttn.grid_remove()
+                    self.setup_error_lbl.grid_remove()
+                except ValueError:
+                    self.setup_entry_error("credits_error")
         else:
-            self.setup_entry_error("name_error")
+            self.setup_entry_error("namelength_error")
 
     def setup_entry_error(self, errortype):
-
+        """Responds to setup menu validation error"""
         if errortype == "credits_error":
             self.setup_error_lbl.config(text="Maximum Credits must be an integer value")
-            self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
-        elif errortype == "name_error":
+        elif errortype == "namelength_error":
             self.setup_error_lbl.config(text="Degree name must be 40 characters or less")
-            self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
+        elif errortype == "nameblank_error":
+            self.setup_error_lbl.config(text="You must enter a degree name")
+        self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
+
 # main program
 
 # create directory
