@@ -17,12 +17,19 @@ class Application(Frame):
         self.wel_lbl = Label(self,
                              text="We've noticed this is your first time using our Degree Progress Tracker.\n" +
                                   "Please input your degree information below:",
-                             font="Helvetica 15 bold"
-                             )
-        self.wel_lbl.grid(row=0, column=1, columnspan=3, sticky=S)
-        self.wel_lbl.config(anchor=CENTER)
-        self.wel_lbl.pack()
-
+                             font="Helvetica 15"
+                             ).grid(row=0, column=1, padx=80, pady=100, columnspan=7)
+        self.course_name_entry_lbl = Label(self,
+                                           text="Course Name",
+                                           font="Helvetica 14"
+                                           ).grid(row=1, column=4, sticky=W)
+        self.course_name_entry = Entry(self, width=50).grid(row=1, column=5, sticky=W)
+        self.course_maxcreds_entry_lbl = Label(self,
+                                           text="Maximum Course Credits",
+                                           font="Helvetica 14"
+                                           ).grid(row=2, column=4, sticky=W)
+        self.course_name_entry = Entry(self, width=50).grid(row=2, column=5, sticky=W)
+        self.submit_course_info_bttn = Button(self, text="Submit").grid(row=3, column=5, sticky=W)
 # main program
 
 # create directory
@@ -47,11 +54,13 @@ except IOError:
 root = Tk()
 root.title("Degree Progress Tracker")
 root.geometry("800x600")
+root.resizable(False, False)
 mainApp = Application(root)
 
 # Invoke first time setup sequence
 
 if firstTime == True:
     mainApp.first_time()
+
 
 root.mainloop()
