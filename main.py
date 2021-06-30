@@ -23,8 +23,7 @@ class Application(Frame):
 
         self.course_name_entry_lbl = Label(self,
                                            text="Course Name",
-                                           font="Helvetica 13"
-                                           )
+                                           font="Helvetica 13")
         self.course_name_entry_lbl.grid(row=1, column=4, sticky=W)
 
         self.course_name_entry = Entry(self, width=50)
@@ -62,6 +61,7 @@ class Application(Frame):
                     self.course_maxcreds_entry.grid_remove()
                     self.submit_course_info_bttn.grid_remove()
                     self.setup_error_lbl.grid_remove()
+                    self.main_menu()
                 except ValueError:
                     self.setup_entry_error("credits_error")
         else:
@@ -77,6 +77,26 @@ class Application(Frame):
             self.setup_error_lbl.config(text="You must enter a degree name")
         self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
 
+    def main_menu(self):
+        """Opens the main menu of the application"""
+        self.main_title_lbl = Label(self,
+                                    text="Degree Progress Tracker",
+                                    font="Helvetica 25")
+        self.main_title_lbl.grid(row=0, column=1, columnspan=7, padx=220)
+
+        self.main_credit_lbl = Label(self,
+                                    text="by Isaac Wetton",
+                                    font="Helvetica 12")
+        self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=5)
+
+        self.main_courseinfo_bttn = Button(self, text="View Course Info & Stats", width=42, height=3)
+        self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=3)
+        self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=3)
+        self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=3)
+        self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
+        self.main_createmodule_bttn.grid(row=4, column=4, pady=5)
+        self.main_addwork_bttn.grid(row=5, column=4, pady=5)
+        self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
 # main program
 
 # create directory
@@ -104,9 +124,10 @@ root.geometry("800x400")
 root.resizable(False, False)
 mainApp = Application(root)
 
-# Invoke first time setup sequence
+# Invoke first time setup sequence if required
 
 if firstTime == True:
     mainApp.first_time()
-
+else:
+    mainApp.main_menu()
 root.mainloop()
