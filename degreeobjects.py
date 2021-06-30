@@ -31,7 +31,6 @@ class Module(object):
             if work.module == module:
                 self.works.append(work)
                 self.worksheetmarks[work.name] = work.score / work.max_score
-                
 
 
 if __name__ == "__main__":

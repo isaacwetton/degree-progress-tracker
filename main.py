@@ -2,7 +2,7 @@
 import os
 import pickle
 import shelve
-import degreeobjects
+from degreeobjects import *
 from tkinter import *
 
 
