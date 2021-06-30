@@ -57,6 +57,8 @@ class Application(Frame):
                     f_writeCourseData = open(direct + "courseData.dat", "wb")
                     pickle.dump(courseData, f_writeCourseData, True)
                     f_writeCourseData.close()
+                    f_moduleWorkLists = open(direct + "moduleWorkLists.dat", "wb")
+                    f_moduleWorkLists.close()
                     self.wel_lbl.grid_remove()
                     self.course_name_entry.grid_remove()
                     self.course_name_entry_lbl.grid_remove()
@@ -89,8 +91,8 @@ class Application(Frame):
         self.main_title_lbl.grid(row=0, column=1, columnspan=7, padx=220)
 
         self.main_credit_lbl = Label(self,
-                                    text="by Isaac Wetton",
-                                    font="Helvetica 12")
+                                     text="by Isaac Wetton",
+                                     font="Helvetica 12")
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=5)
 
         self.main_courseinfo_bttn = Button(self, text="View Course Info & Stats", width=42, height=3,
@@ -119,18 +121,20 @@ class Application(Frame):
         f_readCourseData = open(direct + "courseData.dat", "rb")
         courseData = pickle.load(f_readCourseData)
         f_readCourseData.close()
-        
+
         # Create course info menu
 
         self.course_title_lbl = Label(self,
-                                    text="Course Info",
-                                    font="Helvetica 30")
+                                      text="Course Info",
+                                      font="Helvetica 30")
         self.course_title_lbl.grid(row=0, column=3, columnspan=7, padx=300)
 
         self.course_name_lbl = Label(self,
-                                    text="Course name: " + courseData[0] ,
-                                    font="Helvetica 12")
+                                     text="Course name: " + courseData[0],
+                                     font="Helvetica 12")
         self.course_name_lbl.grid(row=1, column=4, columnspan=2)
+
+
 # main program
 
 # create module and work lists
