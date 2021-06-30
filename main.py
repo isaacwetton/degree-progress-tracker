@@ -1,7 +1,5 @@
 # Import relevant modules
 import os
-import pickle
-import shelve
 from degreeobjects import *
 from tkinter import *
 
@@ -18,6 +16,7 @@ class Application(Frame):
 
     def first_time(self):
         """Initiates first time setup menu"""
+
         self.wel_lbl = Label(self,
                              text="I've noticed this is your first time using my Degree Progress Tracker.\n" +
                                   "Please input your degree information below:",
@@ -56,7 +55,7 @@ class Application(Frame):
                 try:
                     courseData = (self.course_name_entry.get(), int(self.course_maxcreds_entry.get()))
                     f_writeCourseData = open(direct + "courseData.dat", "wb")
-                    pickle.dump(courseData, f_writeCourseData)
+                    pickle.dump(courseData, f_writeCourseData, True)
                     f_writeCourseData.close()
                     self.wel_lbl.grid_remove()
                     self.course_name_entry.grid_remove()
@@ -83,6 +82,7 @@ class Application(Frame):
 
     def main_menu(self):
         """Opens the main menu of the application"""
+
         self.main_title_lbl = Label(self,
                                     text="Degree Progress Tracker",
                                     font="Helvetica 25")
@@ -93,7 +93,8 @@ class Application(Frame):
                                     font="Helvetica 12")
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=5)
 
-        self.main_courseinfo_bttn = Button(self, text="View Course Info & Stats", width=42, height=3)
+        self.main_courseinfo_bttn = Button(self, text="View Course Info & Stats", width=42, height=3,
+                                           command=self.course_info_menu)
         self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=3)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=3)
         self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=3)
@@ -102,7 +103,34 @@ class Application(Frame):
         self.main_addwork_bttn.grid(row=5, column=4, pady=5)
         self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
 
+    def clear_main_menu(self):
+        """Closes the main menu"""
+        self.main_title_lbl.grid_forget()
+        self.main_credit_lbl.grid_forget()
+        self.main_courseinfo_bttn.grid_forget()
+        self.main_createmodule_bttn.grid_forget()
+        self.main_addwork_bttn.grid_forget()
+        self.main_viewmodule_bttn.grid_forget()
 
+    def course_info_menu(self):
+        """Opens course info menu"""
+        self.clear_main_menu()
+        # Open relevant files
+        f_readCourseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_readCourseData)
+        f_readCourseData.close()
+        
+        # Create course info menu
+
+        self.course_title_lbl = Label(self,
+                                    text="Course Info",
+                                    font="Helvetica 30")
+        self.course_title_lbl.grid(row=0, column=3, columnspan=7, padx=300)
+
+        self.course_name_lbl = Label(self,
+                                    text="Course name: " + courseData[0] ,
+                                    font="Helvetica 12")
+        self.course_name_lbl.grid(row=1, column=4, columnspan=2)
 # main program
 
 # create module and work lists

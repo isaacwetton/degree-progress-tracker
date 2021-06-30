@@ -1,5 +1,6 @@
 # Degree Objects
 # Provides software object classes for degree-progress-tracker
+import pickle, shelve
 
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
@@ -12,7 +13,9 @@ class Work(object):
         self.score = score
         self.max_score = max_score
         works.append(self)
-
+        f_worksData = open(direct + "worksData.dat", "wb")
+        pickle.dump(works, f_worksData, True)
+        f_worksData.close()
 
 class Module(object):
     """A degree module"""
@@ -22,7 +25,6 @@ class Module(object):
         self.name = name
         self.max_credits = max_credits
         self.works = []
-        self.worksheetmarks = {}
         modules.append(self)
 
     def collect_work(self, module):
@@ -30,7 +32,7 @@ class Module(object):
         for work in works:
             if work.module == module:
                 self.works.append(work)
-                self.worksheetmarks[work.name] = work.score / work.max_score
+
 
 
 if __name__ == "__main__":
