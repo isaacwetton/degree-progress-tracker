@@ -1,6 +1,10 @@
 # Import relevant modules
+import os
+import pickle
+import shelve
+import degreeobjects
 from tkinter import *
-import os, pickle
+
 
 # Create application frame
 
@@ -97,11 +101,11 @@ class Application(Frame):
         self.main_createmodule_bttn.grid(row=4, column=4, pady=5)
         self.main_addwork_bttn.grid(row=5, column=4, pady=5)
         self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
+
+
 # main program
 
 # create directory
-
-
 direct = ""
 try:
     os.mkdir(os.environ['USERPROFILE'] + "\\Documents\\DegreeTracker\\")
