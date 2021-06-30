@@ -105,6 +105,10 @@ class Application(Frame):
 
 # main program
 
+# create module and work lists
+modules = []
+works = []
+
 # create directory
 direct = ""
 try:
