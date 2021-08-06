@@ -124,16 +124,30 @@ class Application(Frame):
 
         # Create course info menu
 
+        self.courseinfo_home_bttn = Button(self,
+                                          text="Home",
+                                          width=10,
+                                          height=2,
+                                          command=self.courseinfo_home
+        )
+        self.courseinfo_home_bttn.grid(row=0, column=0, padx=10)
+
         self.course_title_lbl = Label(self,
                                       text="Course Info",
                                       font="Helvetica 30")
-        self.course_title_lbl.grid(row=0, column=3, columnspan=7, padx=300)
+        self.course_title_lbl.grid(row=0, column=2, columnspan=7, padx=200)
 
         self.course_name_lbl = Label(self,
                                      text="Course name: " + courseData[0],
                                      font="Helvetica 12")
-        self.course_name_lbl.grid(row=1, column=4, columnspan=2)
+        self.course_name_lbl.grid(row=1, column=3, columnspan=2)
 
+    def courseinfo_home(self):
+        """Goes back to main menu from course info page"""
+        self.courseinfo_home_bttn.grid_forget()
+        self.course_title_lbl.grid_forget()
+        self.course_name_lbl.grid_forget()
+        self.main_menu()
 
 # main program
 
