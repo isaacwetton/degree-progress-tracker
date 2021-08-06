@@ -97,7 +97,8 @@ class Application(Frame):
 
         self.main_courseinfo_bttn = Button(self, text="View Course Info & Stats", width=42, height=3,
                                            command=self.course_info_menu)
-        self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=3)
+        self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=3,
+                                             command=self.create_module_menu)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=3)
         self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=3)
         self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
@@ -149,6 +150,27 @@ class Application(Frame):
         self.course_name_lbl.grid_forget()
         self.main_menu()
 
+    def create_module_menu(self):
+        """Opens menu for adding a module"""
+        self.clear_main_menu()
+        self.create_module_home_bttn = Button(self,
+                                           text="Home",
+                                           width=10,
+                                           height=2,
+                                           command=self.create_module_home
+                                           )
+        self.create_module_home_bttn.grid(row=0, column=0, padx=10)
+
+        self.create_module_title_lbl = Label(self,
+                                      text="Create Module",
+                                      font="Helvetica 30")
+        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170)
+
+    def create_module_home(self):
+        """Goes back to main menu from module creation menu"""
+        self.create_module_home_bttn.grid_forget()
+        self.create_module_title_lbl.grid_forget()
+        self.main_menu()
 # main program
 
 # create module and work lists
