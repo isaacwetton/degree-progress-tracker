@@ -1,5 +1,6 @@
 # Import relevant modules
 import os
+import webbrowser
 from degreeobjects import *
 from tkinter import *
 
@@ -101,7 +102,8 @@ class Application(Frame):
                                              command=self.create_module_menu)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2)
         self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2)
-        self.main_about_bttn = Button(self, text="About", width=42, height=2)
+        self.main_about_bttn = Button(self, text="About", width=42, height=2,
+                                      command=self.about_page)
         self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
         self.main_createmodule_bttn.grid(row=4, column=4, pady=5)
         self.main_addwork_bttn.grid(row=5, column=4, pady=5)
@@ -174,6 +176,51 @@ class Application(Frame):
         self.create_module_home_bttn.grid_forget()
         self.create_module_title_lbl.grid_forget()
         self.main_menu()
+
+    def about_page(self):
+        """Displays information page about the application"""
+        self.clear_main_menu()
+        self.about_home_bttn = Button(self,
+                                              text="Home",
+                                              width=10,
+                                              height=2,
+                                              command=self.about_home
+                                              )
+        self.about_home_bttn.grid(row=0, column=0, padx=10)
+
+        self.about_text1_lbl = Label(self,
+                                             text="This application was created by Isaac Wetton. " \
+                                                  + "It is designed to assist with the organisation\nand tracking of " \
+                                                  + "a university degree's progress. The app allows for the creation " \
+                                                  + "of modules\nand worksheet which can then be assigned to those " \
+                                                  + "modules. \n\nEach module and worksheet's average marks and " \
+                                                  + "grades can be tracked, as well as overall\nprogress." \
+                                                  + "The app makes the assumption that 40% is a third class, 50% is " \
+                                                  + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n" \
+                                                  + "The course data for this program is stored in the directory "
+                                                  + "User\Documents\DegreeTracker\.\nIf the program stops working " \
+                                                  + "at any point, it can be reset by deleting this directory and " \
+                                                  + "its\ncontents.\n\nThis is the first GUI program I have created " \
+                                                  + "with Python so please appreciate there may be some\nissues. " \
+                                                  + "Bugs and other problems can be reported on the GitHub page " \
+                                                  + "below.",
+                                             font="Helvetica 13",
+                                             justify=LEFT)
+        self.about_text1_lbl.grid(row=1, column=0, columnspan=7, pady=10, padx=50)
+
+        self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Project",
+                                        width=50, height=1, command=self.githublink)
+        self.about_github_bttn.grid(row=2, column=2, padx=20)
+
+    def about_home(self):
+        """Goes back to main menu from about page"""
+        self.about_home_bttn.grid_forget()
+        self.about_text1_lbl.grid_forget()
+        self.about_github_bttn.grid_forget()
+        self.main_menu()
+
+    def githublink(self):
+        webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
 # main program
 
 # create module and work lists
