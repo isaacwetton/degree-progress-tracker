@@ -186,7 +186,7 @@ class Application(Frame):
                                               height=2,
                                               command=self.about_home
                                               )
-        self.about_home_bttn.grid(row=0, column=0, padx=10)
+        self.about_home_bttn.grid(row=0, column=0, padx=10, pady=5)
 
         self.about_text1_lbl = Label(self,
                                              text="This application was created by Isaac Wetton. " \
@@ -221,6 +221,16 @@ class Application(Frame):
 
     def githublink(self):
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
+
+    def shelve_modules(self):
+        global modules
+        global works
+        f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
+        for module in modules:
+            f_modules[module] = module.works
+        f_modules.sync()
+        f_modules.close()
+
 # main program
 
 # create module and work lists
@@ -242,6 +252,7 @@ try:
 except IOError:
     # os.remove(direct + "courseData.dat")
     firstTime = True
+f_courseData.close()
 
 # Create root and main application window
 root = Tk()

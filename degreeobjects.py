@@ -26,6 +26,7 @@ class Module(object):
         self.max_credits = max_credits
         self.works = []
         modules.append(self)
+        self.collect_work()
 
     def collect_work(self, module):
         global works
