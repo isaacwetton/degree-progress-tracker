@@ -249,10 +249,11 @@ except FileExistsError:
 try:
     f_courseData = open(direct + "courseData.dat", "rb+")
     firstTime = False
+    f_courseData.close()
 except IOError:
     # os.remove(direct + "courseData.dat")
     firstTime = True
-f_courseData.close()
+
 
 # Create root and main application window
 root = Tk()
