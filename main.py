@@ -146,7 +146,7 @@ class Application(Frame):
         self.course_name_lbl = Label(self,
                                      text="Course name: " + courseData[0],
                                      font="Helvetica 12")
-        self.course_name_lbl.grid(row=1, column=3, columnspan=2)
+        self.course_name_lbl.grid(row=1, column=2, columnspan=6)
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
