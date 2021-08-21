@@ -164,17 +164,41 @@ class Application(Frame):
                                            height=2,
                                            command=self.create_module_home
                                            )
-        self.create_module_home_bttn.grid(row=0, column=0, padx=10)
+        self.create_module_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
         self.create_module_title_lbl = Label(self,
                                       text="Create Module",
                                       font="Helvetica 30")
-        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170)
+        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0,80))
+
+        self.create_module_name_lbl = Label(self,
+                                           text="Module Name",
+                                           font="Helvetica 13")
+        self.create_module_name_lbl.grid(row=1, column=3, sticky=W)
+        self.create_module_name_entry = Entry(self, width=50)
+        self.create_module_name_entry.grid(row=1, column=4)
+
+        self.create_module_maxcredits_lbl = Label(self,
+                                                  text="Maximum Available Credits",
+                                                  font="Helvetica 13")
+        self.create_module_maxcredits_lbl.grid(row=2, column=3, sticky=W)
+        self.create_module_maxcredits_entry = Entry(self, width=50)
+        self.create_module_maxcredits_entry.grid(row=2, column=4)
+
+        self.create_module_submit_bttn = Button(self,
+                                                text="Create Module",
+                                                width=42)
+        self.create_module_submit_bttn.grid(row=3, column=4)
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
         self.create_module_home_bttn.grid_forget()
         self.create_module_title_lbl.grid_forget()
+        self.create_module_name_lbl.grid_forget()
+        self.create_module_name_entry.grid_forget()
+        self.create_module_maxcredits_lbl.grid_forget()
+        self.create_module_maxcredits_entry.grid_forget()
+        self.create_module_submit_bttn.grid_forget()
         self.main_menu()
 
     def about_page(self):
@@ -220,9 +244,11 @@ class Application(Frame):
         self.main_menu()
 
     def githublink(self):
+        """Opens the application's Github repos"""
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
 
     def shelve_modules(self):
+        """Collects all modules and stores them in the file system"""
         global modules
         global works
         f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
