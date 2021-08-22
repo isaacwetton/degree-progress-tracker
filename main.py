@@ -205,8 +205,11 @@ class Application(Frame):
 
         self.create_module_submit_bttn = Button(self,
                                                 text="Create Module",
-                                                width=42)
+                                                width=42,
+                                                command=self.create_module_validation)
         self.create_module_submit_bttn.grid(row=5, column=4)
+
+        self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="red")
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
@@ -221,7 +224,53 @@ class Application(Frame):
         self.create_module_maxcreds_lbl.grid_forget()
         self.create_module_maxcreds_entry.grid_forget()
         self.create_module_submit_bttn.grid_forget()
+        self.create_module_error_lbl.grid_forget()
         self.main_menu()
+
+    def create_module_validation(self):
+        """Validates inputted information when creating a module"""
+        if self.create_module_name_entry.get() != "":
+            if len(self.create_module_name_entry.get()) < 51:
+                try:
+                    examPercent = float(self.create_module_examcreds_entry.get())
+                    courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
+                    if 0 <= examPercent <= 100 and 0 <= courseworkPercent <= 100:
+                        if examPercent + courseworkPercent == 100:
+                            try:
+                               maxCreds = int(self.create_module_maxcreds_entry.get())
+                               if maxCreds >= 0:
+                                   print("success")
+                               else:
+                                   self.create_module_error("maxCredsNegative")
+                            except ValueError:
+                                self.create_module_error("maxCredsInt")
+                        else:
+                            self.create_module_error("%add")
+                    else:
+                        self.create_module_error("%range")
+                except ValueError:
+                    self.create_module_error("%value")
+            else:
+                self.create_module_error("namelength")
+        else:
+            self.create_module_error("nameblank")
+
+    def create_module_error(self, errortype):
+        if errortype == "nameblank":
+            self.create_module_error_lbl.configure(text="Your module name cannot be blank")
+        elif errortype == "namelength":
+            self.create_module_error_lbl.configure(text="Your module name cannot exceed 50 characters")
+        elif errortype == "%value":
+            self.create_module_error_lbl.configure(text="Percentages must be given as numbers")
+        elif errortype == "%range":
+            self.create_module_error_lbl.configure(text="Percentages must be between 0 and 100")
+        elif errortype == "%add":
+            self.create_module_error_lbl.configure(text="The two percentages must add to 100")
+        elif errortype == "maxCredsInt":
+            self.create_module_error_lbl.configure(text="The maximum credits must be given as an integer value")
+        elif errortype == "maxCredsNegative":
+            self.create_module_error_lbl.configure(text="Maximum credits cannot be negative")
+        self.create_module_error_lbl.grid(row=6, column=3, pady=(5,0), columnspan=2)
 
     def about_page(self):
         """Displays information page about the application"""
