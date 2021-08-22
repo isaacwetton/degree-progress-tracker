@@ -20,10 +20,12 @@ class Work(object):
 class Module(object):
     """A degree module"""
 
-    def __init__(self, name, max_credits):
+    def __init__(self, name, max_credits, exam_credits, coursework_credits):
         global modules
         self.name = name
         self.max_credits = max_credits
+        self.exam_credits = exam_credits
+        self.coursework_credits = coursework_credits
         self.works = []
         modules.append(self)
         self.collect_work()
