@@ -178,17 +178,24 @@ class Application(Frame):
         self.create_module_name_entry = Entry(self, width=50)
         self.create_module_name_entry.grid(row=1, column=4)
 
-        self.create_module_maxcredits_lbl = Label(self,
-                                                  text="Maximum Available Credits",
+        self.create_module_examcreds_lbl = Label(self,
+                                            text="Maximum Exam Credits",
+                                            font="Helvetica 13")
+        self.create_module_examcreds_lbl.grid(row=2, column=3, sticky=W)
+        self.create_module_examcreds_entry = Entry(self, width=50)
+        self.create_module_examcreds_entry.grid(row=2, column=4)
+
+        self.create_module_courseworkcreds_lbl = Label(self,
+                                                  text="Maximum Coursework Credits",
                                                   font="Helvetica 13")
-        self.create_module_maxcredits_lbl.grid(row=2, column=3, sticky=W)
-        self.create_module_maxcredits_entry = Entry(self, width=50)
-        self.create_module_maxcredits_entry.grid(row=2, column=4)
+        self.create_module_courseworkcreds_lbl.grid(row=3, column=3, sticky=W)
+        self.create_module_courseworkcreds_entry = Entry(self, width=50)
+        self.create_module_courseworkcreds_entry.grid(row=3, column=4)
 
         self.create_module_submit_bttn = Button(self,
                                                 text="Create Module",
                                                 width=42)
-        self.create_module_submit_bttn.grid(row=3, column=4)
+        self.create_module_submit_bttn.grid(row=4, column=4)
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
@@ -196,8 +203,10 @@ class Application(Frame):
         self.create_module_title_lbl.grid_forget()
         self.create_module_name_lbl.grid_forget()
         self.create_module_name_entry.grid_forget()
-        self.create_module_maxcredits_lbl.grid_forget()
-        self.create_module_maxcredits_entry.grid_forget()
+        self.create_module_examcreds_lbl.grid_forget()
+        self.create_module_examcreds_entry.grid_forget()
+        self.create_module_courseworkcreds_lbl.grid_forget()
+        self.create_module_courseworkcreds_entry.grid_forget()
         self.create_module_submit_bttn.grid_forget()
         self.main_menu()
 
