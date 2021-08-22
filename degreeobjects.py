@@ -27,11 +27,14 @@ class Module(object):
         self.works = []
         modules.append(self)
         self.collect_work()
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
 
-    def collect_work(self, module):
+    def collect_work(self):
         global works
         for work in works:
-            if work.module == module:
+            if work.module == self.name:
                 self.works.append(work)
 
 
