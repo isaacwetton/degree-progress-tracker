@@ -140,7 +140,8 @@ class Application(Frame):
         self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=2,
                                              command=self.create_module_menu)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2)
-        self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2)
+        self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2,
+                                           command=self.viewmodule_validate1)
         self.main_about_bttn = Button(self, text="About", width=42, height=2,
                                       command=self.about_page)
         self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
@@ -342,6 +343,13 @@ class Application(Frame):
         self.create_module_home()
         self.main_edit_redtext("Module " + moduleName + " created")
 
+    def viewmodule_validate1(self):
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if len(modules) == 0:
+            self.main_edit_redtext("There are currently no modules to view")
+
     def about_page(self):
         """Displays information page about the application"""
         self.clear_main_menu()
@@ -394,6 +402,7 @@ class Application(Frame):
         """Opens the application's Github repos"""
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
 
+    # # This function is from a previous version and might no longer be required
     # def shelve_modules(self):
     #     """Collects all modules and stores them in the file system"""
     #     f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
