@@ -2,7 +2,8 @@
 import os
 import webbrowser
 from tkinter import *
-import pickle, shelve
+import pickle
+#import shelve
 
 # Create application frame
 
@@ -148,6 +149,13 @@ class Application(Frame):
         self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
         self.main_about_bttn.grid(row=7, column=4, pady=5)
 
+        self.main_redtext = Label(self, font="Helvetica 12", fg="red")
+
+    def main_edit_redtext(self, displaytext):
+        """Edits and displays the red text on the main menu"""
+        self.main_redtext.configure(text=displaytext)
+        self.main_redtext.grid(row=8, column=4)
+
     def clear_main_menu(self):
         """Closes the main menu"""
         self.main_title_lbl.grid_forget()
@@ -157,6 +165,7 @@ class Application(Frame):
         self.main_addwork_bttn.grid_forget()
         self.main_viewmodule_bttn.grid_forget()
         self.main_about_bttn.grid_forget()
+        self.main_redtext.grid_forget()
 
     def course_info_menu(self):
         """Opens course info menu"""
@@ -331,6 +340,7 @@ class Application(Frame):
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
         self.create_module_home()
+        self.main_edit_redtext("Module " + moduleName + " created")
 
     def about_page(self):
         """Displays information page about the application"""
