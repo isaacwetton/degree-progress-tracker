@@ -16,10 +16,6 @@ class Work(object):
         self.work_type = work_type
         self.score = score
         self.max_score = max_score
-        works.append(self)
-        f_worksData = open(direct + "worksData.dat", "wb")
-        pickle.dump(works, f_worksData, True)
-        f_worksData.close()
 
 class Module(object):
     """A degree module"""
@@ -31,11 +27,6 @@ class Module(object):
         self.exam_credits = exam_credits
         self.coursework_credits = coursework_credits
         self.works = []
-        modules.append(self)
-        self.collect_work()
-        f_modulesData = open(direct + "modulesData.dat", "wb")
-        pickle.dump(modules, f_modulesData, True)
-        f_modulesData.close()
 
     def collect_work(self):
         global works
@@ -315,11 +306,15 @@ class Application(Frame):
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5,0), columnspan=2)
 
     def create_module(self):
+        global modules
         moduleName = self.create_module_name_entry.get()
         examPercent = float(self.create_module_examcreds_entry.get())
         courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
         maxCreds = int(self.create_module_maxcreds_entry.get())
-        exec(moduleName.replace(" ","") + " = Module(moduleName, maxCreds, examPercent, courseworkPercent)")
+        modules[moduleName] = Module(moduleName, maxCreds, examPercent, courseworkPercent)
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
 
     def about_page(self):
         """Displays information page about the application"""
@@ -379,9 +374,9 @@ class Application(Frame):
 
 # main program
 
-# create module and work lists
-modules = []
-works = []
+# create module and work dicts
+modules = {}
+works = {}
 
 # create directory
 direct = ""
