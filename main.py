@@ -245,7 +245,7 @@ class Application(Frame):
                         if examPercent + courseworkPercent == 100:
                             try:
                                maxCreds = int(self.create_module_maxcreds_entry.get())
-                               if maxCreds >= 0:
+                               if maxCreds > 0:
                                    print("success")
                                else:
                                    self.create_module_error("maxCredsNegative")
