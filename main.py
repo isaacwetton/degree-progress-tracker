@@ -1,12 +1,38 @@
 # Import relevant modules
 import os
 import webbrowser
-from degreeobjects import *
 from tkinter import *
-
+import pickle
+#import shelve
 
 # Create application frame
 
+class Work(object):
+    """A piece of university work (Coursework or Exam)"""
+
+    def __init__(self, name, module, work_type, score, max_score):
+        global works
+        self.name = name
+        self.module = module
+        self.work_type = work_type
+        self.score = score
+        self.max_score = max_score
+
+class Module(object):
+    """A degree module"""
+
+    def __init__(self, name, max_credits, exam_credits, coursework_credits):
+        self.name = name
+        self.max_credits = max_credits
+        self.exam_credits = exam_credits
+        self.coursework_credits = coursework_credits
+        self.works = []
+
+    def collect_work(self):
+        global works
+        for work in works:
+            if work.module == self.name:
+                self.works.append(work)
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
@@ -54,20 +80,31 @@ class Application(Frame):
                 self.setup_entry_error("nameblank_error")
             else:
                 try:
-                    courseData = (self.course_name_entry.get(), int(self.course_maxcreds_entry.get()))
-                    f_writeCourseData = open(direct + "courseData.dat", "wb")
-                    pickle.dump(courseData, f_writeCourseData, True)
-                    f_writeCourseData.close()
-                    f_moduleWorkLists = open(direct + "moduleWorkLists.dat", "wb")
-                    f_moduleWorkLists.close()
-                    self.wel_lbl.grid_remove()
-                    self.course_name_entry.grid_remove()
-                    self.course_name_entry_lbl.grid_remove()
-                    self.course_maxcreds_entry_lbl.grid_remove()
-                    self.course_maxcreds_entry.grid_remove()
-                    self.submit_course_info_bttn.grid_remove()
-                    self.setup_error_lbl.grid_remove()
-                    self.main_menu()
+                    courseName = self.course_name_entry.get()
+                    courseCredits = int(self.course_maxcreds_entry.get())
+                    if courseCredits <= 0:
+                        self.setup_entry_error("negativecreds_error")
+                    else:
+                        courseData = (courseName, courseCredits)
+                        f_writeCourseData = open(direct + "courseData.dat", "wb")
+                        pickle.dump(courseData, f_writeCourseData, True)
+                        f_writeCourseData.close()
+                        f_modulesData = open(direct + "modulesData.dat", "wb")
+                        modules = {}
+                        pickle.dump(modules, f_modulesData, True)
+                        f_modulesData.close()
+                        f_worksData = open(direct + "worksData.dat", "wb")
+                        works = {}
+                        pickle.dump(works, f_worksData, True)
+                        f_worksData.close()
+                        self.wel_lbl.grid_remove()
+                        self.course_name_entry.grid_remove()
+                        self.course_name_entry_lbl.grid_remove()
+                        self.course_maxcreds_entry_lbl.grid_remove()
+                        self.course_maxcreds_entry.grid_remove()
+                        self.submit_course_info_bttn.grid_remove()
+                        self.setup_error_lbl.grid_remove()
+                        self.main_menu()
                 except ValueError:
                     self.setup_entry_error("credits_error")
         else:
@@ -81,6 +118,8 @@ class Application(Frame):
             self.setup_error_lbl.config(text="Degree name must be 40 characters or less")
         elif errortype == "nameblank_error":
             self.setup_error_lbl.config(text="You must enter a degree name")
+        elif errortype == "negativecreds_error":
+            self.setup_error_lbl.config(text="Credits must be positive and above 0")
         self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
 
     def main_menu(self):
@@ -101,7 +140,8 @@ class Application(Frame):
         self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=2,
                                              command=self.create_module_menu)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2)
-        self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2)
+        self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2,
+                                           command=self.viewmodule_validate1)
         self.main_about_bttn = Button(self, text="About", width=42, height=2,
                                       command=self.about_page)
         self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
@@ -109,6 +149,13 @@ class Application(Frame):
         self.main_addwork_bttn.grid(row=5, column=4, pady=5)
         self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
         self.main_about_bttn.grid(row=7, column=4, pady=5)
+
+        self.main_redtext = Label(self, font="Helvetica 12", fg="red")
+
+    def main_edit_redtext(self, displaytext):
+        """Edits and displays the red text on the main menu"""
+        self.main_redtext.configure(text=displaytext)
+        self.main_redtext.grid(row=8, column=4)
 
     def clear_main_menu(self):
         """Closes the main menu"""
@@ -119,6 +166,7 @@ class Application(Frame):
         self.main_addwork_bttn.grid_forget()
         self.main_viewmodule_bttn.grid_forget()
         self.main_about_bttn.grid_forget()
+        self.main_redtext.grid_forget()
 
     def course_info_menu(self):
         """Opens course info menu"""
@@ -178,17 +226,34 @@ class Application(Frame):
         self.create_module_name_entry = Entry(self, width=50)
         self.create_module_name_entry.grid(row=1, column=4)
 
-        self.create_module_maxcredits_lbl = Label(self,
-                                                  text="Maximum Available Credits",
+        self.create_module_examcreds_lbl = Label(self,
+                                            text="Percentage Exam (%)",
+                                            font="Helvetica 13")
+        self.create_module_examcreds_lbl.grid(row=2, column=3, sticky=W)
+        self.create_module_examcreds_entry = Entry(self, width=50)
+        self.create_module_examcreds_entry.grid(row=2, column=4)
+
+        self.create_module_courseworkcreds_lbl = Label(self,
+                                                  text="Percentage Coursework (%)",
                                                   font="Helvetica 13")
-        self.create_module_maxcredits_lbl.grid(row=2, column=3, sticky=W)
-        self.create_module_maxcredits_entry = Entry(self, width=50)
-        self.create_module_maxcredits_entry.grid(row=2, column=4)
+        self.create_module_courseworkcreds_lbl.grid(row=3, column=3, sticky=W)
+        self.create_module_courseworkcreds_entry = Entry(self, width=50)
+        self.create_module_courseworkcreds_entry.grid(row=3, column=4)
+
+        self.create_module_maxcreds_lbl = Label(self,
+                                                       text="Maximum Available Credits",
+                                                       font="Helvetica 13")
+        self.create_module_maxcreds_lbl.grid(row=4, column=3, sticky=W)
+        self.create_module_maxcreds_entry = Entry(self, width=50)
+        self.create_module_maxcreds_entry.grid(row=4, column=4)
 
         self.create_module_submit_bttn = Button(self,
                                                 text="Create Module",
-                                                width=42)
-        self.create_module_submit_bttn.grid(row=3, column=4)
+                                                width=42,
+                                                command=self.create_module_validation)
+        self.create_module_submit_bttn.grid(row=5, column=4)
+
+        self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="red")
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
@@ -196,10 +261,94 @@ class Application(Frame):
         self.create_module_title_lbl.grid_forget()
         self.create_module_name_lbl.grid_forget()
         self.create_module_name_entry.grid_forget()
-        self.create_module_maxcredits_lbl.grid_forget()
-        self.create_module_maxcredits_entry.grid_forget()
+        self.create_module_examcreds_lbl.grid_forget()
+        self.create_module_examcreds_entry.grid_forget()
+        self.create_module_courseworkcreds_lbl.grid_forget()
+        self.create_module_courseworkcreds_entry.grid_forget()
+        self.create_module_maxcreds_lbl.grid_forget()
+        self.create_module_maxcreds_entry.grid_forget()
         self.create_module_submit_bttn.grid_forget()
+        self.create_module_error_lbl.grid_forget()
         self.main_menu()
+
+    def create_module_validation(self):
+        """Validates inputted information when creating a module"""
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if self.create_module_name_entry.get() in modules:
+            self.create_module_error("moduleExists")
+        else:
+            if self.create_module_name_entry.get() != "":
+                if len(self.create_module_name_entry.get()) < 51:
+                    try:
+                        examPercent = float(self.create_module_examcreds_entry.get())
+                        courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
+                        if 0 <= examPercent <= 100 and 0 <= courseworkPercent <= 100:
+                            if examPercent + courseworkPercent == 100:
+                                try:
+                                    maxCreds = int(self.create_module_maxcreds_entry.get())
+                                    if maxCreds > 0:
+                                        self.create_module()
+                                    else:
+                                        self.create_module_error("maxCredsNegative")
+                                except ValueError:
+                                    self.create_module_error("maxCredsInt")
+                            else:
+                                self.create_module_error("%add")
+                        else:
+                            self.create_module_error("%range")
+                    except ValueError:
+                        self.create_module_error("%value")
+                else:
+                    self.create_module_error("namelength")
+            else:
+                self.create_module_error("nameblank")
+
+
+
+    def create_module_error(self, errortype):
+        """Shows an error message if module creation validation fails"""
+        if errortype == "nameblank":
+            self.create_module_error_lbl.configure(text="Your module name cannot be blank")
+        elif errortype == "namelength":
+            self.create_module_error_lbl.configure(text="Your module name cannot exceed 50 characters")
+        elif errortype == "%value":
+            self.create_module_error_lbl.configure(text="Percentages must be given as numbers")
+        elif errortype == "%range":
+            self.create_module_error_lbl.configure(text="Percentages must be between 0 and 100")
+        elif errortype == "%add":
+            self.create_module_error_lbl.configure(text="The two percentages must add to 100")
+        elif errortype == "maxCredsInt":
+            self.create_module_error_lbl.configure(text="The maximum credits must be given as an integer value")
+        elif errortype == "maxCredsNegative":
+            self.create_module_error_lbl.configure(text="Maximum credits cannot be negative")
+        elif errortype == "moduleExists":
+            self.create_module_error_lbl.configure(text="A module of that name already exists")
+        self.create_module_error_lbl.grid(row=6, column=3, pady=(5,0), columnspan=2)
+
+    def create_module(self):
+        """Creates a module object using the given info and stores it in the file system"""
+        moduleName = self.create_module_name_entry.get()
+        examPercent = float(self.create_module_examcreds_entry.get())
+        courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
+        maxCreds = int(self.create_module_maxcreds_entry.get())
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        modules[moduleName] = Module(moduleName, maxCreds, examPercent, courseworkPercent)
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
+        self.create_module_home()
+        self.main_edit_redtext("Module " + moduleName + " created")
+
+    def viewmodule_validate1(self):
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if len(modules) == 0:
+            self.main_edit_redtext("There are currently no modules to view")
 
     def about_page(self):
         """Displays information page about the application"""
@@ -236,32 +385,33 @@ class Application(Frame):
                                         width=50, height=1, command=self.githublink)
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
+        self.about_contact_lbl = Label(self,
+                                  text="Contact: isaac@wetton.net",
+                                  font="Helvetica 12")
+        self.about_contact_lbl.grid(row=3, column=2, pady=(5, 0))
+
     def about_home(self):
         """Goes back to main menu from about page"""
         self.about_home_bttn.grid_forget()
         self.about_text1_lbl.grid_forget()
         self.about_github_bttn.grid_forget()
+        self.about_contact_lbl.grid_forget()
         self.main_menu()
 
     def githublink(self):
         """Opens the application's Github repos"""
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
 
-    def shelve_modules(self):
-        """Collects all modules and stores them in the file system"""
-        global modules
-        global works
-        f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
-        for module in modules:
-            f_modules[module] = module.works
-        f_modules.sync()
-        f_modules.close()
+    # # This function is from a previous version and might no longer be required
+    # def shelve_modules(self):
+    #     """Collects all modules and stores them in the file system"""
+    #     f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
+    #     for module in modules:
+    #         f_modules[module] = module.works
+    #     f_modules.sync()
+    #     f_modules.close()
 
 # main program
-
-# create module and work lists
-modules = []
-works = []
 
 # create directory
 direct = ""
