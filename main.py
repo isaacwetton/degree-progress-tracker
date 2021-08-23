@@ -54,24 +54,29 @@ class Application(Frame):
                 self.setup_entry_error("nameblank_error")
             else:
                 try:
-                    courseData = (self.course_name_entry.get(), int(self.course_maxcreds_entry.get()))
-                    f_writeCourseData = open(direct + "courseData.dat", "wb")
-                    pickle.dump(courseData, f_writeCourseData, True)
-                    f_writeCourseData.close()
-                    f_moduleWorkLists = open(direct + "moduleWorkLists.dat", "wb")
-                    f_moduleWorkLists.close()
-                    f_modulesData = open(direct + "modulesData.dat", "wb")
-                    f_modulesData.close()
-                    f_worksData = open(direct + "worksData.dat", "wb")
-                    f_worksData.close()
-                    self.wel_lbl.grid_remove()
-                    self.course_name_entry.grid_remove()
-                    self.course_name_entry_lbl.grid_remove()
-                    self.course_maxcreds_entry_lbl.grid_remove()
-                    self.course_maxcreds_entry.grid_remove()
-                    self.submit_course_info_bttn.grid_remove()
-                    self.setup_error_lbl.grid_remove()
-                    self.main_menu()
+                    courseName = self.course_name_entry.get()
+                    courseCredits = int(self.course_maxcreds_entry.get())
+                    if courseCredits <= 0:
+                        self.setup_entry_error("negativecreds_error")
+                    else:
+                        courseData = (courseName, courseCredits)
+                        f_writeCourseData = open(direct + "courseData.dat", "wb")
+                        pickle.dump(courseData, f_writeCourseData, True)
+                        f_writeCourseData.close()
+                        f_moduleWorkLists = open(direct + "moduleWorkLists.dat", "wb")
+                        f_moduleWorkLists.close()
+                        f_modulesData = open(direct + "modulesData.dat", "wb")
+                        f_modulesData.close()
+                        f_worksData = open(direct + "worksData.dat", "wb")
+                        f_worksData.close()
+                        self.wel_lbl.grid_remove()
+                        self.course_name_entry.grid_remove()
+                        self.course_name_entry_lbl.grid_remove()
+                        self.course_maxcreds_entry_lbl.grid_remove()
+                        self.course_maxcreds_entry.grid_remove()
+                        self.submit_course_info_bttn.grid_remove()
+                        self.setup_error_lbl.grid_remove()
+                        self.main_menu()
                 except ValueError:
                     self.setup_entry_error("credits_error")
         else:
@@ -85,6 +90,8 @@ class Application(Frame):
             self.setup_error_lbl.config(text="Degree name must be 40 characters or less")
         elif errortype == "nameblank_error":
             self.setup_error_lbl.config(text="You must enter a degree name")
+        elif errortype == "negativecreds_error":
+            self.setup_error_lbl.config(text="Credits must be positive and above 0")
         self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
 
     def main_menu(self):
