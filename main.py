@@ -263,31 +263,39 @@ class Application(Frame):
 
     def create_module_validation(self):
         """Validates inputted information when creating a module"""
-        if self.create_module_name_entry.get() != "":
-            if len(self.create_module_name_entry.get()) < 51:
-                try:
-                    examPercent = float(self.create_module_examcreds_entry.get())
-                    courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
-                    if 0 <= examPercent <= 100 and 0 <= courseworkPercent <= 100:
-                        if examPercent + courseworkPercent == 100:
-                            try:
-                               maxCreds = int(self.create_module_maxcreds_entry.get())
-                               if maxCreds > 0:
-                                   self.create_module()
-                               else:
-                                   self.create_module_error("maxCredsNegative")
-                            except ValueError:
-                                self.create_module_error("maxCredsInt")
-                        else:
-                            self.create_module_error("%add")
-                    else:
-                        self.create_module_error("%range")
-                except ValueError:
-                    self.create_module_error("%value")
-            else:
-                self.create_module_error("namelength")
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if self.create_module_name_entry.get() in modules:
+            self.create_module_error("moduleExists")
         else:
-            self.create_module_error("nameblank")
+            if self.create_module_name_entry.get() != "":
+                if len(self.create_module_name_entry.get()) < 51:
+                    try:
+                        examPercent = float(self.create_module_examcreds_entry.get())
+                        courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
+                        if 0 <= examPercent <= 100 and 0 <= courseworkPercent <= 100:
+                            if examPercent + courseworkPercent == 100:
+                                try:
+                                    maxCreds = int(self.create_module_maxcreds_entry.get())
+                                    if maxCreds > 0:
+                                        self.create_module()
+                                    else:
+                                        self.create_module_error("maxCredsNegative")
+                                except ValueError:
+                                    self.create_module_error("maxCredsInt")
+                            else:
+                                self.create_module_error("%add")
+                        else:
+                            self.create_module_error("%range")
+                    except ValueError:
+                        self.create_module_error("%value")
+                else:
+                    self.create_module_error("namelength")
+            else:
+                self.create_module_error("nameblank")
+
+
 
     def create_module_error(self, errortype):
         if errortype == "nameblank":
@@ -304,6 +312,8 @@ class Application(Frame):
             self.create_module_error_lbl.configure(text="The maximum credits must be given as an integer value")
         elif errortype == "maxCredsNegative":
             self.create_module_error_lbl.configure(text="Maximum credits cannot be negative")
+        elif errortype == "moduleExists":
+            self.create_module_error_lbl.configure(text="A module of that name already exists")
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5,0), columnspan=2)
 
     def create_module(self):
@@ -312,8 +322,10 @@ class Application(Frame):
         examPercent = float(self.create_module_examcreds_entry.get())
         courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
         maxCreds = int(self.create_module_maxcreds_entry.get())
-        f_modulesData = open(direct + "modulesData.dat", "rb+")
+        f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        f_modulesData = open(direct + "modulesData.dat", "wb")
         modules[moduleName] = Module(moduleName, maxCreds, examPercent, courseworkPercent)
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
@@ -364,15 +376,13 @@ class Application(Frame):
         """Opens the application's Github repos"""
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
 
-    def shelve_modules(self):
-        """Collects all modules and stores them in the file system"""
-        global modules
-        global works
-        f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
-        for module in modules:
-            f_modules[module] = module.works
-        f_modules.sync()
-        f_modules.close()
+    # def shelve_modules(self):
+    #     """Collects all modules and stores them in the file system"""
+    #     f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
+    #     for module in modules:
+    #         f_modules[module] = module.works
+    #     f_modules.sync()
+    #     f_modules.close()
 
 # main program
 
