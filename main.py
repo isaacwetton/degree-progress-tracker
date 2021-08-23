@@ -1,12 +1,47 @@
 # Import relevant modules
 import os
 import webbrowser
-from degreeobjects import *
 from tkinter import *
-
+import pickle, shelve
 
 # Create application frame
 
+class Work(object):
+    """A piece of university work (Coursework or Exam)"""
+
+    def __init__(self, name, module, work_type, score, max_score):
+        global works
+        self.name = name
+        self.module = module
+        self.work_type = work_type
+        self.score = score
+        self.max_score = max_score
+        works.append(self)
+        f_worksData = open(direct + "worksData.dat", "wb")
+        pickle.dump(works, f_worksData, True)
+        f_worksData.close()
+
+class Module(object):
+    """A degree module"""
+
+    def __init__(self, name, max_credits, exam_credits, coursework_credits):
+        global modules
+        self.name = name
+        self.max_credits = max_credits
+        self.exam_credits = exam_credits
+        self.coursework_credits = coursework_credits
+        self.works = []
+        modules.append(self)
+        self.collect_work()
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
+
+    def collect_work(self):
+        global works
+        for work in works:
+            if work.module == self.name:
+                self.works.append(work)
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
@@ -246,7 +281,7 @@ class Application(Frame):
                             try:
                                maxCreds = int(self.create_module_maxcreds_entry.get())
                                if maxCreds > 0:
-                                   print("success")
+                                   self.create_module()
                                else:
                                    self.create_module_error("maxCredsNegative")
                             except ValueError:
@@ -278,6 +313,13 @@ class Application(Frame):
         elif errortype == "maxCredsNegative":
             self.create_module_error_lbl.configure(text="Maximum credits cannot be negative")
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5,0), columnspan=2)
+
+    def create_module(self):
+        moduleName = self.create_module_name_entry.get()
+        examPercent = float(self.create_module_examcreds_entry.get())
+        courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
+        maxCreds = int(self.create_module_maxcreds_entry.get())
+        exec(moduleName.replace(" ","") + " = Module(moduleName, maxCreds, examPercent, courseworkPercent)")
 
     def about_page(self):
         """Displays information page about the application"""
