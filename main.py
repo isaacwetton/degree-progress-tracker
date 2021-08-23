@@ -298,6 +298,7 @@ class Application(Frame):
 
 
     def create_module_error(self, errortype):
+        """Shows an error message if module creation validation fails"""
         if errortype == "nameblank":
             self.create_module_error_lbl.configure(text="Your module name cannot be blank")
         elif errortype == "namelength":
