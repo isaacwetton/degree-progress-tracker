@@ -377,11 +377,17 @@ class Application(Frame):
                                         width=50, height=1, command=self.githublink)
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
+        self.about_contact_lbl = Label(self,
+                                  text="Contact: isaac@wetton.net",
+                                  font="Helvetica 12")
+        self.about_contact_lbl.grid(row=3, column=2, pady=(5, 0))
+
     def about_home(self):
         """Goes back to main menu from about page"""
         self.about_home_bttn.grid_forget()
         self.about_text1_lbl.grid_forget()
         self.about_github_bttn.grid_forget()
+        self.about_contact_lbl.grid_forget()
         self.main_menu()
 
     def githublink(self):
