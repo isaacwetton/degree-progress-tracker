@@ -330,6 +330,7 @@ class Application(Frame):
         modules[moduleName] = Module(moduleName, maxCreds, examPercent, courseworkPercent)
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
+        self.create_module_home()
 
     def about_page(self):
         """Displays information page about the application"""
