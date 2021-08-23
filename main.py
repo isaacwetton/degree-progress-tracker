@@ -21,7 +21,6 @@ class Module(object):
     """A degree module"""
 
     def __init__(self, name, max_credits, exam_credits, coursework_credits):
-        global modules
         self.name = name
         self.max_credits = max_credits
         self.exam_credits = exam_credits
@@ -89,11 +88,13 @@ class Application(Frame):
                         f_writeCourseData = open(direct + "courseData.dat", "wb")
                         pickle.dump(courseData, f_writeCourseData, True)
                         f_writeCourseData.close()
-                        f_moduleWorkLists = open(direct + "moduleWorkLists.dat", "wb")
-                        f_moduleWorkLists.close()
                         f_modulesData = open(direct + "modulesData.dat", "wb")
+                        modules = {}
+                        pickle.dump(modules, f_modulesData, True)
                         f_modulesData.close()
                         f_worksData = open(direct + "worksData.dat", "wb")
+                        works = {}
+                        pickle.dump(works, f_worksData, True)
                         f_worksData.close()
                         self.wel_lbl.grid_remove()
                         self.course_name_entry.grid_remove()
@@ -306,13 +307,14 @@ class Application(Frame):
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5,0), columnspan=2)
 
     def create_module(self):
-        global modules
+        """Creates a module object using the given info and stores it in the file system"""
         moduleName = self.create_module_name_entry.get()
         examPercent = float(self.create_module_examcreds_entry.get())
         courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
         maxCreds = int(self.create_module_maxcreds_entry.get())
+        f_modulesData = open(direct + "modulesData.dat", "rb+")
+        modules = pickle.load(f_modulesData)
         modules[moduleName] = Module(moduleName, maxCreds, examPercent, courseworkPercent)
-        f_modulesData = open(direct + "modulesData.dat", "wb")
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
 
@@ -373,10 +375,6 @@ class Application(Frame):
         f_modules.close()
 
 # main program
-
-# create module and work dicts
-modules = {}
-works = {}
 
 # create directory
 direct = ""
