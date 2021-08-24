@@ -139,7 +139,8 @@ class Application(Frame):
                                            command=self.course_info_menu)
         self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=2,
                                              command=self.create_module_menu)
-        self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2)
+        self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2,
+                                        command=self.addwork_menu)
         self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2,
                                            command=self.viewmodule_validate1)
         self.main_about_bttn = Button(self, text="About", width=42, height=2,
@@ -342,6 +343,27 @@ class Application(Frame):
         f_modulesData.close()
         self.create_module_home()
         self.main_edit_redtext("Module " + moduleName + " created")
+
+    def addwork_menu(self):
+        """Opens menu for adding a piece of work"""
+        self.clear_main_menu()
+        self.addwork_home_bttn = Button(self,
+                                              text="Home",
+                                              width=10,
+                                              height=2,
+                                              command=self.addwork_home
+                                              )
+        self.addwork_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
+
+        self.addwork_title_lbl = Label(self,
+                                             text="Add Piece of Work",
+                                             font="Helvetica 25")
+        self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 80))
+
+    def addwork_home(self):
+        self.addwork_home_bttn.grid_forget()
+        self.addwork_title_lbl.grid_forget()
+        self.main_menu()
 
     def viewmodule_validate1(self):
         f_modulesData = open(direct + "modulesData.dat", "rb")
