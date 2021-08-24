@@ -13,14 +13,13 @@ import pickle
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
-    def __init__(self, name, module, work_type, score, max_score, percentage):
+    def __init__(self, name, module, work_type, score, percentage_module):
         global works
         self.name = name
         self.module = module
         self.work_type = work_type
         self.score = score
-        self.max_score = max_score
-        self.percentage = percentage
+        self.percentage_module = percentage_module
 
 
 class Module(object):
@@ -362,7 +361,7 @@ class Application(Frame):
         self.addwork_title_lbl = Label(self,
                                        text="Add Piece of Work",
                                        font="Helvetica 25")
-        self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 80))
+        self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 50))
 
         # Create list of module names for combobox
 
@@ -378,7 +377,7 @@ class Application(Frame):
         self.addwork_combobox_lbl = Label(self,
                                           text="Select Module",
                                           font="Helvetica 13")
-        self.addwork_combobox_lbl.grid(row=1, column=3, sticky=W)
+        self.addwork_combobox_lbl.grid(row=1, column=3, sticky=E)
         self.addwork_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
         self.addwork_combobox.grid(row=1, column=4, columnspan=4)
 
@@ -387,27 +386,44 @@ class Application(Frame):
         self.addwork_name_lbl = Label(self,
                                       text="Work name",
                                       font="Helvetica 13")
-        self.addwork_name_lbl.grid(row=2, column=3, sticky=W)
+        self.addwork_name_lbl.grid(row=2, column=3, sticky=E)
         self.addwork_name_entry = Entry(self, width=50)
         self.addwork_name_entry.grid(row=2, column=4, columnspan=4)
 
         self.addwork_type_lbl = Label(self,
                                       text="Work type",
                                       font="Helvetica 13")
-        self.addwork_type_lbl.grid(row=3, column=3, sticky=W)
+        self.addwork_type_lbl.grid(row=3, column=3, sticky=E)
         radiovar = StringVar()
         self.addwork_type_exambttn = Radiobutton(self,
                                                  text="Exam",
                                                  font="Helvetica 13",
                                                  variable=radiovar,
                                                  value="exam")
-        self.addwork_type_exambttn.grid(row=3, column=4, padx=(20, 0), pady=(2,0))
+        self.addwork_type_exambttn.grid(row=3, column=4, padx=(20, 0), pady=(2, 0))
         self.addwork_type_courseworkbttn = Radiobutton(self,
                                                        text="Coursework",
                                                        font="Helvetica 13",
                                                        variable=radiovar,
                                                        value="coursework")
-        self.addwork_type_courseworkbttn.grid(row=3, column=5, pady=(2,0))
+        self.addwork_type_courseworkbttn.grid(row=3, column=5, pady=(2, 0))
+
+        self.addwork_percent_lbl = Label(self,
+                                         text="Percentage of module",
+                                         font="Helvetica 13")
+        self.addwork_percent_lbl.grid(row=4, column=3, sticky=E)
+        self.addwork_percent_entry = Entry(self, width=50)
+        self.addwork_percent_entry.grid(row=4, column=4, columnspan=4)
+
+        self.addwork_score_lbl = Label(self,
+                                       text="Score (%)",
+                                       font="Helvetica 13")
+        self.addwork_score_lbl.grid(row=5, column=3, sticky=E)
+        self.addwork_score_entry = Entry(self, width=50)
+        self.addwork_score_entry.grid(row=5, column=4, columnspan=4)
+
+        self.addwork_submit_bttn = Button(self, width=40, text="Submit")
+        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30,0), padx=(50,0))
 
     def addwork_home(self):
         """Return to the main menu from the add work menu"""
@@ -420,6 +436,11 @@ class Application(Frame):
         self.addwork_type_lbl.grid_forget()
         self.addwork_type_exambttn.grid_forget()
         self.addwork_type_courseworkbttn.grid_forget()
+        self.addwork_percent_lbl.grid_forget()
+        self.addwork_percent_entry.grid_forget()
+        self.addwork_score_lbl.grid_forget()
+        self.addwork_score_entry.grid_forget()
+        self.addwork_submit_bttn.grid_forget()
         self.main_menu()
 
     def viewmodule_validate1(self):
