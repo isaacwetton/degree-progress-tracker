@@ -186,8 +186,9 @@ class Application(Frame):
 
         self.courseinfo_home_bttn = Button(self,
                                            text="Home",
-                                           width=10,
-                                           height=2,
+                                           font="Helvetica 13 bold",
+                                           width=8,
+                                           height=1,
                                            command=self.courseinfo_home
                                            )
         self.courseinfo_home_bttn.grid(row=0, column=0, padx=10)
@@ -214,8 +215,9 @@ class Application(Frame):
         self.clear_main_menu()
         self.create_module_home_bttn = Button(self,
                                               text="Home",
-                                              width=10,
-                                              height=2,
+                                              font="Helvetica 13 bold",
+                                              width=8,
+                                              height=1,
                                               command=self.create_module_home
                                               )
         self.create_module_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
@@ -352,8 +354,9 @@ class Application(Frame):
         self.clear_main_menu()
         self.addwork_home_bttn = Button(self,
                                         text="Home",
-                                        width=10,
-                                        height=2,
+                                        font="Helvetica 13 bold",
+                                        width=8,
+                                        height=1,
                                         command=self.addwork_home
                                         )
         self.addwork_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
@@ -456,8 +459,9 @@ class Application(Frame):
         self.clear_main_menu()
         self.about_home_bttn = Button(self,
                                       text="Home",
-                                      width=10,
-                                      height=2,
+                                      font="Helvetica 13 bold",
+                                      width=8,
+                                      height=1,
                                       command=self.about_home
                                       )
         self.about_home_bttn.grid(row=0, column=0, padx=10, pady=5)
