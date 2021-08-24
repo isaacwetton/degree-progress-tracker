@@ -401,6 +401,7 @@ class Application(Frame):
                                       font="Helvetica 13")
         self.addwork_type_lbl.grid(row=3, column=3, sticky=E)
         self.radiovar = StringVar()
+        self.radiovar.set(None)
         self.addwork_type_exambttn = Radiobutton(self,
                                                  text="Exam",
                                                  font="Helvetica 13",
