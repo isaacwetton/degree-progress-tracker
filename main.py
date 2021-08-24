@@ -2,8 +2,11 @@
 import os
 import webbrowser
 from tkinter import *
+from tkinter import ttk
 import pickle
-#import shelve
+
+
+# import shelve
 
 # Create application frame
 
@@ -17,6 +20,7 @@ class Work(object):
         self.work_type = work_type
         self.score = score
         self.max_score = max_score
+
 
 class Module(object):
     """A degree module"""
@@ -33,6 +37,7 @@ class Module(object):
         for work in works:
             if work.module == self.name:
                 self.works.append(work)
+
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
@@ -180,11 +185,11 @@ class Application(Frame):
         # Create course info menu
 
         self.courseinfo_home_bttn = Button(self,
-                                          text="Home",
-                                          width=10,
-                                          height=2,
-                                          command=self.courseinfo_home
-        )
+                                           text="Home",
+                                           width=10,
+                                           height=2,
+                                           command=self.courseinfo_home
+                                           )
         self.courseinfo_home_bttn.grid(row=0, column=0, padx=10)
 
         self.course_title_lbl = Label(self,
@@ -208,42 +213,42 @@ class Application(Frame):
         """Opens menu for adding a module"""
         self.clear_main_menu()
         self.create_module_home_bttn = Button(self,
-                                           text="Home",
-                                           width=10,
-                                           height=2,
-                                           command=self.create_module_home
-                                           )
+                                              text="Home",
+                                              width=10,
+                                              height=2,
+                                              command=self.create_module_home
+                                              )
         self.create_module_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
         self.create_module_title_lbl = Label(self,
-                                      text="Create Module",
-                                      font="Helvetica 30")
-        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0,80))
+                                             text="Create Module",
+                                             font="Helvetica 30")
+        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 80))
 
         self.create_module_name_lbl = Label(self,
-                                           text="Module Name",
-                                           font="Helvetica 13")
+                                            text="Module Name",
+                                            font="Helvetica 13")
         self.create_module_name_lbl.grid(row=1, column=3, sticky=W)
         self.create_module_name_entry = Entry(self, width=50)
         self.create_module_name_entry.grid(row=1, column=4)
 
         self.create_module_examcreds_lbl = Label(self,
-                                            text="Percentage Exam (%)",
-                                            font="Helvetica 13")
+                                                 text="Percentage Exam (%)",
+                                                 font="Helvetica 13")
         self.create_module_examcreds_lbl.grid(row=2, column=3, sticky=W)
         self.create_module_examcreds_entry = Entry(self, width=50)
         self.create_module_examcreds_entry.grid(row=2, column=4)
 
         self.create_module_courseworkcreds_lbl = Label(self,
-                                                  text="Percentage Coursework (%)",
-                                                  font="Helvetica 13")
+                                                       text="Percentage Coursework (%)",
+                                                       font="Helvetica 13")
         self.create_module_courseworkcreds_lbl.grid(row=3, column=3, sticky=W)
         self.create_module_courseworkcreds_entry = Entry(self, width=50)
         self.create_module_courseworkcreds_entry.grid(row=3, column=4)
 
         self.create_module_maxcreds_lbl = Label(self,
-                                                       text="Maximum Available Credits",
-                                                       font="Helvetica 13")
+                                                text="Maximum Available Credits",
+                                                font="Helvetica 13")
         self.create_module_maxcreds_lbl.grid(row=4, column=3, sticky=W)
         self.create_module_maxcreds_entry = Entry(self, width=50)
         self.create_module_maxcreds_entry.grid(row=4, column=4)
@@ -306,8 +311,6 @@ class Application(Frame):
             else:
                 self.create_module_error("nameblank")
 
-
-
     def create_module_error(self, errortype):
         """Shows an error message if module creation validation fails"""
         if errortype == "nameblank":
@@ -326,7 +329,7 @@ class Application(Frame):
             self.create_module_error_lbl.configure(text="Maximum credits cannot be negative")
         elif errortype == "moduleExists":
             self.create_module_error_lbl.configure(text="A module of that name already exists")
-        self.create_module_error_lbl.grid(row=6, column=3, pady=(5,0), columnspan=2)
+        self.create_module_error_lbl.grid(row=6, column=3, pady=(5, 0), columnspan=2)
 
     def create_module(self):
         """Creates a module object using the given info and stores it in the file system"""
@@ -348,24 +351,73 @@ class Application(Frame):
         """Opens menu for adding a piece of work"""
         self.clear_main_menu()
         self.addwork_home_bttn = Button(self,
-                                              text="Home",
-                                              width=10,
-                                              height=2,
-                                              command=self.addwork_home
-                                              )
+                                        text="Home",
+                                        width=10,
+                                        height=2,
+                                        command=self.addwork_home
+                                        )
         self.addwork_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
         self.addwork_title_lbl = Label(self,
-                                             text="Add Piece of Work",
-                                             font="Helvetica 25")
+                                       text="Add Piece of Work",
+                                       font="Helvetica 25")
         self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 80))
 
+        # Create list of module names for combobox
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        moduleList = []
+        for module in modules:
+            moduleList.append(module)
+
+        # Create combobox
+
+        self.addwork_combobox_lbl = Label(self,
+                                          text="Select Module",
+                                          font="Helvetica 13")
+        self.addwork_combobox_lbl.grid(row=1, column=3, sticky=W)
+        self.addwork_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
+        self.addwork_combobox.grid(row=1, column=4, columnspan=4)
+
+        # Create other entry fields
+
+        self.addwork_name_lbl = Label(self,
+                                      text="Work name",
+                                      font="Helvetica 13")
+        self.addwork_name_lbl.grid(row=2, column=3, sticky=W)
+        self.addwork_name_entry = Entry(self, width=50)
+        self.addwork_name_entry.grid(row=2, column=4, columnspan=4)
+
+        self.addwork_type_lbl = Label(self,
+                                      text="Work type",
+                                      font="Helvetica 13")
+        self.addwork_type_lbl.grid(row=3, column=3, sticky=W)
+        radiovar = StringVar()
+        self.addwork_type_exambttn = Radiobutton(self,
+                                                 text="Exam",
+                                                 font="Helvetica 13",
+                                                 variable=radiovar,
+                                                 value="exam")
+        self.addwork_type_exambttn.grid(row=3, column=4, padx=(20, 0), pady=(2,0))
+        self.addwork_type_courseworkbttn = Radiobutton(self,
+                                                       text="Coursework",
+                                                       font="Helvetica 13",
+                                                       variable=radiovar,
+                                                       value="coursework")
+        self.addwork_type_courseworkbttn.grid(row=3, column=5, pady=(2,0))
+
     def addwork_home(self):
+        """Return to the main menu from the add work menu"""
         self.addwork_home_bttn.grid_forget()
         self.addwork_title_lbl.grid_forget()
+        self.addwork_combobox_lbl.grid_forget()
+        self.addwork_combobox.grid_forget()
         self.main_menu()
 
     def viewmodule_validate1(self):
+        """Check if any modules exist, and if so allow access to the view modules menu"""
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
@@ -376,31 +428,31 @@ class Application(Frame):
         """Displays information page about the application"""
         self.clear_main_menu()
         self.about_home_bttn = Button(self,
-                                              text="Home",
-                                              width=10,
-                                              height=2,
-                                              command=self.about_home
-                                              )
+                                      text="Home",
+                                      width=10,
+                                      height=2,
+                                      command=self.about_home
+                                      )
         self.about_home_bttn.grid(row=0, column=0, padx=10, pady=5)
 
         self.about_text1_lbl = Label(self,
-                                             text="This application was created by Isaac Wetton. " \
-                                                  + "It is designed to assist with the organisation\nand tracking of " \
-                                                  + "a university degree's progress. The app allows for the creation " \
-                                                  + "of modules\nand worksheet which can then be assigned to those " \
-                                                  + "modules. \n\nEach module and worksheet's average marks and " \
-                                                  + "grades can be tracked, as well as overall\nprogress." \
-                                                  + "The app makes the assumption that 40% is a third class, 50% is " \
-                                                  + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n" \
-                                                  + "The course data for this program is stored in the directory "
-                                                  + "User\Documents\DegreeTracker\.\nIf the program stops working " \
-                                                  + "at any point, it can be reset by deleting this directory and " \
-                                                  + "its\ncontents.\n\nThis is the first GUI program I have created " \
-                                                  + "with Python so please appreciate there may be some\nissues. " \
-                                                  + "Bugs and other problems can be reported on the GitHub page " \
-                                                  + "below.",
-                                             font="Helvetica 13",
-                                             justify=LEFT)
+                                     text="This application was created by Isaac Wetton. " \
+                                          + "It is designed to assist with the organisation\nand tracking of " \
+                                          + "a university degree's progress. The app allows for the creation " \
+                                          + "of modules\nand worksheet which can then be assigned to those " \
+                                          + "modules. \n\nEach module and worksheet's average marks and " \
+                                          + "grades can be tracked, as well as overall\nprogress." \
+                                          + "The app makes the assumption that 40% is a third class, 50% is " \
+                                          + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n" \
+                                          + "The course data for this program is stored in the directory "
+                                          + "User\Documents\DegreeTracker\.\nIf the program stops working " \
+                                          + "at any point, it can be reset by deleting this directory and " \
+                                          + "its\ncontents.\n\nThis is the first GUI program I have created " \
+                                          + "with Python so please appreciate there may be some\nissues. " \
+                                          + "Bugs and other problems can be reported on the GitHub page " \
+                                          + "below.",
+                                     font="Helvetica 13",
+                                     justify=LEFT)
         self.about_text1_lbl.grid(row=1, column=0, columnspan=7, pady=10, padx=50)
 
         self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Project",
@@ -408,8 +460,8 @@ class Application(Frame):
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
         self.about_contact_lbl = Label(self,
-                                  text="Contact: isaac@wetton.net",
-                                  font="Helvetica 12")
+                                       text="Contact: isaac@wetton.net",
+                                       font="Helvetica 12")
         self.about_contact_lbl.grid(row=3, column=2, pady=(5, 0))
 
     def about_home(self):
@@ -433,6 +485,7 @@ class Application(Frame):
     #     f_modules.sync()
     #     f_modules.close()
 
+
 # main program
 
 # create directory
@@ -451,7 +504,6 @@ try:
 except IOError:
     # os.remove(direct + "courseData.dat")
     firstTime = True
-
 
 # Create root and main application window
 root = Tk()
