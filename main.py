@@ -30,13 +30,13 @@ class Module(object):
         self.max_credits = max_credits
         self.exam_credits = exam_credits
         self.coursework_credits = coursework_credits
-        self.works = []
+        self.works = {}
 
-    def collect_work(self):
-        global works
-        for work in works:
-            if work.module == self.name:
-                self.works.append(work)
+    # def collect_work(self):
+    #     global works
+    #     for work in works:
+    #         if work.module == self.name:
+    #             self.works.append(work)
 
 
 class Application(Frame):
@@ -397,17 +397,17 @@ class Application(Frame):
                                       text="Work type",
                                       font="Helvetica 13")
         self.addwork_type_lbl.grid(row=3, column=3, sticky=E)
-        radiovar = StringVar()
+        self.radiovar = StringVar()
         self.addwork_type_exambttn = Radiobutton(self,
                                                  text="Exam",
                                                  font="Helvetica 13",
-                                                 variable=radiovar,
+                                                 variable=self.radiovar,
                                                  value="exam")
         self.addwork_type_exambttn.grid(row=3, column=4, padx=(20, 0), pady=(2, 0))
         self.addwork_type_courseworkbttn = Radiobutton(self,
                                                        text="Coursework",
                                                        font="Helvetica 13",
-                                                       variable=radiovar,
+                                                       variable=self.radiovar,
                                                        value="coursework")
         self.addwork_type_courseworkbttn.grid(row=3, column=5, pady=(2, 0))
 
@@ -425,8 +425,10 @@ class Application(Frame):
         self.addwork_score_entry = Entry(self, width=50)
         self.addwork_score_entry.grid(row=5, column=4, columnspan=4)
 
-        self.addwork_submit_bttn = Button(self, width=40, text="Submit")
-        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30,0), padx=(50,0))
+        self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation)
+        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30,5), padx=(50,0))
+
+        self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="red")
 
     def addwork_home(self):
         """Return to the main menu from the add work menu"""
@@ -445,6 +447,51 @@ class Application(Frame):
         self.addwork_score_entry.grid_forget()
         self.addwork_submit_bttn.grid_forget()
         self.main_menu()
+
+    def addwork_validation(self):
+        """Validates the inputted info for adding work. If it fails, an error message is displayed."""
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        work_module = self.addwork_combobox.get()
+        if work_module == "":
+            self.addwork_error("noModule")
+        elif self.addwork_name_entry.get() == "":
+            self.addwork_error("nameBlank")
+        elif len(self.addwork_name_entry.get()) > 50:
+            self.addwork_error("nameLength")
+        elif self.addwork_name_entry.get() in modules[work_module].works:
+            self.addwork_error("workExists")
+        else:
+            try:
+                percent = float(self.addwork_percent_entry.get())
+                score = float(self.addwork_score_entry.get())
+                if self.radiovar.get() != "exam" and self.radiovar.get() != "coursework":
+                    self.addwork_error("selectType")
+                elif not 0 <= percent <= 100 or not 0 <= score <= 100:
+                    self.addwork_error("%range")
+                else:
+                    print("Validation Successful")
+            except ValueError:
+                self.addwork_error("%value")
+
+    def addwork_error(self, errortype):
+        """Displays error message in redtext if validation fails"""
+        if errortype == "noModule":
+            self.addwork_error_lbl.configure(text="You must select a module")
+        elif errortype == "nameBlank":
+            self.addwork_error_lbl.configure(text="The name of the piece of work cannot be blank")
+        elif errortype == "workExists":
+            self.addwork_error_lbl.configure(text="That piece of work already exists")
+        elif errortype == "selectType":
+            self.addwork_error_lbl.configure(text="You must select a type of work")
+        elif errortype == "nameLength":
+            self.addwork_error_lbl.configure(text="Work name cannot exceed 50 characters")
+        elif errortype == "%range":
+            self.addwork_error_lbl.configure(text="Percentages must be between 0 and 100")
+        elif errortype == "%value":
+            self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
+        self.addwork_error_lbl.grid(row=7, column=3, columnspan=4)
 
     def viewmodule_validate1(self):
         """Check if any modules exist, and if so allow access to the view modules menu"""
