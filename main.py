@@ -13,13 +13,14 @@ import pickle
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
-    def __init__(self, name, module, work_type, score, max_score):
+    def __init__(self, name, module, work_type, score, max_score, percentage):
         global works
         self.name = name
         self.module = module
         self.work_type = work_type
         self.score = score
         self.max_score = max_score
+        self.percentage = percentage
 
 
 class Module(object):
