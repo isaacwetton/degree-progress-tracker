@@ -415,6 +415,11 @@ class Application(Frame):
         self.addwork_title_lbl.grid_forget()
         self.addwork_combobox_lbl.grid_forget()
         self.addwork_combobox.grid_forget()
+        self.addwork_name_lbl.grid_forget()
+        self.addwork_name_entry.grid_forget()
+        self.addwork_type_lbl.grid_forget()
+        self.addwork_type_exambttn.grid_forget()
+        self.addwork_type_courseworkbttn.grid_forget()
         self.main_menu()
 
     def viewmodule_validate1(self):
