@@ -320,7 +320,7 @@ class Application(Frame):
         elif errortype == "maxCredsInt":
             self.create_module_error_lbl.configure(text="The maximum credits must be given as an integer value")
         elif errortype == "maxCredsNegative":
-            self.create_module_error_lbl.configure(text="Maximum credits cannot be negative")
+            self.create_module_error_lbl.configure(text="Maximum credits cannot be negative or zero")
         elif errortype == "moduleExists":
             self.create_module_error_lbl.configure(text="A module of that name already exists")
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5, 0), columnspan=2)
