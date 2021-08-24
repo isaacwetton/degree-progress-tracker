@@ -32,13 +32,6 @@ class Module(object):
         self.coursework_credits = coursework_credits
         self.works = {}
 
-    # def collect_work(self):
-    #     global works
-    #     for work in works:
-    #         if work.module == self.name:
-    #             self.works.append(work)
-
-
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
 
@@ -553,15 +546,6 @@ class Application(Frame):
     def githublink(self):
         """Opens the application's Github repos"""
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
-
-    # # This function is from a previous version and might no longer be required
-    # def shelve_modules(self):
-    #     """Collects all modules and stores them in the file system"""
-    #     f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
-    #     for module in modules:
-    #         f_modules[module] = module.works
-    #     f_modules.sync()
-    #     f_modules.close()
 
 
 # main program
