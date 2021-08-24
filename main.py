@@ -138,9 +138,9 @@ class Application(Frame):
         self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=2,
                                              command=self.create_module_menu)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2,
-                                        command=self.addwork_menu)
+                                        command=self.addwork_validate_access)
         self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2,
-                                           command=self.viewmodule_validate1)
+                                           command=self.viewmodule_validate_access)
         self.main_about_bttn = Button(self, text="About", width=42, height=2,
                                       command=self.about_page)
         self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
@@ -342,6 +342,16 @@ class Application(Frame):
         self.create_module_home()
         self.main_edit_redtext("Module " + moduleName + " created")
 
+    def addwork_validate_access(self):
+        """Check if any modules exist, and if so allow access to the addwork menu"""
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if len(modules) == 0:
+            self.main_edit_redtext("You must create a module first")
+        else:
+            self.addwork_menu()
+
     def addwork_menu(self):
         """Opens menu for adding a piece of work"""
         self.clear_main_menu()
@@ -486,7 +496,7 @@ class Application(Frame):
             self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
         self.addwork_error_lbl.grid(row=7, column=3, columnspan=4)
 
-    def viewmodule_validate1(self):
+    def viewmodule_validate_access(self):
         """Check if any modules exist, and if so allow access to the view modules menu"""
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
