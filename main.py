@@ -13,10 +13,9 @@ import pickle
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
-    def __init__(self, name, module, work_type, score, percentage_module):
+    def __init__(self, name, work_type, score, percentage_module):
         global works
         self.name = name
-        self.module = module
         self.work_type = work_type
         self.score = score
         self.percentage_module = percentage_module
@@ -475,7 +474,7 @@ class Application(Frame):
                 elif not 0 <= percent <= 100 or not 0 <= score <= 100:
                     self.addwork_error("%range")
                 else:
-                    print("Validation Successful")
+                    self.addwork()
             except ValueError:
                 self.addwork_error("%value")
 
@@ -496,6 +495,23 @@ class Application(Frame):
         elif errortype == "%value":
             self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
         self.addwork_error_lbl.grid(row=7, column=3, columnspan=4)
+
+    def addwork(self):
+        """Creates a piece of work object using the info inputted into the addwork menu"""
+        workName = self.addwork_name_entry.get()
+        workModule = self.addwork_combobox.get()
+        workType = self.radiovar.get()
+        workPercent = float(self.addwork_percent_entry.get())
+        workScore = float(self.addwork_score_entry.get())
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        modules[workModule].works[workName] = Work(workName, workType, workScore, workPercent)
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
+        self.addwork_home()
+        self.main_edit_redtext(workName + " in module " + workModule + " created")
 
     def viewmodule_validate_access(self):
         """Check if any modules exist, and if so allow access to the view modules menu"""
