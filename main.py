@@ -5,20 +5,25 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 
-
-# import shelve
-
 # Create application frame
 
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
-    def __init__(self, name, work_type, score, percentage_module):
+    def __init__(self, name, module, work_type, score, percentage_module):
         global works
         self.name = name
+        self.module = module
         self.work_type = work_type
         self.score = score
         self.percentage_module = percentage_module
+
+    def __str__(self):
+        rep = self.name + " in " + self.module + "\n"
+        rep += "Type: " + self.work_type + "\n"
+        rep += "Score (%): " + str(self.score) + "\n"
+        rep += "Percentage of module: " + str(self.percentage_module) + "\n"
+        return rep
 
 
 class Module(object):
@@ -30,6 +35,13 @@ class Module(object):
         self.exam_credits = exam_credits
         self.coursework_credits = coursework_credits
         self.works = {}
+
+    def __str__(self):
+        rep = "Module: " + self.name + "\n"
+        rep += "Max Credits: " + self.max_credits + "\n"
+        rep += "Percentage exam: " + self.exam_credits + "\n"
+        rep += "Percentage coursework: " + self.coursework_credits + "\n"
+        return rep
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
@@ -507,7 +519,7 @@ class Application(Frame):
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
         f_modulesData = open(direct + "modulesData.dat", "wb")
-        modules[workModule].works[workName] = Work(workName, workType, workScore, workPercent)
+        modules[workModule].works[workName] = Work(workName, workModule, workType, workScore, workPercent)
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
         self.addwork_home()
