@@ -622,6 +622,11 @@ class Application(Frame):
 
         noExam = False
         noCoursework = False
+        if modules[module].exam_percent == 0.0:
+            noExam = True
+        if modules[module].exam_percent == 0.0:
+            noCoursework = True
+            
         completedExamTotal = 0.0
         completedCourseworkTotal = 0.0
         for work in moduleWorks:
@@ -649,20 +654,17 @@ class Application(Frame):
                 completedCourseworkScore += (moduleWorks[work].score / 100) * moduleWorks[work].percentage_module
 
         completedExamScoreModule = completedExamScore
-        if modules[module].exam_percent != 0.0:
+        if completedExamTotal != 0.0:
             completedExamScore /= (completedExamTotal / 100)
-        else:
-            noExam = True
 
         completedCourseworkScoreModule = completedCourseworkScore
-        if modules[module].coursework_percent != 0.0:
+        if completedCourseworkTotal != 0.0:
             completedCourseworkScore /= (completedCourseworkTotal / 100)
-        else:
-            noExam = True
 
         completedModuleScore = completedCourseworkScoreModule + completedExamScoreModule
         completedModuleTotal = completedExamTotal + completedCourseworkTotal
-        completedModuleScore /= (completedModuleTotal / 100)
+        if completedModuleTotal != 0.0:
+            completedModuleScore /= (completedModuleTotal / 100)
 
         # Round any displayed values
 
