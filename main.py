@@ -584,6 +584,7 @@ class Application(Frame):
         self.viewmodule_work_txt = Text(self.viewmodule_work_frame, width=70, height=10, state=DISABLED,
                                         yscrollcommand=self.viewmodule_work_scroll.set)
         self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
+        self.viewmodule_work_scroll.configure(command=self.viewmodule_work_txt.yview)
 
         # Create percentage exam and coursework in labels
 
