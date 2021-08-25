@@ -626,7 +626,7 @@ class Application(Frame):
             noExam = True
         if modules[module].exam_percent == 0.0:
             noCoursework = True
-            
+
         completedExamTotal = 0.0
         completedCourseworkTotal = 0.0
         for work in moduleWorks:
@@ -721,6 +721,7 @@ class Application(Frame):
         self.viewmodule_percentcoursework_lbl.grid_forget()
         self.viewmodule_scoreexam_lbl.grid_forget()
         self.viewmodule_scorecoursework_lbl.grid_forget()
+        self.viewmodule_scoretotal_lbl.grid_forget()
         self.main_menu()
 
     def about_page(self):
