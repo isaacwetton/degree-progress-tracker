@@ -335,8 +335,8 @@ class Application(Frame):
     def create_module(self):
         """Creates a module object using the given info and stores it in the file system"""
         moduleName = self.create_module_name_entry.get()
-        examPercent = float(self.create_module_examcreds_entry.get())
-        courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
+        examPercent = round(float(self.create_module_examcreds_entry.get()), 1)
+        courseworkPercent = round(float(self.create_module_courseworkcreds_entry.get()), 1)
         maxCreds = int(self.create_module_maxcreds_entry.get())
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
@@ -509,8 +509,8 @@ class Application(Frame):
         workName = self.addwork_name_entry.get()
         workModule = self.addwork_combobox.get()
         workType = self.radiovar.get()
-        workPercent = float(self.addwork_percent_entry.get())
-        workScore = float(self.addwork_score_entry.get())
+        workPercent = round(float(self.addwork_percent_entry.get()), 1)
+        workScore = round(float(self.addwork_score_entry.get()), 1)
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
