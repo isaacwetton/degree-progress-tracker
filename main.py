@@ -5,6 +5,7 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 
+
 # Create application frame
 
 class Work(object):
@@ -28,19 +29,20 @@ class Work(object):
 class Module(object):
     """A degree module"""
 
-    def __init__(self, name, max_credits, exam_credits, coursework_credits):
+    def __init__(self, name, max_credits, exam_percent, coursework_percent):
         self.name = name
         self.max_credits = max_credits
-        self.exam_credits = exam_credits
-        self.coursework_credits = coursework_credits
+        self.exam_percent = exam_percent
+        self.coursework_percent = coursework_percent
         self.works = {}
 
     def __str__(self):
         rep = "Module: " + self.name + "\n"
         rep += "Max Credits: " + self.max_credits + "\n"
-        rep += "Percentage exam: " + self.exam_credits + "\n"
-        rep += "Percentage coursework: " + self.coursework_credits + "\n"
+        rep += "Percentage exam: " + self.exam_percent + "\n"
+        rep += "Percentage coursework: " + self.coursework_percent + "\n"
         return rep
+
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
@@ -436,7 +438,7 @@ class Application(Frame):
         self.addwork_score_entry.grid(row=5, column=4, columnspan=4)
 
         self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation)
-        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30,5), padx=(50,0))
+        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30, 5), padx=(50, 0))
 
         self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="red")
 
@@ -535,17 +537,17 @@ class Application(Frame):
         """Opens the menu for viewing an existing module's information"""
         self.clear_main_menu()
         self.viewmodule_home_bttn = Button(self,
-                                        text="Home",
-                                        font="Helvetica 13 bold",
-                                        width=8,
-                                        height=1,
-                                        command=self.viewmodule_home
-                                        )
+                                           text="Home",
+                                           font="Helvetica 13 bold",
+                                           width=8,
+                                           height=1,
+                                           command=self.viewmodule_home
+                                           )
         self.viewmodule_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
         self.viewmodule_title_lbl = Label(self,
-                                       text="View a module",
-                                       font="Helvetica 30")
+                                          text="View a module",
+                                          font="Helvetica 30")
         self.viewmodule_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
 
         # Create list of module names for combobox
@@ -560,9 +562,9 @@ class Application(Frame):
         # Create combobox
 
         self.viewmodule_combobox_lbl = Label(self,
-                                          text="Select Module",
-                                          font="Helvetica 13")
-        self.viewmodule_combobox_lbl.grid(row=1, column=2, sticky=E, padx=(50,5))
+                                             text="Select Module",
+                                             font="Helvetica 13")
+        self.viewmodule_combobox_lbl.grid(row=1, column=2, sticky=E, padx=(50, 5))
         self.viewmodule_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
         self.viewmodule_combobox.grid(row=1, column=3, columnspan=4)
         self.viewmodule_combobox.bind("<<ComboboxSelected>>", self.viewmodule_loadData)
@@ -583,12 +585,23 @@ class Application(Frame):
                                         yscrollcommand=self.viewmodule_work_scroll.set)
         self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
 
+        # Create percentage exam and coursework in labels
+
+        self.viewmodule_percentexam_lbl = Label(self, font="Helvetica 13")
+        self.viewmodule_percentcoursework_lbl = Label(self, font="Helvetica 13")
+
     def viewmodule_loadData(self, event):
-        """Loads work data into the viewmodule textbox when a module is selected"""
+        """Loads module data when a module is selected"""
+
+        # Load the module data
+
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
         module = self.viewmodule_combobox.get()
+
+        # Load worksheets into textbox
+
         textbox_content = ""
         workNumber = 1
         moduleWorks = modules[module].works
@@ -600,6 +613,14 @@ class Application(Frame):
         self.viewmodule_work_txt.delete(0.0, END)
         self.viewmodule_work_txt.insert(0.0, textbox_content)
         self.viewmodule_work_txt.configure(state=DISABLED)
+
+        # Display percentage exam and coursework in labels
+
+        self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent) + "% of the module is exams")
+        self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
+                                                        + "% of the module is coursework")
+        self.viewmodule_percentexam_lbl.grid(row=3, column=2, columnspan=6, sticky=W, padx=(50,0))
+        self.viewmodule_percentcoursework_lbl.grid(row=4, column=2, columnspan=6, sticky=W, padx=(50,0))
 
     def viewmodule_home(self):
         """Returns to the main menu from the module viewing menu"""
