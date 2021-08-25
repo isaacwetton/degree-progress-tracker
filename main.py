@@ -2,21 +2,28 @@
 import os
 import webbrowser
 from tkinter import *
+from tkinter import ttk
 import pickle
-#import shelve
 
 # Create application frame
 
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
-    def __init__(self, name, module, work_type, score, max_score):
+    def __init__(self, name, work_type, score, percentage_module):
         global works
         self.name = name
-        self.module = module
         self.work_type = work_type
         self.score = score
-        self.max_score = max_score
+        self.percentage_module = percentage_module
+
+    def __str__(self):
+        rep = self.name + "\n"
+        rep += "Type: " + self.work_type + "\n"
+        rep += "Score (%): " + str(self.score) + "\n"
+        rep += "Percentage of module: " + str(self.percentage_module) + "\n"
+        return rep
+
 
 class Module(object):
     """A degree module"""
@@ -26,13 +33,14 @@ class Module(object):
         self.max_credits = max_credits
         self.exam_credits = exam_credits
         self.coursework_credits = coursework_credits
-        self.works = []
+        self.works = {}
 
-    def collect_work(self):
-        global works
-        for work in works:
-            if work.module == self.name:
-                self.works.append(work)
+    def __str__(self):
+        rep = "Module: " + self.name + "\n"
+        rep += "Max Credits: " + self.max_credits + "\n"
+        rep += "Percentage exam: " + self.exam_credits + "\n"
+        rep += "Percentage coursework: " + self.coursework_credits + "\n"
+        return rep
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
@@ -139,9 +147,10 @@ class Application(Frame):
                                            command=self.course_info_menu)
         self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=2,
                                              command=self.create_module_menu)
-        self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2)
+        self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2,
+                                        command=self.addwork_validate_access)
         self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2,
-                                           command=self.viewmodule_validate1)
+                                           command=self.viewmodule_validate_access)
         self.main_about_bttn = Button(self, text="About", width=42, height=2,
                                       command=self.about_page)
         self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
@@ -179,11 +188,12 @@ class Application(Frame):
         # Create course info menu
 
         self.courseinfo_home_bttn = Button(self,
-                                          text="Home",
-                                          width=10,
-                                          height=2,
-                                          command=self.courseinfo_home
-        )
+                                           text="Home",
+                                           font="Helvetica 13 bold",
+                                           width=8,
+                                           height=1,
+                                           command=self.courseinfo_home
+                                           )
         self.courseinfo_home_bttn.grid(row=0, column=0, padx=10)
 
         self.course_title_lbl = Label(self,
@@ -207,42 +217,43 @@ class Application(Frame):
         """Opens menu for adding a module"""
         self.clear_main_menu()
         self.create_module_home_bttn = Button(self,
-                                           text="Home",
-                                           width=10,
-                                           height=2,
-                                           command=self.create_module_home
-                                           )
+                                              text="Home",
+                                              font="Helvetica 13 bold",
+                                              width=8,
+                                              height=1,
+                                              command=self.create_module_home
+                                              )
         self.create_module_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
         self.create_module_title_lbl = Label(self,
-                                      text="Create Module",
-                                      font="Helvetica 30")
-        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0,80))
+                                             text="Create Module",
+                                             font="Helvetica 30")
+        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 80))
 
         self.create_module_name_lbl = Label(self,
-                                           text="Module Name",
-                                           font="Helvetica 13")
+                                            text="Module Name",
+                                            font="Helvetica 13")
         self.create_module_name_lbl.grid(row=1, column=3, sticky=W)
         self.create_module_name_entry = Entry(self, width=50)
         self.create_module_name_entry.grid(row=1, column=4)
 
         self.create_module_examcreds_lbl = Label(self,
-                                            text="Percentage Exam (%)",
-                                            font="Helvetica 13")
+                                                 text="Percentage Exam (%)",
+                                                 font="Helvetica 13")
         self.create_module_examcreds_lbl.grid(row=2, column=3, sticky=W)
         self.create_module_examcreds_entry = Entry(self, width=50)
         self.create_module_examcreds_entry.grid(row=2, column=4)
 
         self.create_module_courseworkcreds_lbl = Label(self,
-                                                  text="Percentage Coursework (%)",
-                                                  font="Helvetica 13")
+                                                       text="Percentage Coursework (%)",
+                                                       font="Helvetica 13")
         self.create_module_courseworkcreds_lbl.grid(row=3, column=3, sticky=W)
         self.create_module_courseworkcreds_entry = Entry(self, width=50)
         self.create_module_courseworkcreds_entry.grid(row=3, column=4)
 
         self.create_module_maxcreds_lbl = Label(self,
-                                                       text="Maximum Available Credits",
-                                                       font="Helvetica 13")
+                                                text="Maximum Available Credits",
+                                                font="Helvetica 13")
         self.create_module_maxcreds_lbl.grid(row=4, column=3, sticky=W)
         self.create_module_maxcreds_entry = Entry(self, width=50)
         self.create_module_maxcreds_entry.grid(row=4, column=4)
@@ -305,8 +316,6 @@ class Application(Frame):
             else:
                 self.create_module_error("nameblank")
 
-
-
     def create_module_error(self, errortype):
         """Shows an error message if module creation validation fails"""
         if errortype == "nameblank":
@@ -322,10 +331,10 @@ class Application(Frame):
         elif errortype == "maxCredsInt":
             self.create_module_error_lbl.configure(text="The maximum credits must be given as an integer value")
         elif errortype == "maxCredsNegative":
-            self.create_module_error_lbl.configure(text="Maximum credits cannot be negative")
+            self.create_module_error_lbl.configure(text="Maximum credits cannot be negative or zero")
         elif errortype == "moduleExists":
             self.create_module_error_lbl.configure(text="A module of that name already exists")
-        self.create_module_error_lbl.grid(row=6, column=3, pady=(5,0), columnspan=2)
+        self.create_module_error_lbl.grid(row=6, column=3, pady=(5, 0), columnspan=2)
 
     def create_module(self):
         """Creates a module object using the given info and stores it in the file system"""
@@ -343,7 +352,180 @@ class Application(Frame):
         self.create_module_home()
         self.main_edit_redtext("Module " + moduleName + " created")
 
-    def viewmodule_validate1(self):
+    def addwork_validate_access(self):
+        """Check if any modules exist, and if so allow access to the addwork menu"""
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if len(modules) == 0:
+            self.main_edit_redtext("You must create a module first")
+        else:
+            self.addwork_menu()
+
+    def addwork_menu(self):
+        """Opens menu for adding a piece of work"""
+        self.clear_main_menu()
+        self.addwork_home_bttn = Button(self,
+                                        text="Home",
+                                        font="Helvetica 13 bold",
+                                        width=8,
+                                        height=1,
+                                        command=self.addwork_home
+                                        )
+        self.addwork_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
+
+        self.addwork_title_lbl = Label(self,
+                                       text="Add Piece of Work",
+                                       font="Helvetica 25")
+        self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 50))
+
+        # Create list of module names for combobox
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        moduleList = []
+        for module in modules:
+            moduleList.append(module)
+
+        # Create combobox
+
+        self.addwork_combobox_lbl = Label(self,
+                                          text="Select Module",
+                                          font="Helvetica 13")
+        self.addwork_combobox_lbl.grid(row=1, column=3, sticky=E)
+        self.addwork_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
+        self.addwork_combobox.grid(row=1, column=4, columnspan=4)
+
+        # Create other entry fields
+
+        self.addwork_name_lbl = Label(self,
+                                      text="Work name",
+                                      font="Helvetica 13")
+        self.addwork_name_lbl.grid(row=2, column=3, sticky=E)
+        self.addwork_name_entry = Entry(self, width=50)
+        self.addwork_name_entry.grid(row=2, column=4, columnspan=4)
+
+        self.addwork_type_lbl = Label(self,
+                                      text="Work type",
+                                      font="Helvetica 13")
+        self.addwork_type_lbl.grid(row=3, column=3, sticky=E)
+        self.radiovar = StringVar()
+        self.radiovar.set(None)
+        self.addwork_type_exambttn = Radiobutton(self,
+                                                 text="Exam",
+                                                 font="Helvetica 13",
+                                                 variable=self.radiovar,
+                                                 value="exam")
+        self.addwork_type_exambttn.grid(row=3, column=4, padx=(20, 0), pady=(2, 0))
+        self.addwork_type_courseworkbttn = Radiobutton(self,
+                                                       text="Coursework",
+                                                       font="Helvetica 13",
+                                                       variable=self.radiovar,
+                                                       value="coursework")
+        self.addwork_type_courseworkbttn.grid(row=3, column=5, pady=(2, 0))
+
+        self.addwork_percent_lbl = Label(self,
+                                         text="Percentage of module",
+                                         font="Helvetica 13")
+        self.addwork_percent_lbl.grid(row=4, column=3, sticky=E)
+        self.addwork_percent_entry = Entry(self, width=50)
+        self.addwork_percent_entry.grid(row=4, column=4, columnspan=4)
+
+        self.addwork_score_lbl = Label(self,
+                                       text="Score (%)",
+                                       font="Helvetica 13")
+        self.addwork_score_lbl.grid(row=5, column=3, sticky=E)
+        self.addwork_score_entry = Entry(self, width=50)
+        self.addwork_score_entry.grid(row=5, column=4, columnspan=4)
+
+        self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation)
+        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30,5), padx=(50,0))
+
+        self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="red")
+
+    def addwork_home(self):
+        """Return to the main menu from the add work menu"""
+        self.addwork_home_bttn.grid_forget()
+        self.addwork_title_lbl.grid_forget()
+        self.addwork_combobox_lbl.grid_forget()
+        self.addwork_combobox.grid_forget()
+        self.addwork_name_lbl.grid_forget()
+        self.addwork_name_entry.grid_forget()
+        self.addwork_type_lbl.grid_forget()
+        self.addwork_type_exambttn.grid_forget()
+        self.addwork_type_courseworkbttn.grid_forget()
+        self.addwork_percent_lbl.grid_forget()
+        self.addwork_percent_entry.grid_forget()
+        self.addwork_score_lbl.grid_forget()
+        self.addwork_score_entry.grid_forget()
+        self.addwork_submit_bttn.grid_forget()
+        self.main_menu()
+
+    def addwork_validation(self):
+        """Validates the inputted info for adding work. If it fails, an error message is displayed."""
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        work_module = self.addwork_combobox.get()
+        if work_module == "":
+            self.addwork_error("noModule")
+        elif self.addwork_name_entry.get() == "":
+            self.addwork_error("nameBlank")
+        elif len(self.addwork_name_entry.get()) > 50:
+            self.addwork_error("nameLength")
+        elif self.addwork_name_entry.get() in modules[work_module].works:
+            self.addwork_error("workExists")
+        else:
+            try:
+                percent = float(self.addwork_percent_entry.get())
+                score = float(self.addwork_score_entry.get())
+                if self.radiovar.get() != "exam" and self.radiovar.get() != "coursework":
+                    self.addwork_error("selectType")
+                elif not 0 <= percent <= 100 or not 0 <= score <= 100:
+                    self.addwork_error("%range")
+                else:
+                    self.addwork()
+            except ValueError:
+                self.addwork_error("%value")
+
+    def addwork_error(self, errortype):
+        """Displays error message in redtext if validation fails"""
+        if errortype == "noModule":
+            self.addwork_error_lbl.configure(text="You must select a module")
+        elif errortype == "nameBlank":
+            self.addwork_error_lbl.configure(text="The name of the piece of work cannot be blank")
+        elif errortype == "workExists":
+            self.addwork_error_lbl.configure(text="That piece of work already exists")
+        elif errortype == "selectType":
+            self.addwork_error_lbl.configure(text="You must select a type of work")
+        elif errortype == "nameLength":
+            self.addwork_error_lbl.configure(text="Work name cannot exceed 50 characters")
+        elif errortype == "%range":
+            self.addwork_error_lbl.configure(text="Percentages must be between 0 and 100")
+        elif errortype == "%value":
+            self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
+        self.addwork_error_lbl.grid(row=7, column=3, columnspan=4)
+
+    def addwork(self):
+        """Creates a piece of work object using the info inputted into the addwork menu"""
+        workName = self.addwork_name_entry.get()
+        workModule = self.addwork_combobox.get()
+        workType = self.radiovar.get()
+        workPercent = float(self.addwork_percent_entry.get())
+        workScore = float(self.addwork_score_entry.get())
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        modules[workModule].works[workName] = Work(workName, workType, workScore, workPercent)
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
+        self.addwork_home()
+        self.main_edit_redtext(workName + " in module " + workModule + " created")
+
+    def viewmodule_validate_access(self):
+        """Check if any modules exist, and if so allow access to the view modules menu"""
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
@@ -354,31 +536,32 @@ class Application(Frame):
         """Displays information page about the application"""
         self.clear_main_menu()
         self.about_home_bttn = Button(self,
-                                              text="Home",
-                                              width=10,
-                                              height=2,
-                                              command=self.about_home
-                                              )
+                                      text="Home",
+                                      font="Helvetica 13 bold",
+                                      width=8,
+                                      height=1,
+                                      command=self.about_home
+                                      )
         self.about_home_bttn.grid(row=0, column=0, padx=10, pady=5)
 
         self.about_text1_lbl = Label(self,
-                                             text="This application was created by Isaac Wetton. " \
-                                                  + "It is designed to assist with the organisation\nand tracking of " \
-                                                  + "a university degree's progress. The app allows for the creation " \
-                                                  + "of modules\nand worksheet which can then be assigned to those " \
-                                                  + "modules. \n\nEach module and worksheet's average marks and " \
-                                                  + "grades can be tracked, as well as overall\nprogress." \
-                                                  + "The app makes the assumption that 40% is a third class, 50% is " \
-                                                  + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n" \
-                                                  + "The course data for this program is stored in the directory "
-                                                  + "User\Documents\DegreeTracker\.\nIf the program stops working " \
-                                                  + "at any point, it can be reset by deleting this directory and " \
-                                                  + "its\ncontents.\n\nThis is the first GUI program I have created " \
-                                                  + "with Python so please appreciate there may be some\nissues. " \
-                                                  + "Bugs and other problems can be reported on the GitHub page " \
-                                                  + "below.",
-                                             font="Helvetica 13",
-                                             justify=LEFT)
+                                     text="This application was created by Isaac Wetton. " \
+                                          + "It is designed to assist with the organisation\nand tracking of " \
+                                          + "a university degree's progress. The app allows for the creation " \
+                                          + "of modules\nand worksheet which can then be assigned to those " \
+                                          + "modules. \n\nEach module and worksheet's average marks and " \
+                                          + "grades can be tracked, as well as overall\nprogress." \
+                                          + "The app makes the assumption that 40% is a third class, 50% is " \
+                                          + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n" \
+                                          + "The course data for this program is stored in the directory "
+                                          + "User\Documents\DegreeTracker\.\nIf the program stops working " \
+                                          + "at any point, it can be reset by deleting this directory and " \
+                                          + "its\ncontents.\n\nThis is the first GUI program I have created " \
+                                          + "with Python so please appreciate there may be some\nissues. " \
+                                          + "Bugs and other problems can be reported on the GitHub page " \
+                                          + "below.",
+                                     font="Helvetica 13",
+                                     justify=LEFT)
         self.about_text1_lbl.grid(row=1, column=0, columnspan=7, pady=10, padx=50)
 
         self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Project",
@@ -386,8 +569,8 @@ class Application(Frame):
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
         self.about_contact_lbl = Label(self,
-                                  text="Contact: isaac@wetton.net",
-                                  font="Helvetica 12")
+                                       text="Contact: isaac@wetton.net",
+                                       font="Helvetica 12")
         self.about_contact_lbl.grid(row=3, column=2, pady=(5, 0))
 
     def about_home(self):
@@ -402,14 +585,6 @@ class Application(Frame):
         """Opens the application's Github repos"""
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
 
-    # # This function is from a previous version and might no longer be required
-    # def shelve_modules(self):
-    #     """Collects all modules and stores them in the file system"""
-    #     f_modules = shelve.open(direct + "moduleWorkLists.dat", "n")
-    #     for module in modules:
-    #         f_modules[module] = module.works
-    #     f_modules.sync()
-    #     f_modules.close()
 
 # main program
 
@@ -429,7 +604,6 @@ try:
 except IOError:
     # os.remove(direct + "courseData.dat")
     firstTime = True
-
 
 # Create root and main application window
 root = Tk()
