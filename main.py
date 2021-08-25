@@ -101,10 +101,6 @@ class Application(Frame):
                         modules = {}
                         pickle.dump(modules, f_modulesData, True)
                         f_modulesData.close()
-                        f_worksData = open(direct + "worksData.dat", "wb")
-                        works = {}
-                        pickle.dump(works, f_worksData, True)
-                        f_worksData.close()
                         self.wel_lbl.grid_remove()
                         self.course_name_entry.grid_remove()
                         self.course_name_entry_lbl.grid_remove()
