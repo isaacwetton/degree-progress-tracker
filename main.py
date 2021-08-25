@@ -618,13 +618,11 @@ class Application(Frame):
         # Calculate values for displaying stats
 
         completedExamTotal = 0.0
+        completedCourseworkTotal = 0.0
         for work in moduleWorks:
             if moduleWorks[work].work_type == "exam":
                 completedExamTotal += moduleWorks[work].percentage_module
-
-        completedCourseworkTotal = 0.0
-        for work in moduleWorks:
-            if moduleWorks[work].work_type == "coursework":
+            elif moduleWorks[work].work_type == "coursework":
                 completedCourseworkTotal += moduleWorks[work].percentage_module
 
         if completedExamTotal != 0:
