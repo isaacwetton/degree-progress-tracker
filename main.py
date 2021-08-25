@@ -569,11 +569,13 @@ class Application(Frame):
         self.viewmodule_combobox_lbl.grid(row=1, column=2, sticky=E, padx=(50,5))
         self.viewmodule_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
         self.viewmodule_combobox.grid(row=1, column=3, columnspan=4)
+        self.viewmodule_combobox.bind("<<ComboboxSelected>>", self.viewmodule_loadData)
 
         # Create frame to contain textbox and scrollbar
 
         self.viewmodule_work_frame = Frame(self, width=80, height=10)
         self.viewmodule_work_frame.grid(row=2, column=2, columnspan=6)
+
         # Create scrollbar
 
         self.viewmodule_work_scroll = Scrollbar(self.viewmodule_work_frame, width=20)
@@ -585,7 +587,23 @@ class Application(Frame):
                                         yscrollcommand=self.viewmodule_work_scroll.set)
         self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
 
-
+    def viewmodule_loadData(self, event):
+        """Loads work data into the viewmodule textbox when a module is selected"""
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        module = self.viewmodule_combobox.get()
+        textbox_content = ""
+        workNumber = 1
+        moduleWorks = modules[module].works
+        for work in moduleWorks:
+            textbox_content += str(workNumber) + ") " + moduleWorks[work].name + " - " + moduleWorks[work].work_type \
+                               + " - " + str(moduleWorks[work].score) + "%\n"
+            workNumber += 1
+        self.viewmodule_work_txt.configure(state=NORMAL)
+        self.viewmodule_work_txt.delete(0.0, END)
+        self.viewmodule_work_txt.insert(0.0, textbox_content)
+        self.viewmodule_work_txt.configure(state=DISABLED)
 
     def viewmodule_home(self):
         """Returns to the main menu from the module viewing menu"""
