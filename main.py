@@ -10,16 +10,15 @@ import pickle
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
-    def __init__(self, name, module, work_type, score, percentage_module):
+    def __init__(self, name, work_type, score, percentage_module):
         global works
         self.name = name
-        self.module = module
         self.work_type = work_type
         self.score = score
         self.percentage_module = percentage_module
 
     def __str__(self):
-        rep = self.name + " in " + self.module + "\n"
+        rep = self.name + "\n"
         rep += "Type: " + self.work_type + "\n"
         rep += "Score (%): " + str(self.score) + "\n"
         rep += "Percentage of module: " + str(self.percentage_module) + "\n"
@@ -519,7 +518,7 @@ class Application(Frame):
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
         f_modulesData = open(direct + "modulesData.dat", "wb")
-        modules[workModule].works[workName] = Work(workName, workModule, workType, workScore, workPercent)
+        modules[workModule].works[workName] = Work(workName, workType, workScore, workPercent)
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
         self.addwork_home()
