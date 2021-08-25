@@ -549,12 +549,52 @@ class Application(Frame):
         self.viewmodule_title_lbl = Label(self,
                                        text="View a module",
                                        font="Helvetica 30")
-        self.viewmodule_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 50))
+        self.viewmodule_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
+
+        # Create list of module names for combobox
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        moduleList = []
+        for module in modules:
+            moduleList.append(module)
+
+        # Create combobox
+
+        self.viewmodule_combobox_lbl = Label(self,
+                                          text="Select Module",
+                                          font="Helvetica 13")
+        self.viewmodule_combobox_lbl.grid(row=1, column=2, sticky=E, padx=(50,5))
+        self.viewmodule_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
+        self.viewmodule_combobox.grid(row=1, column=3, columnspan=4)
+
+        # Create frame to contain textbox and scrollbar
+
+        self.viewmodule_work_frame = Frame(self, width=80, height=10)
+        self.viewmodule_work_frame.grid(row=2, column=2, columnspan=6)
+        # Create scrollbar
+
+        self.viewmodule_work_scroll = Scrollbar(self.viewmodule_work_frame, width=20)
+        self.viewmodule_work_scroll.pack(side=RIGHT, fill=Y)
+
+        # Create textbox for work display
+
+        self.viewmodule_work_txt = Text(self.viewmodule_work_frame, width=70, height=10, state=DISABLED,
+                                        yscrollcommand=self.viewmodule_work_scroll.set)
+        self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
+
+
 
     def viewmodule_home(self):
         """Returns to the main menu from the module viewing menu"""
         self.viewmodule_home_bttn.grid_forget()
         self.viewmodule_title_lbl.grid_forget()
+        self.viewmodule_combobox_lbl.grid_forget()
+        self.viewmodule_combobox.grid_forget()
+        self.viewmodule_work_txt.pack_forget()
+        self.viewmodule_work_scroll.pack_forget()
+        self.viewmodule_work_frame.grid_forget()
         self.main_menu()
 
     def about_page(self):
