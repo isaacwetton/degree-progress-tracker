@@ -715,8 +715,11 @@ class Application(Frame):
             self.viewmodule_percentcoursework_lbl.configure(text="You have no coursework for this module.")
             self.viewmodule_scorecoursework_lbl.configure(text="")
 
-        self.viewmodule_scoretotal_lbl.configure(text="In all your completed work so far in this module, you have "
-                                                 + "an overall score of " + str(completedModuleScore) + "%.")
+        if completedModuleTotal != 0:
+            self.viewmodule_scoretotal_lbl.configure(text="In all your completed work so far in this module, you have "
+                                                     + "an overall score of " + str(completedModuleScore) + "%.")
+        else:
+            self.viewmodule_scoretotal_lbl.configure(text="You have not created any work for this module yet.")
 
         self.viewmodule_percentexam_lbl.grid(row=3, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scoreexam_lbl.grid(row=4, column=2, columnspan=6, sticky=W, padx=(50, 0))
