@@ -831,4 +831,6 @@ if firstTime is True:
     mainApp.first_time()
 else:
     mainApp.main_menu()
+
+root.iconbitmap('degreetrackericon.ico')
 root.mainloop()
