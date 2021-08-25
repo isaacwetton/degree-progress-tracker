@@ -625,20 +625,20 @@ class Application(Frame):
         self.about_home_bttn.grid(row=0, column=0, padx=10, pady=5)
 
         self.about_text1_lbl = Label(self,
-                                     text="This application was created by Isaac Wetton. " \
-                                          + "It is designed to assist with the organisation\nand tracking of " \
-                                          + "a university degree's progress. The app allows for the creation " \
-                                          + "of modules\nand worksheet which can then be assigned to those " \
-                                          + "modules. \n\nEach module and worksheet's average marks and " \
-                                          + "grades can be tracked, as well as overall\nprogress." \
-                                          + "The app makes the assumption that 40% is a third class, 50% is " \
-                                          + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n" \
+                                     text="This application was created by Isaac Wetton. "
+                                          + "It is designed to assist with the organisation\nand tracking of "
+                                          + "a university degree's progress. The app allows for the creation "
+                                          + "of modules\nand worksheet which can then be assigned to those "
+                                          + "modules. \n\nEach module and worksheet's average marks and "
+                                          + "grades can be tracked, as well as overall\nprogress."
+                                          + "The app makes the assumption that 40% is a third class, 50% is "
+                                          + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n"
                                           + "The course data for this program is stored in the directory "
-                                          + "User\Documents\DegreeTracker\.\nIf the program stops working " \
-                                          + "at any point, it can be reset by deleting this directory and " \
-                                          + "its\ncontents.\n\nThis is the first GUI program I have created " \
-                                          + "with Python so please appreciate there may be some\nissues. " \
-                                          + "Bugs and other problems can be reported on the GitHub page " \
+                                          + "User\Documents\DegreeTracker\.\nIf the program stops working "
+                                          + "at any point, it can be reset by deleting this directory and "
+                                          + "its\ncontents.\n\nThis is the first GUI program I have created "
+                                          + "with Python so please appreciate there may be some\nissues. "
+                                          + "Bugs and other problems can be reported on the GitHub page "
                                           + "below.",
                                      font="Helvetica 13",
                                      justify=LEFT)
@@ -694,7 +694,7 @@ mainApp = Application(root)
 
 # Invoke first time setup sequence if required
 
-if firstTime == True:
+if firstTime is True:
     mainApp.first_time()
 else:
     mainApp.main_menu()
