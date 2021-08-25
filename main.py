@@ -587,8 +587,8 @@ class Application(Frame):
 
         # Create percentage exam and coursework in labels
 
-        self.viewmodule_percentexam_lbl = Label(self, font="Helvetica 13")
-        self.viewmodule_percentcoursework_lbl = Label(self, font="Helvetica 13")
+        self.viewmodule_percentexam_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_percentcoursework_lbl = Label(self, font="Helvetica 10")
 
     def viewmodule_loadData(self, event):
         """Loads module data when a module is selected"""
@@ -614,11 +614,36 @@ class Application(Frame):
         self.viewmodule_work_txt.insert(0.0, textbox_content)
         self.viewmodule_work_txt.configure(state=DISABLED)
 
+        # Calculate values for displaying stats
+
+        completedExamTotal = 0.0
+        for work in moduleWorks:
+            if moduleWorks[work].work_type == "exam":
+                completedExamTotal += moduleWorks[work].percentage_module
+
+        completedCourseworkTotal = 0.0
+        for work in moduleWorks:
+            if moduleWorks[work].work_type == "coursework":
+                completedCourseworkTotal += moduleWorks[work].percentage_module
+
+        if completedExamTotal != 0:
+            completedExamPercent = (modules[module].exam_percent / completedExamTotal) * 100
+        else:
+            completedExamPercent = 0.0
+
+        if completedCourseworkTotal != 0:
+            completedCourseworkPercent = (modules[module].coursework_percent / completedCourseworkTotal) * 100
+        else:
+            completedCourseworkPercent = 0.0
+
         # Display percentage exam and coursework in labels
 
-        self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent) + "% of the module is exams")
+        self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent) + "% of the module is exams. "
+                                                  + "You have completed " + str(completedExamPercent)
+                                                  + "% of your exams.")
         self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                        + "% of the module is coursework")
+                                                        + "% of the module is coursework. You have completed "
+                                                        + str(completedCourseworkPercent) + "% of your coursework.")
         self.viewmodule_percentexam_lbl.grid(row=3, column=2, columnspan=6, sticky=W, padx=(50,0))
         self.viewmodule_percentcoursework_lbl.grid(row=4, column=2, columnspan=6, sticky=W, padx=(50,0))
 
@@ -631,6 +656,8 @@ class Application(Frame):
         self.viewmodule_work_txt.pack_forget()
         self.viewmodule_work_scroll.pack_forget()
         self.viewmodule_work_frame.grid_forget()
+        self.viewmodule_percentexam_lbl.grid_forget()
+        self.viewmodule_percentcoursework_lbl.grid_forget()
         self.main_menu()
 
     def about_page(self):
