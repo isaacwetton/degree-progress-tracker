@@ -664,6 +664,14 @@ class Application(Frame):
         completedModuleTotal = completedExamTotal + completedCourseworkTotal
         completedModuleScore /= (completedModuleTotal / 100)
 
+        # Round any displayed values
+
+        completedExamPercent = round(completedExamPercent, 2)
+        completedExamScore = round(completedExamScore, 2)
+        completedCourseworkPercent = round(completedCourseworkPercent, 2)
+        completedCourseworkScore = round(completedCourseworkScore, 2)
+        completedModuleScore = round(completedModuleScore, 2)
+
         # Display percentage exam and coursework in labels
 
         if noExam is False:
