@@ -590,6 +590,9 @@ class Application(Frame):
 
         self.viewmodule_percentexam_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_percentcoursework_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_scoreexam_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_scorecoursework_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_scoretotal_lbl = Label(self, font="Helvetica 10")
 
     def viewmodule_loadData(self, event):
         """Loads module data when a module is selected"""
@@ -617,6 +620,8 @@ class Application(Frame):
 
         # Calculate values for displaying stats
 
+        noExam = False
+        noCoursework = False
         completedExamTotal = 0.0
         completedCourseworkTotal = 0.0
         for work in moduleWorks:
@@ -625,26 +630,73 @@ class Application(Frame):
             elif moduleWorks[work].work_type == "coursework":
                 completedCourseworkTotal += moduleWorks[work].percentage_module
 
-        if completedExamTotal != 0:
-            completedExamPercent = (modules[module].exam_percent / completedExamTotal) * 100
+        if modules[module].exam_percent != 0:
+            completedExamPercent = (completedExamTotal / modules[module].exam_percent) * 100
         else:
             completedExamPercent = 0.0
 
-        if completedCourseworkTotal != 0:
-            completedCourseworkPercent = (modules[module].coursework_percent / completedCourseworkTotal) * 100
+        if modules[module].coursework_percent != 0:
+            completedCourseworkPercent = (completedCourseworkTotal / modules[module].coursework_percent) * 100
         else:
             completedCourseworkPercent = 0.0
 
+        completedExamScore = 0.0
+        completedCourseworkScore = 0.0
+        for work in moduleWorks:
+            if moduleWorks[work].work_type == "exam":
+                completedExamScore += (moduleWorks[work].score / 100) * moduleWorks[work].percentage_module
+            elif moduleWorks[work].work_type == "coursework":
+                completedCourseworkScore += (moduleWorks[work].score / 100) * moduleWorks[work].percentage_module
+
+        completedExamScoreModule = completedExamScore
+        if modules[module].exam_percent != 0.0:
+            completedExamScore /= (completedExamTotal / 100)
+        else:
+            noExam = True
+
+        completedCourseworkScoreModule = completedCourseworkScore
+        if modules[module].coursework_percent != 0.0:
+            completedCourseworkScore /= (completedCourseworkTotal / 100)
+        else:
+            noExam = True
+
+        completedModuleScore = completedCourseworkScoreModule + completedExamScoreModule
+        completedModuleTotal = completedExamTotal + completedCourseworkTotal
+        completedModuleScore /= (completedModuleTotal / 100)
+
         # Display percentage exam and coursework in labels
 
-        self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent) + "% of the module is exams. "
-                                                  + "You have completed " + str(completedExamPercent)
-                                                  + "% of your exams.")
-        self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                        + "% of the module is coursework. You have completed "
-                                                        + str(completedCourseworkPercent) + "% of your coursework.")
-        self.viewmodule_percentexam_lbl.grid(row=3, column=2, columnspan=6, sticky=W, padx=(50,0))
-        self.viewmodule_percentcoursework_lbl.grid(row=4, column=2, columnspan=6, sticky=W, padx=(50,0))
+        if noExam is False:
+            self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
+                                                      + "% of the module is exams. "
+                                                      + "You have completed " + str(completedExamPercent)
+                                                      + "% of your exams.")
+            self.viewmodule_scoreexam_lbl.configure(text="In your completed exams, you have scored an overall "
+                                                    + str(completedExamScore) + "%.")
+        elif noExam is True:
+            self.viewmodule_percentexam_lbl.configure(text="You have no exams for this module.")
+            self.viewmodule_scoreexam_lbl.configure(text="")
+
+        if noCoursework is False:
+            self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
+                                                            + "% of the module is coursework. You have completed "
+                                                            + str(completedCourseworkPercent)
+                                                            + "% of your coursework.")
+            self.viewmodule_scorecoursework_lbl.configure(text="In your completed coursework, "
+                                                          + "you have scored an overall "
+                                                          + str(completedCourseworkScore) + "%.")
+        elif noCoursework is True:
+            self.viewmodule_percentcoursework_lbl.configure(text="You have no coursework for this module.")
+            self.viewmodule_scorecoursework_lbl.configure(text="")
+
+        self.viewmodule_scoretotal_lbl.configure(text="In all your completed work so far in this module, you have "
+                                                 + "an overall score of " + str(completedModuleScore) + "%.")
+
+        self.viewmodule_percentexam_lbl.grid(row=3, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_scoreexam_lbl.grid(row=4, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_percentcoursework_lbl.grid(row=5, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_scorecoursework_lbl.grid(row=6, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_scoretotal_lbl.grid(row=7, column=2, columnspan=6, sticky=W, padx=(50, 0))
 
     def viewmodule_home(self):
         """Returns to the main menu from the module viewing menu"""
@@ -657,6 +709,8 @@ class Application(Frame):
         self.viewmodule_work_frame.grid_forget()
         self.viewmodule_percentexam_lbl.grid_forget()
         self.viewmodule_percentcoursework_lbl.grid_forget()
+        self.viewmodule_scoreexam_lbl.grid_forget()
+        self.viewmodule_scorecoursework_lbl.grid_forget()
         self.main_menu()
 
     def about_page(self):
