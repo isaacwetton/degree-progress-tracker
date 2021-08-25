@@ -531,6 +531,31 @@ class Application(Frame):
         f_modulesData.close()
         if len(modules) == 0:
             self.main_edit_redtext("There are currently no modules to view")
+        else:
+            self.viewmodule_menu()
+
+    def viewmodule_menu(self):
+        """Opens the menu for viewing an existing module's information"""
+        self.clear_main_menu()
+        self.viewmodule_home_bttn = Button(self,
+                                        text="Home",
+                                        font="Helvetica 13 bold",
+                                        width=8,
+                                        height=1,
+                                        command=self.viewmodule_home
+                                        )
+        self.viewmodule_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
+
+        self.viewmodule_title_lbl = Label(self,
+                                       text="View a module",
+                                       font="Helvetica 30")
+        self.viewmodule_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 50))
+
+    def viewmodule_home(self):
+        """Returns to the main menu from the module viewing menu"""
+        self.viewmodule_home_bttn.grid_forget()
+        self.viewmodule_title_lbl.grid_forget()
+        self.main_menu()
 
     def about_page(self):
         """Displays information page about the application"""
