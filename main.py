@@ -460,6 +460,7 @@ class Application(Frame):
         self.addwork_score_lbl.grid_forget()
         self.addwork_score_entry.grid_forget()
         self.addwork_submit_bttn.grid_forget()
+        self.addwork_error_lbl.grid_forget()
         self.main_menu()
 
     def addwork_validation(self):
