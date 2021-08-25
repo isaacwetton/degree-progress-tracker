@@ -5,6 +5,7 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 
+
 # Create application frame
 
 class Work(object):
@@ -28,19 +29,20 @@ class Work(object):
 class Module(object):
     """A degree module"""
 
-    def __init__(self, name, max_credits, exam_credits, coursework_credits):
+    def __init__(self, name, max_credits, exam_percent, coursework_percent):
         self.name = name
         self.max_credits = max_credits
-        self.exam_credits = exam_credits
-        self.coursework_credits = coursework_credits
+        self.exam_percent = exam_percent
+        self.coursework_percent = coursework_percent
         self.works = {}
 
     def __str__(self):
         rep = "Module: " + self.name + "\n"
         rep += "Max Credits: " + self.max_credits + "\n"
-        rep += "Percentage exam: " + self.exam_credits + "\n"
-        rep += "Percentage coursework: " + self.coursework_credits + "\n"
+        rep += "Percentage exam: " + self.exam_percent + "\n"
+        rep += "Percentage coursework: " + self.coursework_percent + "\n"
         return rep
+
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
@@ -101,10 +103,6 @@ class Application(Frame):
                         modules = {}
                         pickle.dump(modules, f_modulesData, True)
                         f_modulesData.close()
-                        f_worksData = open(direct + "worksData.dat", "wb")
-                        works = {}
-                        pickle.dump(works, f_worksData, True)
-                        f_worksData.close()
                         self.wel_lbl.grid_remove()
                         self.course_name_entry.grid_remove()
                         self.course_name_entry_lbl.grid_remove()
@@ -339,8 +337,8 @@ class Application(Frame):
     def create_module(self):
         """Creates a module object using the given info and stores it in the file system"""
         moduleName = self.create_module_name_entry.get()
-        examPercent = float(self.create_module_examcreds_entry.get())
-        courseworkPercent = float(self.create_module_courseworkcreds_entry.get())
+        examPercent = round(float(self.create_module_examcreds_entry.get()), 1)
+        courseworkPercent = round(float(self.create_module_courseworkcreds_entry.get()), 1)
         maxCreds = int(self.create_module_maxcreds_entry.get())
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
@@ -440,7 +438,7 @@ class Application(Frame):
         self.addwork_score_entry.grid(row=5, column=4, columnspan=4)
 
         self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation)
-        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30,5), padx=(50,0))
+        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30, 5), padx=(50, 0))
 
         self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="red")
 
@@ -460,6 +458,7 @@ class Application(Frame):
         self.addwork_score_lbl.grid_forget()
         self.addwork_score_entry.grid_forget()
         self.addwork_submit_bttn.grid_forget()
+        self.addwork_error_lbl.grid_forget()
         self.main_menu()
 
     def addwork_validation(self):
@@ -512,8 +511,8 @@ class Application(Frame):
         workName = self.addwork_name_entry.get()
         workModule = self.addwork_combobox.get()
         workType = self.radiovar.get()
-        workPercent = float(self.addwork_percent_entry.get())
-        workScore = float(self.addwork_score_entry.get())
+        workPercent = round(float(self.addwork_percent_entry.get()), 1)
+        workScore = round(float(self.addwork_score_entry.get()), 1)
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
@@ -531,6 +530,220 @@ class Application(Frame):
         f_modulesData.close()
         if len(modules) == 0:
             self.main_edit_redtext("There are currently no modules to view")
+        else:
+            self.viewmodule_menu()
+
+    def viewmodule_menu(self):
+        """Opens the menu for viewing an existing module's information"""
+        self.clear_main_menu()
+        self.viewmodule_home_bttn = Button(self,
+                                           text="Home",
+                                           font="Helvetica 13 bold",
+                                           width=8,
+                                           height=1,
+                                           command=self.viewmodule_home
+                                           )
+        self.viewmodule_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
+
+        self.viewmodule_title_lbl = Label(self,
+                                          text="View a module",
+                                          font="Helvetica 30")
+        self.viewmodule_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
+
+        # Create list of module names for combobox
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        moduleList = []
+        for module in modules:
+            moduleList.append(module)
+
+        # Create combobox
+
+        self.viewmodule_combobox_lbl = Label(self,
+                                             text="Select Module",
+                                             font="Helvetica 13")
+        self.viewmodule_combobox_lbl.grid(row=1, column=2, sticky=E, padx=(50, 5))
+        self.viewmodule_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
+        self.viewmodule_combobox.grid(row=1, column=3, columnspan=4)
+        self.viewmodule_combobox.bind("<<ComboboxSelected>>", self.viewmodule_loadData)
+
+        # Create frame to contain textbox and scrollbar
+
+        self.viewmodule_work_frame = Frame(self, width=80, height=10)
+        self.viewmodule_work_frame.grid(row=2, column=2, columnspan=6)
+
+        # Create scrollbar
+
+        self.viewmodule_work_scroll = Scrollbar(self.viewmodule_work_frame, width=20)
+        self.viewmodule_work_scroll.pack(side=RIGHT, fill=Y)
+
+        # Create textbox for work display
+
+        self.viewmodule_work_txt = Text(self.viewmodule_work_frame, width=70, height=10, state=DISABLED,
+                                        yscrollcommand=self.viewmodule_work_scroll.set)
+        self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
+        self.viewmodule_work_scroll.configure(command=self.viewmodule_work_txt.yview)
+
+        # Create percentage exam and coursework in labels
+
+        self.viewmodule_percentexam_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_percentcoursework_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_scoreexam_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_scorecoursework_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_scoretotal_lbl = Label(self, font="Helvetica 10")
+
+    def viewmodule_loadData(self, event):
+        """Loads module data when a module is selected"""
+
+        # Load the module data
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        module = self.viewmodule_combobox.get()
+
+        # Load worksheets into textbox
+
+        textbox_content = ""
+        workNumber = 1
+        moduleWorks = modules[module].works
+        for work in moduleWorks:
+            textbox_content += str(workNumber) + ") " + moduleWorks[work].name + " - " + moduleWorks[work].work_type \
+                               + " - " + str(moduleWorks[work].score) + "%\n"
+            workNumber += 1
+        self.viewmodule_work_txt.configure(state=NORMAL)
+        self.viewmodule_work_txt.delete(0.0, END)
+        self.viewmodule_work_txt.insert(0.0, textbox_content)
+        self.viewmodule_work_txt.configure(state=DISABLED)
+
+        # Calculate values for displaying stats
+
+        noExam = False
+        noCoursework = False
+        if modules[module].exam_percent == 0.0:
+            noExam = True
+        if modules[module].coursework_percent == 0.0:
+            noCoursework = True
+        print(noCoursework)
+        completedExamTotal = 0.0
+        completedCourseworkTotal = 0.0
+        for work in moduleWorks:
+            if moduleWorks[work].work_type == "exam":
+                completedExamTotal += moduleWorks[work].percentage_module
+            elif moduleWorks[work].work_type == "coursework":
+                completedCourseworkTotal += moduleWorks[work].percentage_module
+
+        if modules[module].exam_percent != 0:
+            completedExamPercent = (completedExamTotal / modules[module].exam_percent) * 100
+        else:
+            completedExamPercent = 0.0
+
+        if modules[module].coursework_percent != 0:
+            completedCourseworkPercent = (completedCourseworkTotal / modules[module].coursework_percent) * 100
+        else:
+            completedCourseworkPercent = 0.0
+
+        completedExamScore = 0.0
+        completedCourseworkScore = 0.0
+        for work in moduleWorks:
+            if moduleWorks[work].work_type == "exam":
+                completedExamScore += (moduleWorks[work].score / 100) * moduleWorks[work].percentage_module
+            elif moduleWorks[work].work_type == "coursework":
+                completedCourseworkScore += (moduleWorks[work].score / 100) * moduleWorks[work].percentage_module
+
+        completedExamScoreModule = completedExamScore
+        if completedExamTotal != 0.0:
+            completedExamScore /= (completedExamTotal / 100)
+
+        completedCourseworkScoreModule = completedCourseworkScore
+        if completedCourseworkTotal != 0.0:
+            completedCourseworkScore /= (completedCourseworkTotal / 100)
+
+        completedModuleScore = completedCourseworkScoreModule + completedExamScoreModule
+        completedModuleTotal = completedExamTotal + completedCourseworkTotal
+        if completedModuleTotal != 0.0:
+            completedModuleScore /= (completedModuleTotal / 100)
+
+        # Round any displayed values
+
+        completedExamPercent = round(completedExamPercent, 2)
+        completedExamScore = round(completedExamScore, 2)
+        completedCourseworkPercent = round(completedCourseworkPercent, 2)
+        completedCourseworkScore = round(completedCourseworkScore, 2)
+        completedModuleScore = round(completedModuleScore, 2)
+
+        # Display percentage exam and coursework in labels
+
+        if noExam is False:
+            if completedExamTotal != 0:
+                self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
+                                                          + "% of the module is exams. "
+                                                          + "You have completed " + str(completedExamPercent)
+                                                          + "% of your exams.")
+                self.viewmodule_scoreexam_lbl.configure(text="In your completed exams, you have scored an overall "
+                                                        + str(completedExamScore) + "%.")
+            else:
+                self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
+                                                               + "% of the module is exams. "
+                                                               + "You have completed " + str(completedExamPercent)
+                                                               + "% of your exams.")
+                self.viewmodule_scoreexam_lbl.configure(text="")
+
+        elif noExam is True:
+            self.viewmodule_percentexam_lbl.configure(text="You have no exams for this module.")
+            self.viewmodule_scoreexam_lbl.configure(text="")
+
+        if noCoursework is False:
+            if completedCourseworkTotal != 0:
+                self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
+                                                                + "% of the module is coursework. You have completed "
+                                                                + str(completedCourseworkPercent)
+                                                                + "% of your coursework.")
+                self.viewmodule_scorecoursework_lbl.configure(text="In your completed coursework, "
+                                                              + "you have scored an overall "
+                                                              + str(completedCourseworkScore) + "%.")
+            else:
+                self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
+                                                                + "% of the module is coursework. You have completed "
+                                                                + str(completedCourseworkPercent)
+                                                                + "% of your coursework.")
+                self.viewmodule_scorecoursework_lbl.configure(text="")
+
+        elif noCoursework is True:
+            self.viewmodule_percentcoursework_lbl.configure(text="You have no coursework for this module.")
+            self.viewmodule_scorecoursework_lbl.configure(text="")
+
+        if completedModuleTotal != 0 and noExam is False and noCoursework is False:
+            self.viewmodule_scoretotal_lbl.configure(text="In all your completed work so far in this module, you have "
+                                                     + "an overall score of " + str(completedModuleScore) + "%.")
+        elif completedModuleTotal != 0 and (noCoursework is True or noExam is True):
+            self.viewmodule_scoretotal_lbl.configure(text="")
+        else:
+            self.viewmodule_scoretotal_lbl.configure(text="You have not created any work for this module yet.")
+
+        self.viewmodule_percentexam_lbl.grid(row=3, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_scoreexam_lbl.grid(row=4, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_percentcoursework_lbl.grid(row=5, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_scorecoursework_lbl.grid(row=6, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_scoretotal_lbl.grid(row=7, column=2, columnspan=6, sticky=W, padx=(50, 0))
+
+    def viewmodule_home(self):
+        """Returns to the main menu from the module viewing menu"""
+        self.viewmodule_home_bttn.grid_forget()
+        self.viewmodule_title_lbl.grid_forget()
+        self.viewmodule_combobox_lbl.grid_forget()
+        self.viewmodule_combobox.grid_forget()
+        self.viewmodule_work_txt.pack_forget()
+        self.viewmodule_work_scroll.pack_forget()
+        self.viewmodule_work_frame.grid_forget()
+        self.viewmodule_percentexam_lbl.grid_forget()
+        self.viewmodule_percentcoursework_lbl.grid_forget()
+        self.viewmodule_scoreexam_lbl.grid_forget()
+        self.viewmodule_scorecoursework_lbl.grid_forget()
+        self.viewmodule_scoretotal_lbl.grid_forget()
+        self.main_menu()
 
     def about_page(self):
         """Displays information page about the application"""
@@ -545,20 +758,20 @@ class Application(Frame):
         self.about_home_bttn.grid(row=0, column=0, padx=10, pady=5)
 
         self.about_text1_lbl = Label(self,
-                                     text="This application was created by Isaac Wetton. " \
-                                          + "It is designed to assist with the organisation\nand tracking of " \
-                                          + "a university degree's progress. The app allows for the creation " \
-                                          + "of modules\nand worksheet which can then be assigned to those " \
-                                          + "modules. \n\nEach module and worksheet's average marks and " \
-                                          + "grades can be tracked, as well as overall\nprogress." \
-                                          + "The app makes the assumption that 40% is a third class, 50% is " \
-                                          + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n" \
+                                     text="This application was created by Isaac Wetton. "
+                                          + "It is designed to assist with the organisation\nand tracking of "
+                                          + "a university degree's progress. The app allows for the creation "
+                                          + "of modules\nand worksheet which can then be assigned to those "
+                                          + "modules. \n\nEach module and worksheet's average marks and "
+                                          + "grades can be tracked, as well as overall\nprogress."
+                                          + "The app makes the assumption that 40% is a third class, 50% is "
+                                          + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n"
                                           + "The course data for this program is stored in the directory "
-                                          + "User\Documents\DegreeTracker\.\nIf the program stops working " \
-                                          + "at any point, it can be reset by deleting this directory and " \
-                                          + "its\ncontents.\n\nThis is the first GUI program I have created " \
-                                          + "with Python so please appreciate there may be some\nissues. " \
-                                          + "Bugs and other problems can be reported on the GitHub page " \
+                                          + "User\Documents\DegreeTracker\.\nIf the program stops working "
+                                          + "at any point, it can be reset by deleting this directory and "
+                                          + "its\ncontents.\n\nThis is the first GUI program I have created "
+                                          + "with Python so please appreciate there may be some\nissues. "
+                                          + "Bugs and other problems can be reported on the GitHub page "
                                           + "below.",
                                      font="Helvetica 13",
                                      justify=LEFT)
@@ -614,7 +827,7 @@ mainApp = Application(root)
 
 # Invoke first time setup sequence if required
 
-if firstTime == True:
+if firstTime is True:
     mainApp.first_time()
 else:
     mainApp.main_menu()
