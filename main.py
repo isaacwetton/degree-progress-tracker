@@ -624,9 +624,9 @@ class Application(Frame):
         noCoursework = False
         if modules[module].exam_percent == 0.0:
             noExam = True
-        if modules[module].exam_percent == 0.0:
+        if modules[module].coursework_percent == 0.0:
             noCoursework = True
-
+        print(noCoursework)
         completedExamTotal = 0.0
         completedCourseworkTotal = 0.0
         for work in moduleWorks:
@@ -715,9 +715,11 @@ class Application(Frame):
             self.viewmodule_percentcoursework_lbl.configure(text="You have no coursework for this module.")
             self.viewmodule_scorecoursework_lbl.configure(text="")
 
-        if completedModuleTotal != 0:
+        if completedModuleTotal != 0 and noExam is False and noCoursework is False:
             self.viewmodule_scoretotal_lbl.configure(text="In all your completed work so far in this module, you have "
                                                      + "an overall score of " + str(completedModuleScore) + "%.")
+        elif completedModuleTotal != 0 and (noCoursework is True or noExam is True):
+            self.viewmodule_scoretotal_lbl.configure(text="")
         else:
             self.viewmodule_scoretotal_lbl.configure(text="You have not created any work for this module yet.")
 
