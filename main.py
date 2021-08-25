@@ -677,24 +677,40 @@ class Application(Frame):
         # Display percentage exam and coursework in labels
 
         if noExam is False:
-            self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                      + "% of the module is exams. "
-                                                      + "You have completed " + str(completedExamPercent)
-                                                      + "% of your exams.")
-            self.viewmodule_scoreexam_lbl.configure(text="In your completed exams, you have scored an overall "
-                                                    + str(completedExamScore) + "%.")
+            if completedExamTotal != 0:
+                self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
+                                                          + "% of the module is exams. "
+                                                          + "You have completed " + str(completedExamPercent)
+                                                          + "% of your exams.")
+                self.viewmodule_scoreexam_lbl.configure(text="In your completed exams, you have scored an overall "
+                                                        + str(completedExamScore) + "%.")
+            else:
+                self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
+                                                               + "% of the module is exams. "
+                                                               + "You have completed " + str(completedExamPercent)
+                                                               + "% of your exams.")
+                self.viewmodule_scoreexam_lbl.configure(text="")
+
         elif noExam is True:
             self.viewmodule_percentexam_lbl.configure(text="You have no exams for this module.")
             self.viewmodule_scoreexam_lbl.configure(text="")
 
         if noCoursework is False:
-            self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                            + "% of the module is coursework. You have completed "
-                                                            + str(completedCourseworkPercent)
-                                                            + "% of your coursework.")
-            self.viewmodule_scorecoursework_lbl.configure(text="In your completed coursework, "
-                                                          + "you have scored an overall "
-                                                          + str(completedCourseworkScore) + "%.")
+            if completedCourseworkTotal != 0:
+                self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
+                                                                + "% of the module is coursework. You have completed "
+                                                                + str(completedCourseworkPercent)
+                                                                + "% of your coursework.")
+                self.viewmodule_scorecoursework_lbl.configure(text="In your completed coursework, "
+                                                              + "you have scored an overall "
+                                                              + str(completedCourseworkScore) + "%.")
+            else:
+                self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
+                                                                + "% of the module is coursework. You have completed "
+                                                                + str(completedCourseworkPercent)
+                                                                + "% of your coursework.")
+                self.viewmodule_scorecoursework_lbl.configure(text="")
+
         elif noCoursework is True:
             self.viewmodule_percentcoursework_lbl.configure(text="You have no coursework for this module.")
             self.viewmodule_scorecoursework_lbl.configure(text="")
