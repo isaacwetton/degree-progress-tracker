@@ -377,12 +377,13 @@ class Application(Frame):
                                        font="Helvetica 25")
         self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170)
 
-        self.addwork__guide_lbl = Label(self,
+        self.addwork_guide_lbl = Label(self,
                                         text="Add exams and pieces of coursework after they have been completed "
                                         + "and marked",
                                         font="Helvetica 12",
                                         fg="brown")
-        self.addwork__guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
+        self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
+        
         # Create list of module names for combobox
 
         f_modulesData = open(direct + "modulesData.dat", "rb")
@@ -452,6 +453,7 @@ class Application(Frame):
         """Return to the main menu from the add work menu"""
         self.addwork_home_bttn.grid_forget()
         self.addwork_title_lbl.grid_forget()
+        self.addwork_guide_lbl.grid_forget()
         self.addwork_combobox_lbl.grid_forget()
         self.addwork_combobox.grid_forget()
         self.addwork_name_lbl.grid_forget()
