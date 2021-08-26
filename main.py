@@ -81,7 +81,7 @@ class Application(Frame):
         self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42)
         self.submit_course_info_bttn.grid(row=3, column=5, sticky=W)
 
-        self.setup_error_lbl = Label(self, font="Helvetica 12", fg="red")
+        self.setup_error_lbl = Label(self, font="Helvetica 12", fg="brown")
 
     def close_setup(self):
         """Validates inputs, saves data and closes setup menu"""
@@ -157,7 +157,7 @@ class Application(Frame):
         self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
         self.main_about_bttn.grid(row=7, column=4, pady=5)
 
-        self.main_redtext = Label(self, font="Helvetica 12", fg="red")
+        self.main_redtext = Label(self, font="Helvetica 12", fg="brown")
 
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
@@ -262,7 +262,7 @@ class Application(Frame):
                                                 command=self.create_module_validation)
         self.create_module_submit_bttn.grid(row=5, column=4)
 
-        self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="red")
+        self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="brown")
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
@@ -381,7 +381,7 @@ class Application(Frame):
                                         text="Add exams and pieces of coursework after they have been completed "
                                         + "and marked",
                                         font="Helvetica 12",
-                                        fg="red")
+                                        fg="brown")
         self.addwork__guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
         # Create list of module names for combobox
 
@@ -446,7 +446,7 @@ class Application(Frame):
         self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation)
         self.addwork_submit_bttn.grid(row=7, column=3, columnspan=5, pady=(30, 5), padx=(50, 0))
 
-        self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="red")
+        self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="brown")
 
     def addwork_home(self):
         """Return to the main menu from the add work menu"""
