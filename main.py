@@ -106,10 +106,11 @@ class Application(Frame):
                 try:
                     courseName = self.course_name_entry.get()
                     courseCredits = int(self.course_maxcreds_entry.get())
+                    courseTarget = self.course_target_combobox.get()
                     if courseCredits <= 0:
                         self.setup_entry_error("negativecreds_error")
                     else:
-                        courseData = (courseName, courseCredits)
+                        courseData = (courseName, courseCredits, courseTarget)
                         f_writeCourseData = open(direct + "courseData.dat", "wb")
                         pickle.dump(courseData, f_writeCourseData, True)
                         f_writeCourseData.close()
