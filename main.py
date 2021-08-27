@@ -59,7 +59,7 @@ class Application(Frame):
                                   "Please input your degree information below:",
                              font="Helvetica 15"
                              )
-        self.wel_lbl.grid(row=0, column=1, padx=90, pady=100, columnspan=7)
+        self.wel_lbl.grid(row=0, column=1, padx=90, pady=(100, 60), columnspan=7)
 
         self.course_name_entry_lbl = Label(self,
                                            text="Course Name",
@@ -78,8 +78,22 @@ class Application(Frame):
         self.course_maxcreds_entry = Entry(self, width=50)
         self.course_maxcreds_entry.grid(row=2, column=5, sticky=W)
 
+        self.course_target_combobox_lbl = Label(self,
+                                                text="Select Target Grade",
+                                                font="Helvetica 13")
+        self.course_target_combobox_lbl.grid(row=3, column=4, sticky=W)
+        self.course_target_combobox = ttk.Combobox(self,
+                                                   values=["Third",
+                                                           "2:2",
+                                                           "2:1",
+                                                           "First"],
+                                                   width=47,
+                                                   state="readonly")
+        self.course_target_combobox.current(2)
+        self.course_target_combobox.grid(row=3, column=5, sticky=W)
+
         self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42)
-        self.submit_course_info_bttn.grid(row=3, column=5, sticky=W)
+        self.submit_course_info_bttn.grid(row=4, column=5, sticky=W)
 
         self.setup_error_lbl = Label(self, font="Helvetica 12", fg="brown")
 
@@ -110,6 +124,8 @@ class Application(Frame):
                         self.course_maxcreds_entry.grid_remove()
                         self.submit_course_info_bttn.grid_remove()
                         self.setup_error_lbl.grid_remove()
+                        self.course_target_combobox_lbl.grid_remove()
+                        self.course_target_combobox.grid_remove()
                         self.main_menu()
                 except ValueError:
                     self.setup_entry_error("credits_error")
@@ -126,7 +142,7 @@ class Application(Frame):
             self.setup_error_lbl.config(text="You must enter a degree name")
         elif errortype == "negativecreds_error":
             self.setup_error_lbl.config(text="Credits must be positive and above 0")
-        self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
+        self.setup_error_lbl.grid(row=5, column=3, columnspan=3)
 
     def main_menu(self):
         """Opens the main menu of the application"""
@@ -383,7 +399,7 @@ class Application(Frame):
                                         font="Helvetica 12",
                                         fg="brown")
         self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
-        
+
         # Create list of module names for combobox
 
         f_modulesData = open(direct + "modulesData.dat", "rb")
