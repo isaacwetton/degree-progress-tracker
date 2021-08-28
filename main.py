@@ -158,15 +158,15 @@ class Application(Frame):
                                      font="Helvetica 12")
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=5)
 
-        self.main_courseinfo_bttn = Button(self, text="View Course Info & Stats", width=42, height=2,
+        self.main_courseinfo_bttn = Button(self, text="View Course Stats", width=42, height=2,
                                            command=self.course_info_menu)
-        self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=2,
+        self.main_createmodule_bttn = Button(self, text="Create/Delete Module", width=42, height=2,
                                              command=self.create_module_menu)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2,
                                         command=self.addwork_validate_access)
-        self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2,
+        self.main_viewmodule_bttn = Button(self, text="View a Module's Stats", width=42, height=2,
                                            command=self.viewmodule_validate_access)
-        self.main_about_bttn = Button(self, text="About", width=42, height=2,
+        self.main_about_bttn = Button(self, text="About this Application", width=42, height=2,
                                       command=self.about_page)
         self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
         self.main_createmodule_bttn.grid(row=4, column=4, pady=5)
