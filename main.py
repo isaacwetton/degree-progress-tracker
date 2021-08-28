@@ -5,9 +5,6 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 
-
-# Create application frame
-
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
@@ -43,6 +40,7 @@ class Module(object):
         rep += "Percentage coursework: " + self.coursework_percent + "\n"
         return rep
 
+# Create application frame
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
