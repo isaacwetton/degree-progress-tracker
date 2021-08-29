@@ -793,7 +793,7 @@ class Application(Frame):
                                           + "The app makes the assumption that 40% is a third class, 50% is "
                                           + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n"
                                           + "The course data for this program is stored in the directory "
-                                          + "User\Documents\DegreeTracker\.\nIf the program stops working "
+                                          + "User\\Documents\\DegreeTracker\\.\nIf the program stops working "
                                           + "at any point, it can be reset by deleting this directory and "
                                           + "its\ncontents.\n\nThis is the first GUI program I have created "
                                           + "with Python so please appreciate there may be some\nissues. "
