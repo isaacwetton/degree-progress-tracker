@@ -245,11 +245,15 @@ class Application(Frame):
         for module in modules:
             completedCreds += modules[module].get_completed_creds()
 
+        # Calculate percentage of course complete
+
+        percentageComplete = completedCreds / courseData[1] * 100
+
         # Display number of completed credits out of maximum
 
         self.course_creds_lbl = Label(self,
                                       text="Completed Credits: " + str(completedCreds) + " out of "
-                                      + str(courseData[1]),
+                                      + str(courseData[1]) + " (" + str(percentageComplete) + "%)",
                                       font="Helvetica 13")
         self.course_creds_lbl.grid(row=2, column=0, columnspan=6)
 
