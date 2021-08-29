@@ -299,16 +299,16 @@ class Application(Frame):
 
         # Create combobox
 
-        self.addwork_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
-        self.addwork_combobox.grid(row=8, column=4)
+        self.create_module_delete_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
+        self.create_module_delete_combobox.grid(row=8, column=4)
 
         self.create_module_delete_bttn = Button(self, font="Helvetica 9", text="Delete Module", width=42#,
                                                 #command=self.delete_module_validation
                                                 )
         self.create_module_delete_bttn.grid(row=9, column=4)
 
-        self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
-        self.create_module_error_lbl.grid(row=10, column=3, pady=(5, 0), columnspan=2)
+        self.delete_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
+        self.delete_module_error_lbl.grid(row=10, column=3, pady=(5, 0), columnspan=2)
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
@@ -324,6 +324,11 @@ class Application(Frame):
         self.create_module_maxcreds_entry.grid_forget()
         self.create_module_submit_bttn.grid_forget()
         self.create_module_error_lbl.grid_forget()
+        self.create_module_delete_title_lbl.grid_forget()
+        self.create_module_delete_select_lbl.grid_forget()
+        self.create_module_delete_combobox.grid_forget()
+        self.create_module_delete_bttn.grid_forget()
+        self.delete_module_error_lbl.grid_forget()
         self.main_menu()
 
     def create_module_validation(self):
