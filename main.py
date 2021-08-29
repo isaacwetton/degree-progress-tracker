@@ -5,9 +5,6 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 
-
-# Create application frame
-
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
@@ -43,6 +40,7 @@ class Module(object):
         rep += "Percentage coursework: " + self.coursework_percent + "\n"
         return rep
 
+# Create application frame
 
 class Application(Frame):
     """A GUI Application Frame to contain the primary menu navigation."""
@@ -59,7 +57,7 @@ class Application(Frame):
                                   "Please input your degree information below:",
                              font="Helvetica 15"
                              )
-        self.wel_lbl.grid(row=0, column=1, padx=90, pady=100, columnspan=7)
+        self.wel_lbl.grid(row=0, column=1, padx=90, pady=(100, 60), columnspan=7)
 
         self.course_name_entry_lbl = Label(self,
                                            text="Course Name",
@@ -78,10 +76,25 @@ class Application(Frame):
         self.course_maxcreds_entry = Entry(self, width=50)
         self.course_maxcreds_entry.grid(row=2, column=5, sticky=W)
 
-        self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42)
-        self.submit_course_info_bttn.grid(row=3, column=5, sticky=W)
+        self.course_target_combobox_lbl = Label(self,
+                                                text="Select Target Grade",
+                                                font="Helvetica 13")
+        self.course_target_combobox_lbl.grid(row=3, column=4, sticky=W)
+        self.course_target_combobox = ttk.Combobox(self,
+                                                   values=["Third",
+                                                           "2:2",
+                                                           "2:1",
+                                                           "First"],
+                                                   width=47,
+                                                   state="readonly")
+        self.course_target_combobox.current(2)
+        self.course_target_combobox.grid(row=3, column=5, sticky=W)
 
-        self.setup_error_lbl = Label(self, font="Helvetica 12", fg="red")
+        self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42,
+                                              font="Helvetica 9")
+        self.submit_course_info_bttn.grid(row=4, column=5, sticky=W)
+
+        self.setup_error_lbl = Label(self, font="Helvetica 12", fg="brown")
 
     def close_setup(self):
         """Validates inputs, saves data and closes setup menu"""
@@ -92,10 +105,11 @@ class Application(Frame):
                 try:
                     courseName = self.course_name_entry.get()
                     courseCredits = int(self.course_maxcreds_entry.get())
+                    courseTarget = self.course_target_combobox.get()
                     if courseCredits <= 0:
                         self.setup_entry_error("negativecreds_error")
                     else:
-                        courseData = (courseName, courseCredits)
+                        courseData = (courseName, courseCredits, courseTarget)
                         f_writeCourseData = open(direct + "courseData.dat", "wb")
                         pickle.dump(courseData, f_writeCourseData, True)
                         f_writeCourseData.close()
@@ -110,6 +124,8 @@ class Application(Frame):
                         self.course_maxcreds_entry.grid_remove()
                         self.submit_course_info_bttn.grid_remove()
                         self.setup_error_lbl.grid_remove()
+                        self.course_target_combobox_lbl.grid_remove()
+                        self.course_target_combobox.grid_remove()
                         self.main_menu()
                 except ValueError:
                     self.setup_entry_error("credits_error")
@@ -126,7 +142,7 @@ class Application(Frame):
             self.setup_error_lbl.config(text="You must enter a degree name")
         elif errortype == "negativecreds_error":
             self.setup_error_lbl.config(text="Credits must be positive and above 0")
-        self.setup_error_lbl.grid(row=4, column=3, columnspan=3)
+        self.setup_error_lbl.grid(row=5, column=3, columnspan=3)
 
     def main_menu(self):
         """Opens the main menu of the application"""
@@ -141,15 +157,15 @@ class Application(Frame):
                                      font="Helvetica 12")
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=5)
 
-        self.main_courseinfo_bttn = Button(self, text="View Course Info & Stats", width=42, height=2,
+        self.main_courseinfo_bttn = Button(self, text="View Course Stats", font="Helvetica 9", width=42, height=2,
                                            command=self.course_info_menu)
-        self.main_createmodule_bttn = Button(self, text="Create Module", width=42, height=2,
+        self.main_createmodule_bttn = Button(self, text="Create/Delete Module", font="Helvetica 9", width=42, height=2,
                                              command=self.create_module_menu)
-        self.main_addwork_bttn = Button(self, text="Add a Piece of Work", width=42, height=2,
+        self.main_addwork_bttn = Button(self, text="Add a Piece of Work", font="Helvetica 9", width=42, height=2,
                                         command=self.addwork_validate_access)
-        self.main_viewmodule_bttn = Button(self, text="View a Module's Info", width=42, height=2,
+        self.main_viewmodule_bttn = Button(self, text="View a Module's Stats", font="Helvetica 9", width=42, height=2,
                                            command=self.viewmodule_validate_access)
-        self.main_about_bttn = Button(self, text="About", width=42, height=2,
+        self.main_about_bttn = Button(self, text="About this Application", font="Helvetica 9", width=42, height=2,
                                       command=self.about_page)
         self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
         self.main_createmodule_bttn.grid(row=4, column=4, pady=5)
@@ -157,7 +173,7 @@ class Application(Frame):
         self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
         self.main_about_bttn.grid(row=7, column=4, pady=5)
 
-        self.main_redtext = Label(self, font="Helvetica 12", fg="red")
+        self.main_redtext = Label(self, font="Helvetica 12", fg="brown")
 
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
@@ -226,7 +242,7 @@ class Application(Frame):
         self.create_module_title_lbl = Label(self,
                                              text="Create Module",
                                              font="Helvetica 30")
-        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 80))
+        self.create_module_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
 
         self.create_module_name_lbl = Label(self,
                                             text="Module Name",
@@ -259,10 +275,39 @@ class Application(Frame):
         self.create_module_submit_bttn = Button(self,
                                                 text="Create Module",
                                                 width=42,
-                                                command=self.create_module_validation)
+                                                command=self.create_module_validation,
+                                                font="Helvetica 9")
         self.create_module_submit_bttn.grid(row=5, column=4)
 
-        self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="red")
+        self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
+        self.create_module_error_lbl.grid(row=6, column=3, pady=(5, 0), columnspan=2)
+
+        self.create_module_delete_title_lbl = Label(self, font="Helvetica 30", text="Delete Module")
+        self.create_module_delete_title_lbl.grid(row=7, column=2, columnspan=7, padx=170, pady=(0, 20))
+
+        self.create_module_delete_select_lbl = Label(self, font="Helvetica 13", text="Select Module")
+        self.create_module_delete_select_lbl.grid(row=8, column=3, sticky=E)
+
+        # Create list of module names for combobox
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        moduleList = []
+        for module in modules:
+            moduleList.append(module)
+
+        # Create combobox
+
+        self.create_module_delete_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
+        self.create_module_delete_combobox.grid(row=8, column=4)
+
+        self.create_module_delete_bttn = Button(self, font="Helvetica 9", text="Delete Module", width=42,
+                                                command=self.delete_module_validation)
+        self.create_module_delete_bttn.grid(row=9, column=4)
+
+        self.delete_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
+        self.delete_module_error_lbl.grid(row=10, column=3, pady=(5, 0), columnspan=2)
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
@@ -278,6 +323,11 @@ class Application(Frame):
         self.create_module_maxcreds_entry.grid_forget()
         self.create_module_submit_bttn.grid_forget()
         self.create_module_error_lbl.grid_forget()
+        self.create_module_delete_title_lbl.grid_forget()
+        self.create_module_delete_select_lbl.grid_forget()
+        self.create_module_delete_combobox.grid_forget()
+        self.create_module_delete_bttn.grid_forget()
+        self.delete_module_error_lbl.grid_forget()
         self.main_menu()
 
     def create_module_validation(self):
@@ -350,6 +400,30 @@ class Application(Frame):
         self.create_module_home()
         self.main_edit_redtext("Module " + moduleName + " created")
 
+    def delete_module_validation(self):
+        """Ensures that a module has been selected for deletion before attempting to delete it"""
+        module = self.create_module_delete_combobox.get()
+        if module == "":
+            self.delete_module_error()
+        else:
+            self.delete_module(module)
+
+    def delete_module_error(self):
+        """Displays error message if a module is not selected when attempting to delete a module"""
+        self.delete_module_error_lbl.configure(text="You must select a module")
+
+    def delete_module(self, module):
+        """Deletes the selected module, then invokes self.create_module_home() to return to main menu"""
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        del modules[module]
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
+        self.create_module_home()
+        self.main_edit_redtext("Module " + module + " deleted successfully")
+
     def addwork_validate_access(self):
         """Check if any modules exist, and if so allow access to the addwork menu"""
         f_modulesData = open(direct + "modulesData.dat", "rb")
@@ -375,7 +449,14 @@ class Application(Frame):
         self.addwork_title_lbl = Label(self,
                                        text="Add Piece of Work",
                                        font="Helvetica 25")
-        self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 50))
+        self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170)
+
+        self.addwork_guide_lbl = Label(self,
+                                        text="Add exams and pieces of coursework after they have been completed "
+                                        + "and marked",
+                                        font="Helvetica 12",
+                                        fg="brown")
+        self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
 
         # Create list of module names for combobox
 
@@ -391,23 +472,23 @@ class Application(Frame):
         self.addwork_combobox_lbl = Label(self,
                                           text="Select Module",
                                           font="Helvetica 13")
-        self.addwork_combobox_lbl.grid(row=1, column=3, sticky=E)
+        self.addwork_combobox_lbl.grid(row=2, column=3, sticky=E)
         self.addwork_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
-        self.addwork_combobox.grid(row=1, column=4, columnspan=4)
+        self.addwork_combobox.grid(row=2, column=4, columnspan=4)
 
         # Create other entry fields
 
         self.addwork_name_lbl = Label(self,
                                       text="Work name",
                                       font="Helvetica 13")
-        self.addwork_name_lbl.grid(row=2, column=3, sticky=E)
+        self.addwork_name_lbl.grid(row=3, column=3, sticky=E)
         self.addwork_name_entry = Entry(self, width=50)
-        self.addwork_name_entry.grid(row=2, column=4, columnspan=4)
+        self.addwork_name_entry.grid(row=3, column=4, columnspan=4)
 
         self.addwork_type_lbl = Label(self,
                                       text="Work type",
                                       font="Helvetica 13")
-        self.addwork_type_lbl.grid(row=3, column=3, sticky=E)
+        self.addwork_type_lbl.grid(row=4, column=3, sticky=E)
         self.radiovar = StringVar()
         self.radiovar.set(None)
         self.addwork_type_exambttn = Radiobutton(self,
@@ -415,37 +496,39 @@ class Application(Frame):
                                                  font="Helvetica 13",
                                                  variable=self.radiovar,
                                                  value="exam")
-        self.addwork_type_exambttn.grid(row=3, column=4, padx=(20, 0), pady=(2, 0))
+        self.addwork_type_exambttn.grid(row=4, column=4, padx=(20, 0), pady=(2, 0))
         self.addwork_type_courseworkbttn = Radiobutton(self,
                                                        text="Coursework",
                                                        font="Helvetica 13",
                                                        variable=self.radiovar,
                                                        value="coursework")
-        self.addwork_type_courseworkbttn.grid(row=3, column=5, pady=(2, 0))
+        self.addwork_type_courseworkbttn.grid(row=4, column=5, pady=(2, 0))
 
         self.addwork_percent_lbl = Label(self,
                                          text="Percentage of module",
                                          font="Helvetica 13")
-        self.addwork_percent_lbl.grid(row=4, column=3, sticky=E)
+        self.addwork_percent_lbl.grid(row=5, column=3, sticky=E)
         self.addwork_percent_entry = Entry(self, width=50)
-        self.addwork_percent_entry.grid(row=4, column=4, columnspan=4)
+        self.addwork_percent_entry.grid(row=5, column=4, columnspan=4)
 
         self.addwork_score_lbl = Label(self,
                                        text="Score (%)",
                                        font="Helvetica 13")
-        self.addwork_score_lbl.grid(row=5, column=3, sticky=E)
+        self.addwork_score_lbl.grid(row=6, column=3, sticky=E)
         self.addwork_score_entry = Entry(self, width=50)
-        self.addwork_score_entry.grid(row=5, column=4, columnspan=4)
+        self.addwork_score_entry.grid(row=6, column=4, columnspan=4)
 
-        self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation)
-        self.addwork_submit_bttn.grid(row=6, column=3, columnspan=5, pady=(30, 5), padx=(50, 0))
+        self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation,
+                                          font="Helvetica 9")
+        self.addwork_submit_bttn.grid(row=7, column=3, columnspan=5, pady=(30, 5), padx=(50, 0))
 
-        self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="red")
+        self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="brown")
 
     def addwork_home(self):
         """Return to the main menu from the add work menu"""
         self.addwork_home_bttn.grid_forget()
         self.addwork_title_lbl.grid_forget()
+        self.addwork_guide_lbl.grid_forget()
         self.addwork_combobox_lbl.grid_forget()
         self.addwork_combobox.grid_forget()
         self.addwork_name_lbl.grid_forget()
@@ -504,7 +587,7 @@ class Application(Frame):
             self.addwork_error_lbl.configure(text="Percentages must be between 0 and 100")
         elif errortype == "%value":
             self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
-        self.addwork_error_lbl.grid(row=7, column=3, columnspan=4)
+        self.addwork_error_lbl.grid(row=8, column=3, columnspan=4)
 
     def addwork(self):
         """Creates a piece of work object using the info inputted into the addwork menu"""
@@ -626,7 +709,7 @@ class Application(Frame):
             noExam = True
         if modules[module].coursework_percent == 0.0:
             noCoursework = True
-        print(noCoursework)
+        
         completedExamTotal = 0.0
         completedCourseworkTotal = 0.0
         for work in moduleWorks:
@@ -761,13 +844,13 @@ class Application(Frame):
                                      text="This application was created by Isaac Wetton. "
                                           + "It is designed to assist with the organisation\nand tracking of "
                                           + "a university degree's progress. The app allows for the creation "
-                                          + "of modules\nand worksheet which can then be assigned to those "
+                                          + "of modules\nand worksheets which can then be assigned to those "
                                           + "modules. \n\nEach module and worksheet's average marks and "
-                                          + "grades can be tracked, as well as overall\nprogress."
+                                          + "grades can be tracked, as well as overall\nprogress. "
                                           + "The app makes the assumption that 40% is a third class, 50% is "
                                           + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n"
                                           + "The course data for this program is stored in the directory "
-                                          + "User\Documents\DegreeTracker\.\nIf the program stops working "
+                                          + "User\\Documents\\DegreeTracker\\.\nIf the program stops working "
                                           + "at any point, it can be reset by deleting this directory and "
                                           + "its\ncontents.\n\nThis is the first GUI program I have created "
                                           + "with Python so please appreciate there may be some\nissues. "
@@ -778,7 +861,7 @@ class Application(Frame):
         self.about_text1_lbl.grid(row=1, column=0, columnspan=7, pady=10, padx=50)
 
         self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Project",
-                                        width=50, height=1, command=self.githublink)
+                                        width=50, height=1, command=self.githublink, font="Helvetica 9")
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
         self.about_contact_lbl = Label(self,
