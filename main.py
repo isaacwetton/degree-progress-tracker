@@ -40,6 +40,15 @@ class Module(object):
         rep += "Percentage coursework: " + self.coursework_percent + "\n"
         return rep
 
+    def get_completed_creds(self):
+        """Calculates the number of completed credits in the module"""
+        completed_percent = 0.0
+        for work in self.works:
+            completed_percent += work.percentage_module
+        completed_creds = completed_percent * 0.01 * self.max_credits
+        completed_creds = round(completed_creds)
+        return completed_creds
+
 # Create application frame
 
 class Application(Frame):
