@@ -821,7 +821,7 @@ class Application(Frame):
                                      text="This application was created by Isaac Wetton. "
                                           + "It is designed to assist with the organisation\nand tracking of "
                                           + "a university degree's progress. The app allows for the creation "
-                                          + "of modules\nand worksheet which can then be assigned to those "
+                                          + "of modules\nand worksheets which can then be assigned to those "
                                           + "modules. \n\nEach module and worksheet's average marks and "
                                           + "grades can be tracked, as well as overall\nprogress. "
                                           + "The app makes the assumption that 40% is a third class, 50% is "
