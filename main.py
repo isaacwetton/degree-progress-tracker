@@ -90,7 +90,8 @@ class Application(Frame):
         self.course_target_combobox.current(2)
         self.course_target_combobox.grid(row=3, column=5, sticky=W)
 
-        self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42)
+        self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42,
+                                              font="Helvetica 9")
         self.submit_course_info_bttn.grid(row=4, column=5, sticky=W)
 
         self.setup_error_lbl = Label(self, font="Helvetica 12", fg="brown")
@@ -274,7 +275,8 @@ class Application(Frame):
         self.create_module_submit_bttn = Button(self,
                                                 text="Create Module",
                                                 width=42,
-                                                command=self.create_module_validation)
+                                                command=self.create_module_validation,
+                                                font="Helvetica 9")
         self.create_module_submit_bttn.grid(row=5, column=4)
 
         self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="brown")
@@ -459,7 +461,8 @@ class Application(Frame):
         self.addwork_score_entry = Entry(self, width=50)
         self.addwork_score_entry.grid(row=6, column=4, columnspan=4)
 
-        self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation)
+        self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation,
+                                          font="Helvetica 9")
         self.addwork_submit_bttn.grid(row=7, column=3, columnspan=5, pady=(30, 5), padx=(50, 0))
 
         self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="brown")
@@ -801,7 +804,7 @@ class Application(Frame):
         self.about_text1_lbl.grid(row=1, column=0, columnspan=7, pady=10, padx=50)
 
         self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Project",
-                                        width=50, height=1, command=self.githublink)
+                                        width=50, height=1, command=self.githublink, font="Helvetica 9")
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
         self.about_contact_lbl = Label(self,
