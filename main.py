@@ -180,10 +180,10 @@ class Application(Frame):
                                   text="v1.0.0-alpha",
                                   font="Helvetica 10")
         self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(700, 0))
+
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
         self.main_redtext.configure(text=displaytext)
-
 
     def clear_main_menu(self):
         """Closes the main menu"""
@@ -224,7 +224,7 @@ class Application(Frame):
         self.course_name_lbl = Label(self,
                                      text="Course name: " + courseData[0],
                                      font="Helvetica 12")
-        self.course_name_lbl.grid(row=1, column=2, columnspan=6)
+        self.course_name_lbl.grid(row=1, column=0, columnspan=6)
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
