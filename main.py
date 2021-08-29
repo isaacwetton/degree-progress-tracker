@@ -234,7 +234,7 @@ class Application(Frame):
         self.course_name_lbl = Label(self,
                                      text="Course name: " + courseData[0],
                                      font="Helvetica 13")
-        self.course_name_lbl.grid(row=1, column=0, columnspan=6)
+        self.course_name_lbl.grid(row=1, column=1, columnspan=6, sticky=W)
 
         # Calculate total completed course credits
 
@@ -255,7 +255,7 @@ class Application(Frame):
                                       text="Completed Credits: " + str(completedCreds) + " out of "
                                       + str(courseData[1]) + " (" + str(percentageComplete) + "%)",
                                       font="Helvetica 13")
-        self.course_creds_lbl.grid(row=2, column=0, columnspan=6)
+        self.course_creds_lbl.grid(row=2, column=1, columnspan=6, sticky=W)
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
