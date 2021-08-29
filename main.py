@@ -789,7 +789,7 @@ class Application(Frame):
                                           + "a university degree's progress. The app allows for the creation "
                                           + "of modules\nand worksheet which can then be assigned to those "
                                           + "modules. \n\nEach module and worksheet's average marks and "
-                                          + "grades can be tracked, as well as overall\nprogress."
+                                          + "grades can be tracked, as well as overall\nprogress. "
                                           + "The app makes the assumption that 40% is a third class, 50% is "
                                           + "a 2:2, 60% is a 2:1\nand 70% is a first class degree.\n\n"
                                           + "The course data for this program is stored in the directory "
