@@ -686,7 +686,7 @@ class Application(Frame):
             noExam = True
         if modules[module].coursework_percent == 0.0:
             noCoursework = True
-        print(noCoursework)
+        
         completedExamTotal = 0.0
         completedCourseworkTotal = 0.0
         for work in moduleWorks:
