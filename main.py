@@ -44,10 +44,11 @@ class Module(object):
         """Calculates the number of completed credits in the module"""
         completed_percent = 0.0
         for work in self.works:
-            completed_percent += work.percentage_module
+            completed_percent += self.works[work].percentage_module
         completed_creds = completed_percent * 0.01 * self.max_credits
         completed_creds = round(completed_creds)
         return completed_creds
+
 
 # Create application frame
 
@@ -232,14 +233,32 @@ class Application(Frame):
 
         self.course_name_lbl = Label(self,
                                      text="Course name: " + courseData[0],
-                                     font="Helvetica 12")
+                                     font="Helvetica 13")
         self.course_name_lbl.grid(row=1, column=0, columnspan=6)
+
+        # Calculate total completed course credits
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        completedCreds = int(0)
+        for module in modules:
+            completedCreds += modules[module].get_completed_creds()
+
+        # Display number of completed credits out of maximum
+
+        self.course_creds_lbl = Label(self,
+                                      text="Completed Credits: " + str(completedCreds) + " out of "
+                                      + str(courseData[1]),
+                                      font="Helvetica 13")
+        self.course_creds_lbl.grid(row=2, column=0, columnspan=6)
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
         self.courseinfo_home_bttn.grid_forget()
         self.course_title_lbl.grid_forget()
         self.course_name_lbl.grid_forget()
+        self.course_creds_lbl.grid_forget()
         self.main_menu()
 
     def create_module_menu(self):
