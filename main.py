@@ -302,9 +302,8 @@ class Application(Frame):
         self.create_module_delete_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
         self.create_module_delete_combobox.grid(row=8, column=4)
 
-        self.create_module_delete_bttn = Button(self, font="Helvetica 9", text="Delete Module", width=42#,
-                                                #command=self.delete_module_validation
-                                                )
+        self.create_module_delete_bttn = Button(self, font="Helvetica 9", text="Delete Module", width=42,
+                                                command=self.delete_module_validation)
         self.create_module_delete_bttn.grid(row=9, column=4)
 
         self.delete_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
@@ -400,6 +399,30 @@ class Application(Frame):
         f_modulesData.close()
         self.create_module_home()
         self.main_edit_redtext("Module " + moduleName + " created")
+
+    def delete_module_validation(self):
+        """Ensures that a module has been selected for deletion before attempting to delete it"""
+        module = self.create_module_delete_combobox.get()
+        if module == "":
+            self.delete_module_error()
+        else:
+            self.delete_module(module)
+
+    def delete_module_error(self):
+        """Displays error message if a module is not selected when attempting to delete a module"""
+        self.delete_module_error_lbl.configure(text="You must select a module")
+
+    def delete_module(self, module):
+        """Deletes the selected module, then invokes self.create_module_home() to return to main menu"""
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        del modules[module]
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
+        self.create_module_home()
+        self.main_edit_redtext("Module " + module + " deleted successfully")
 
     def addwork_validate_access(self):
         """Check if any modules exist, and if so allow access to the addwork menu"""
