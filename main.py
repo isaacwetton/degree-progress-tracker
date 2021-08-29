@@ -155,7 +155,7 @@ class Application(Frame):
         self.main_credit_lbl = Label(self,
                                      text="by Isaac Wetton",
                                      font="Helvetica 12")
-        self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=5)
+        self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=(0, 5))
 
         self.main_courseinfo_bttn = Button(self, text="View Course Stats", font="Helvetica 9", width=42, height=2,
                                            command=self.course_info_menu)
@@ -167,23 +167,29 @@ class Application(Frame):
                                            command=self.viewmodule_validate_access)
         self.main_about_bttn = Button(self, text="About this Application", font="Helvetica 9", width=42, height=2,
                                       command=self.about_page)
-        self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
-        self.main_createmodule_bttn.grid(row=4, column=4, pady=5)
-        self.main_addwork_bttn.grid(row=5, column=4, pady=5)
-        self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
-        self.main_about_bttn.grid(row=7, column=4, pady=5)
+        self.main_courseinfo_bttn.grid(row=2, column=4, pady=5)
+        self.main_createmodule_bttn.grid(row=3, column=4, pady=5)
+        self.main_addwork_bttn.grid(row=4, column=4, pady=5)
+        self.main_viewmodule_bttn.grid(row=5, column=4, pady=5)
+        self.main_about_bttn.grid(row=6, column=4, pady=5)
 
-        self.main_redtext = Label(self, font="Helvetica 12", fg="brown")
+        self.main_redtext = Label(self, font="Helvetica 12", fg="brown", text="")
+        self.main_redtext.grid(row=7, column=4)
 
+        self.main_ver_lbl = Label(self,
+                                  text="v1.0.0-alpha",
+                                  font="Helvetica 10")
+        self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(700, 0))
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
         self.main_redtext.configure(text=displaytext)
-        self.main_redtext.grid(row=8, column=4)
+
 
     def clear_main_menu(self):
         """Closes the main menu"""
         self.main_title_lbl.grid_forget()
         self.main_credit_lbl.grid_forget()
+        self.main_ver_lbl.grid_forget()
         self.main_courseinfo_bttn.grid_forget()
         self.main_createmodule_bttn.grid_forget()
         self.main_addwork_bttn.grid_forget()
