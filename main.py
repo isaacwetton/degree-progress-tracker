@@ -257,6 +257,23 @@ class Application(Frame):
                                       font="Helvetica 13")
         self.course_creds_lbl.grid(row=2, column=1, columnspan=6, sticky=W)
 
+        # Create frame to contain textbox and scrollbar
+
+        self.course_modules_frame = Frame(self, width=80, height=10)
+        self.course_modules_frame.grid(row=3, column=2, columnspan=6)
+
+        # Create scrollbar
+
+        self.course_modules_scroll = Scrollbar(self.course_modules_frame, width=20)
+        self.course_modules_scroll.pack(side=RIGHT, fill=Y)
+
+        # Create textbox for work display
+
+        self.course_modules_txt = Text(self.course_modules_frame, width=70, height=8, state=DISABLED,
+                                        yscrollcommand=self.course_modules_scroll.set)
+        self.course_modules_txt.pack(side=LEFT, fill=BOTH)
+        self.course_modules_scroll.configure(command=self.course_modules_txt.yview)
+
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
         self.courseinfo_home_bttn.grid_forget()
