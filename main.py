@@ -274,12 +274,31 @@ class Application(Frame):
         self.course_modules_txt.pack(side=LEFT, fill=BOTH)
         self.course_modules_scroll.configure(command=self.course_modules_txt.yview)
 
+        # Insert list of modules and their respective scores into the textbox
+
+        textbox_content = ""
+        for module in modules:
+            completedScore = 0.0
+            completedTotal = 0.0
+            for work in modules[module].works:
+                completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
+                                  * 100
+                completedTotal += modules[module].works[work].percentage_module
+            overallScore = round(completedScore / completedTotal * 0.01, 2)
+            textbox_content += module + " - " + str(overallScore) + "%\n"
+        self.course_modules_txt.configure(state=NORMAL)
+        self.course_modules_txt.insert(0.0, textbox_content)
+        self.course_modules_txt.configure(state=DISABLED)
+
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
         self.courseinfo_home_bttn.grid_forget()
         self.course_title_lbl.grid_forget()
         self.course_name_lbl.grid_forget()
         self.course_creds_lbl.grid_forget()
+        self.course_modules_frame.grid_forget()
+        self.course_modules_scroll.pack_forget()
+        self.course_modules_txt.pack_forget()
         self.main_menu()
 
     def create_module_menu(self):
