@@ -295,6 +295,11 @@ class Application(Frame):
         self.course_modules_txt.insert(0.0, textbox_content)
         self.course_modules_txt.configure(state=DISABLED)
 
+        self.course_overallcomplete_score_lbl = Label(self,
+                                                      font="Helvetica 10",
+                                                      text="From your completed work, your current overall score is "
+                                                      + str(toDateOverallScore) + "%")
+        self.course_overallcomplete_score_lbl.grid(row=4, column=1, columnspan=6, sticky=W)
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
@@ -305,6 +310,7 @@ class Application(Frame):
         self.course_modules_frame.grid_forget()
         self.course_modules_scroll.pack_forget()
         self.course_modules_txt.pack_forget()
+        self.course_overallcomplete_score_lbl.grid_forget()
         self.main_menu()
 
     def create_module_menu(self):
