@@ -282,13 +282,16 @@ class Application(Frame):
             completedTotal = 0.0
             for work in modules[module].works:
                 completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
-                                  * 100
+                                  * 0.01
                 completedTotal += modules[module].works[work].percentage_module
-            overallScore = round(completedScore / completedTotal * 0.01, 2)
+            print(completedScore)
+            print(completedTotal)
+            overallScore = round((completedScore / completedTotal) * 100, 2)
             textbox_content += module + " - " + str(overallScore) + "%\n"
         self.course_modules_txt.configure(state=NORMAL)
         self.course_modules_txt.insert(0.0, textbox_content)
         self.course_modules_txt.configure(state=DISABLED)
+
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
