@@ -277,6 +277,8 @@ class Application(Frame):
         # Insert list of modules and their respective scores into the textbox
 
         textbox_content = ""
+        toDateCompletedScore = 0.0
+        toDateCompletedTotal = 0.0
         for module in modules:
             completedScore = 0.0
             completedTotal = 0.0
@@ -284,10 +286,11 @@ class Application(Frame):
                 completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
                                   * 0.01
                 completedTotal += modules[module].works[work].percentage_module
-            print(completedScore)
-            print(completedTotal)
             overallScore = round((completedScore / completedTotal) * 100, 2)
+            toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
+            toDateCompletedTotal += modules[module].max_credits
             textbox_content += module + " - " + str(overallScore) + "%\n"
+        toDateOverallScore = round((toDateCompletedScore / toDateCompletedTotal) * 100, 2)
         self.course_modules_txt.configure(state=NORMAL)
         self.course_modules_txt.insert(0.0, textbox_content)
         self.course_modules_txt.configure(state=DISABLED)
