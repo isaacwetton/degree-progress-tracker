@@ -827,7 +827,7 @@ class Application(Frame):
         self.viewmodule_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
         self.viewmodule_title_lbl = Label(self,
-                                          text="View a module",
+                                          text="View a Module",
                                           font="Helvetica 30")
         self.viewmodule_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
 
