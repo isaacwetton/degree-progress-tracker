@@ -1,4 +1,4 @@
-# degree-progress-tracker v1.0.0-alpha
+# degree-progress-tracker v1.0.1-alpha
 
 THIS IS AN ALPHA VERSION - YOU ARE LIKELY TO ENCOUNTER BUGS AND ERRORS.
 

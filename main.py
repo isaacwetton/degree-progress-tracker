@@ -187,7 +187,7 @@ class Application(Frame):
         self.main_redtext.grid(row=7, column=4)
 
         self.main_ver_lbl = Label(self,
-                                  text="v1.0.0-alpha",
+                                  text="v1.0.1-alpha",
                                   font="Helvetica 10")
         self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(700, 0))
 
@@ -301,11 +301,14 @@ class Application(Frame):
         for module in modules:
             completedScore = 0.0
             completedTotal = 0.0
-            for work in modules[module].works:
-                completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
-                                  * 0.01
-                completedTotal += modules[module].works[work].percentage_module
-            overallScore = round((completedScore / completedTotal) * 100, 2)
+            if modules[module].works != {}:
+                for work in modules[module].works:
+                    completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
+                                      * 0.01
+                    completedTotal += modules[module].works[work].percentage_module
+                overallScore = round((completedScore / completedTotal) * 100, 2)
+            else:
+                overallScore = 0.0
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
             textbox_content += module + " - " + str(overallScore) + "%\n"
