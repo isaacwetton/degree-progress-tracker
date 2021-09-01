@@ -224,7 +224,7 @@ class Application(Frame):
                 self.course_info_menu()
             elif validated is False:
                 self.main_edit_redtext("You must add completed work first")
-        
+
     def course_info_menu(self):
         """Opens course info menu"""
         self.clear_main_menu()
@@ -479,6 +479,15 @@ class Application(Frame):
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
+        f_readCourseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_readCourseData)
+        f_readCourseData.close()
+
+        # Calculate unassigned credits
+        unassignedCreds = courseData[1]
+        for module in modules:
+            unassignedCreds -= modules[module].max_credits
+
         if self.create_module_name_entry.get() in modules:
             self.create_module_error("moduleExists")
         else:
@@ -492,7 +501,10 @@ class Application(Frame):
                                 try:
                                     maxCreds = int(self.create_module_maxcreds_entry.get())
                                     if maxCreds > 0:
-                                        self.create_module()
+                                        if maxCreds <= unassignedCreds:
+                                            self.create_module()
+                                        else:
+                                            self.create_module_error("tooManyCreds", unassigned=unassignedCreds)
                                     else:
                                         self.create_module_error("maxCredsNegative")
                                 except ValueError:
@@ -508,7 +520,7 @@ class Application(Frame):
             else:
                 self.create_module_error("nameblank")
 
-    def create_module_error(self, errortype):
+    def create_module_error(self, errortype, unassigned=0):
         """Shows an error message if module creation validation fails"""
         if errortype == "nameblank":
             self.create_module_error_lbl.configure(text="Your module name cannot be blank")
@@ -526,6 +538,9 @@ class Application(Frame):
             self.create_module_error_lbl.configure(text="Maximum credits cannot be negative or zero")
         elif errortype == "moduleExists":
             self.create_module_error_lbl.configure(text="A module of that name already exists")
+        elif errortype == "tooManyCreds":
+            self.create_module_error_lbl.configure(text="There are only " + str(unassigned)
+                                                   + " unassigned credits remaining")
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5, 0), columnspan=2)
 
     def create_module(self):
