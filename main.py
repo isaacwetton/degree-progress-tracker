@@ -538,9 +538,11 @@ class Application(Frame):
             self.create_module_error_lbl.configure(text="Maximum credits cannot be negative or zero")
         elif errortype == "moduleExists":
             self.create_module_error_lbl.configure(text="A module of that name already exists")
-        elif errortype == "tooManyCreds":
+        elif errortype == "tooManyCreds" and unassigned != 0:
             self.create_module_error_lbl.configure(text="There are only " + str(unassigned)
                                                    + " unassigned credits remaining")
+        elif errortype == "tooManyCreds" and unassigned == 0:
+            self.create_module_error_lbl.configure(text="There are no unassigned credits remaining")
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5, 0), columnspan=2)
 
     def create_module(self):
