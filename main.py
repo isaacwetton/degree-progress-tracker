@@ -40,6 +40,16 @@ class Module(object):
         rep += "Percentage coursework: " + self.coursework_percent + "\n"
         return rep
 
+    def get_completed_creds(self):
+        """Calculates the number of completed credits in the module"""
+        completed_percent = 0.0
+        for work in self.works:
+            completed_percent += self.works[work].percentage_module
+        completed_creds = completed_percent * 0.01 * self.max_credits
+        completed_creds = round(completed_creds)
+        return completed_creds
+
+
 # Create application frame
 
 class Application(Frame):
@@ -155,10 +165,10 @@ class Application(Frame):
         self.main_credit_lbl = Label(self,
                                      text="by Isaac Wetton",
                                      font="Helvetica 12")
-        self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=5)
+        self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=(0, 5))
 
         self.main_courseinfo_bttn = Button(self, text="View Course Stats", font="Helvetica 9", width=42, height=2,
-                                           command=self.course_info_menu)
+                                           command=self.course_info_validate)
         self.main_createmodule_bttn = Button(self, text="Create/Delete Module", font="Helvetica 9", width=42, height=2,
                                              command=self.create_module_menu)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", font="Helvetica 9", width=42, height=2,
@@ -167,29 +177,53 @@ class Application(Frame):
                                            command=self.viewmodule_validate_access)
         self.main_about_bttn = Button(self, text="About this Application", font="Helvetica 9", width=42, height=2,
                                       command=self.about_page)
-        self.main_courseinfo_bttn.grid(row=3, column=4, pady=5)
-        self.main_createmodule_bttn.grid(row=4, column=4, pady=5)
-        self.main_addwork_bttn.grid(row=5, column=4, pady=5)
-        self.main_viewmodule_bttn.grid(row=6, column=4, pady=5)
-        self.main_about_bttn.grid(row=7, column=4, pady=5)
+        self.main_courseinfo_bttn.grid(row=2, column=4, pady=5)
+        self.main_createmodule_bttn.grid(row=3, column=4, pady=5)
+        self.main_addwork_bttn.grid(row=4, column=4, pady=5)
+        self.main_viewmodule_bttn.grid(row=5, column=4, pady=5)
+        self.main_about_bttn.grid(row=6, column=4, pady=5)
 
-        self.main_redtext = Label(self, font="Helvetica 12", fg="brown")
+        self.main_redtext = Label(self, font="Helvetica 12", fg="brown", text="")
+        self.main_redtext.grid(row=7, column=4)
+
+        self.main_ver_lbl = Label(self,
+                                  text="v1.0.0-alpha",
+                                  font="Helvetica 10")
+        self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(700, 0))
 
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
         self.main_redtext.configure(text=displaytext)
-        self.main_redtext.grid(row=8, column=4)
 
     def clear_main_menu(self):
         """Closes the main menu"""
         self.main_title_lbl.grid_forget()
         self.main_credit_lbl.grid_forget()
+        self.main_ver_lbl.grid_forget()
         self.main_courseinfo_bttn.grid_forget()
         self.main_createmodule_bttn.grid_forget()
         self.main_addwork_bttn.grid_forget()
         self.main_viewmodule_bttn.grid_forget()
         self.main_about_bttn.grid_forget()
         self.main_redtext.grid_forget()
+
+    def course_info_validate(self):
+        """Checks to see if there is any completed work before accessing course_info menu"""
+        validated = False
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if len(modules) == 0:
+            self.main_edit_redtext("You must create a module and add completed work first")
+        else:
+            for module in modules:
+                if modules[module].works != {}:
+                    validated = True
+                    break
+            if validated is True:
+                self.course_info_menu()
+            elif validated is False:
+                self.main_edit_redtext("You must add completed work first")
 
     def course_info_menu(self):
         """Opens course info menu"""
@@ -198,6 +232,7 @@ class Application(Frame):
         f_readCourseData = open(direct + "courseData.dat", "rb")
         courseData = pickle.load(f_readCourseData)
         f_readCourseData.close()
+        target = courseData[2]
 
         # Create course info menu
 
@@ -217,14 +252,123 @@ class Application(Frame):
 
         self.course_name_lbl = Label(self,
                                      text="Course name: " + courseData[0],
-                                     font="Helvetica 12")
-        self.course_name_lbl.grid(row=1, column=2, columnspan=6)
+                                     font="Helvetica 13")
+        self.course_name_lbl.grid(row=1, column=1, columnspan=6, sticky=W)
+
+        # Calculate total completed course credits
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        completedCreds = int(0)
+        for module in modules:
+            completedCreds += modules[module].get_completed_creds()
+
+        # Calculate percentage of course complete
+
+        percentageComplete = completedCreds / courseData[1] * 100
+
+        # Display number of completed credits out of maximum
+
+        self.course_creds_lbl = Label(self,
+                                      text="Completed Credits: " + str(completedCreds) + " out of "
+                                      + str(courseData[1]) + " (" + str(percentageComplete) + "%)",
+                                      font="Helvetica 13")
+        self.course_creds_lbl.grid(row=2, column=1, columnspan=6, sticky=W)
+
+        # Create frame to contain textbox and scrollbar
+
+        self.course_modules_frame = Frame(self, width=80, height=10)
+        self.course_modules_frame.grid(row=3, column=2, columnspan=6)
+
+        # Create scrollbar
+
+        self.course_modules_scroll = Scrollbar(self.course_modules_frame, width=20)
+        self.course_modules_scroll.pack(side=RIGHT, fill=Y)
+
+        # Create textbox for work display
+
+        self.course_modules_txt = Text(self.course_modules_frame, width=70, height=8, state=DISABLED,
+                                        yscrollcommand=self.course_modules_scroll.set)
+        self.course_modules_txt.pack(side=LEFT, fill=BOTH)
+        self.course_modules_scroll.configure(command=self.course_modules_txt.yview)
+
+        # Insert list of modules and their respective scores into the textbox
+
+        textbox_content = ""
+        toDateCompletedScore = 0.0
+        toDateCompletedTotal = 0.0
+        for module in modules:
+            completedScore = 0.0
+            completedTotal = 0.0
+            for work in modules[module].works:
+                completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
+                                  * 0.01
+                completedTotal += modules[module].works[work].percentage_module
+            overallScore = round((completedScore / completedTotal) * 100, 2)
+            toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
+            toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
+            textbox_content += module + " - " + str(overallScore) + "%\n"
+        toDateOverallScore = round((toDateCompletedScore / toDateCompletedTotal) * 100, 2)
+        self.course_modules_txt.configure(state=NORMAL)
+        self.course_modules_txt.insert(0.0, textbox_content)
+        self.course_modules_txt.configure(state=DISABLED)
+
+        self.course_overallcomplete_score_lbl = Label(self,
+                                                      font="Helvetica 10",
+                                                      text="From your completed work, your current overall score is "
+                                                      + str(toDateOverallScore) + "%")
+        self.course_overallcomplete_score_lbl.grid(row=4, column=1, columnspan=6, sticky=W)
+
+        # Determine target score based on inputted target
+
+        if target == "First":
+            targetScore = 70.0
+        elif target == "2:1":
+            targetScore = 60.0
+        elif target == "2:2":
+            targetScore = 50.0
+        else:
+            targetScore = 40.0
+
+        # Determine if target is being hit
+
+        if toDateOverallScore >= targetScore:
+            targetHit = True
+        else:
+            targetHit = False
+
+        # Display label describing target info
+
+        self.course_targetinfo_lbl = Label(self,
+                                           font="Helvetica 10",
+                                           text="",
+                                           justify=LEFT)
+        self.course_targetinfo_lbl.grid(row=5, column=1, columnspan=6, sticky=W)
+
+        if targetHit is True:
+            self.course_targetinfo_lbl.configure(text="This overall score exceeds your target grade of a "
+                                                 + target + ". Keep it up!")
+        elif targetHit is False and percentageComplete != 100.0:
+            # Determine the score required on remaining work to hit target grade
+            percentageIncomplete = 100 - percentageComplete
+            requiredScore = ((targetScore * 100) - (toDateOverallScore * percentageComplete)) / percentageIncomplete
+            self.course_targetinfo_lbl.configure(text="This score is currently below your target of a " + target
+                                                 + ". To hit your target, you must score an average of "
+                                                 + str(requiredScore) + "%\nin the remaining "
+                                                 + str(percentageIncomplete) + "% of the course.")
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
         self.courseinfo_home_bttn.grid_forget()
         self.course_title_lbl.grid_forget()
         self.course_name_lbl.grid_forget()
+        self.course_creds_lbl.grid_forget()
+        self.course_modules_frame.grid_forget()
+        self.course_modules_scroll.pack_forget()
+        self.course_modules_txt.pack_forget()
+        self.course_overallcomplete_score_lbl.grid_forget()
+        self.course_targetinfo_lbl.grid_forget()
         self.main_menu()
 
     def create_module_menu(self):
@@ -335,6 +479,15 @@ class Application(Frame):
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
+        f_readCourseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_readCourseData)
+        f_readCourseData.close()
+
+        # Calculate unassigned credits
+        unassignedCreds = courseData[1]
+        for module in modules:
+            unassignedCreds -= modules[module].max_credits
+
         if self.create_module_name_entry.get() in modules:
             self.create_module_error("moduleExists")
         else:
@@ -348,7 +501,10 @@ class Application(Frame):
                                 try:
                                     maxCreds = int(self.create_module_maxcreds_entry.get())
                                     if maxCreds > 0:
-                                        self.create_module()
+                                        if maxCreds <= unassignedCreds:
+                                            self.create_module()
+                                        else:
+                                            self.create_module_error("tooManyCreds", unassigned=unassignedCreds)
                                     else:
                                         self.create_module_error("maxCredsNegative")
                                 except ValueError:
@@ -364,7 +520,7 @@ class Application(Frame):
             else:
                 self.create_module_error("nameblank")
 
-    def create_module_error(self, errortype):
+    def create_module_error(self, errortype, unassigned=0):
         """Shows an error message if module creation validation fails"""
         if errortype == "nameblank":
             self.create_module_error_lbl.configure(text="Your module name cannot be blank")
@@ -382,6 +538,11 @@ class Application(Frame):
             self.create_module_error_lbl.configure(text="Maximum credits cannot be negative or zero")
         elif errortype == "moduleExists":
             self.create_module_error_lbl.configure(text="A module of that name already exists")
+        elif errortype == "tooManyCreds" and unassigned != 0:
+            self.create_module_error_lbl.configure(text="There are only " + str(unassigned)
+                                                   + " unassigned credits remaining")
+        elif errortype == "tooManyCreds" and unassigned == 0:
+            self.create_module_error_lbl.configure(text="There are no unassigned credits remaining")
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5, 0), columnspan=2)
 
     def create_module(self):
@@ -550,6 +711,19 @@ class Application(Frame):
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
         work_module = self.addwork_combobox.get()
+
+        # Determine completed  and remaining work and exam percentages
+
+        completedExam = 0.0
+        completedCoursework = 0.0
+        for work in modules[work_module].works:
+            if modules[work_module].works[work].work_type == "exam":
+                completedExam += modules[work_module].works[work].percentage_module
+            elif modules[work_module].works[work].work_type == "coursework":
+                completedCoursework += modules[work_module].works[work].percentage_module
+        remainingExam = modules[work_module].exam_percent - completedExam
+        remainingCoursework = modules[work_module].coursework_percent - completedCoursework
+
         if work_module == "":
             self.addwork_error("noModule")
         elif self.addwork_name_entry.get() == "":
@@ -564,14 +738,20 @@ class Application(Frame):
                 score = float(self.addwork_score_entry.get())
                 if self.radiovar.get() != "exam" and self.radiovar.get() != "coursework":
                     self.addwork_error("selectType")
-                elif not 0 <= percent <= 100 or not 0 <= score <= 100:
+                elif percent <= 0:
+                    self.addwork_error("negativePercent")
+                elif not 0 < percent <= 100 or not 0 <= score <= 100:
                     self.addwork_error("%range")
+                elif self.radiovar.get() == "exam" and percent > remainingExam:
+                    self.addwork_error("tooManyExam%", incomplete=remainingExam)
+                elif self.radiovar.get() == "coursework" and percent > remainingCoursework:
+                    self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework)
                 else:
                     self.addwork()
             except ValueError:
                 self.addwork_error("%value")
 
-    def addwork_error(self, errortype):
+    def addwork_error(self, errortype, incomplete=0.0):
         """Displays error message in redtext if validation fails"""
         if errortype == "noModule":
             self.addwork_error_lbl.configure(text="You must select a module")
@@ -585,8 +765,22 @@ class Application(Frame):
             self.addwork_error_lbl.configure(text="Work name cannot exceed 50 characters")
         elif errortype == "%range":
             self.addwork_error_lbl.configure(text="Percentages must be between 0 and 100")
+        elif errortype == "negativePercent":
+            self.addwork_error_lbl.configure(text="The work must be a percentage of the module")
         elif errortype == "%value":
             self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
+        elif errortype == "tooManyExam%":
+            if incomplete != 0.0:
+                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of this module that"
+                                                 + " is incomplete exams")
+            else:
+                self.addwork_error_lbl.configure(text="You have completed all of this module's exams")
+        elif errortype == "tooManyCoursework%":
+            if incomplete != 0.0:
+                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of this module that"
+                                                 + " is incomplete coursework")
+            else:
+                self.addwork_error_lbl.configure(text="You have completed all of this module's coursework")
         self.addwork_error_lbl.grid(row=8, column=3, columnspan=4)
 
     def addwork(self):
