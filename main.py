@@ -289,7 +289,7 @@ class Application(Frame):
                 completedTotal += modules[module].works[work].percentage_module
             overallScore = round((completedScore / completedTotal) * 100, 2)
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
-            toDateCompletedTotal += modules[module].max_credits
+            toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
             textbox_content += module + " - " + str(overallScore) + "%\n"
         toDateOverallScore = round((toDateCompletedScore / toDateCompletedTotal) * 100, 2)
         self.course_modules_txt.configure(state=NORMAL)
