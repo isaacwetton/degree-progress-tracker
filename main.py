@@ -214,6 +214,7 @@ class Application(Frame):
         f_readCourseData = open(direct + "courseData.dat", "rb")
         courseData = pickle.load(f_readCourseData)
         f_readCourseData.close()
+        target = courseData[2]
 
         # Create course info menu
 
@@ -301,6 +302,43 @@ class Application(Frame):
                                                       + str(toDateOverallScore) + "%")
         self.course_overallcomplete_score_lbl.grid(row=4, column=1, columnspan=6, sticky=W)
 
+        # Determine target score based on inputted target
+
+        if target == "First":
+            targetScore = 70.0
+        elif target == "2:1":
+            targetScore = 60.0
+        elif target == "2:2":
+            targetScore = 50.0
+        else:
+            targetScore = 40.0
+
+        # Determine if target is being hit
+
+        if toDateOverallScore >= targetScore:
+            targetHit = True
+        else:
+            targetHit = False
+
+        # Display label describing target info
+
+        self.course_targetinfo_lbl = Label(self,
+                                           font="Helvetica 10",
+                                           text="")
+        self.course_targetinfo_lbl.grid(row=5, column=1, columnspan=6, sticky=W)
+
+        if targetHit is True:
+            self.course_targetinfo_lbl.configure(text="This overall score exceeds your target grade of a "
+                                                 + target + ". Keep it up!")
+        elif targetHit is False and percentageComplete != 100.0:
+            # Determine the score required on remaining work to hit target grade
+            percentageIncomplete = 100 - percentageComplete
+            requiredScore = ((targetScore * 100) - (toDateOverallScore * percentageComplete)) / percentageIncomplete
+            self.course_targetinfo_lbl.configure(text="This score is currently below your target of a " + target
+                                                 + ". To hit your target, you must score an average of "
+                                                 + str(requiredScore) + "% in the remaining "
+                                                 + str(percentageIncomplete) + "% of the course.")
+
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
         self.courseinfo_home_bttn.grid_forget()
@@ -311,6 +349,7 @@ class Application(Frame):
         self.course_modules_scroll.pack_forget()
         self.course_modules_txt.pack_forget()
         self.course_overallcomplete_score_lbl.grid_forget()
+        self.course_targetinfo_lbl.grid_forget()
         self.main_menu()
 
     def create_module_menu(self):
