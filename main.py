@@ -301,11 +301,14 @@ class Application(Frame):
         for module in modules:
             completedScore = 0.0
             completedTotal = 0.0
-            for work in modules[module].works:
-                completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
-                                  * 0.01
-                completedTotal += modules[module].works[work].percentage_module
-            overallScore = round((completedScore / completedTotal) * 100, 2)
+            if modules[module].works != {}:
+                for work in modules[module].works:
+                    completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
+                                      * 0.01
+                    completedTotal += modules[module].works[work].percentage_module
+                overallScore = round((completedScore / completedTotal) * 100, 2)
+            else:
+                overallScore = 0.0
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
             textbox_content += module + " - " + str(overallScore) + "%\n"
