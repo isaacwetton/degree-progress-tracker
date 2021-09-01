@@ -711,6 +711,19 @@ class Application(Frame):
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
         work_module = self.addwork_combobox.get()
+
+        # Determine completed  and remaining work and exam percentages
+
+        completedExam = 0.0
+        completedCoursework = 0.0
+        for work in modules[work_module].works:
+            if modules[work_module].works[work].work_type == "exam":
+                completedExam += modules[work_module].works[work].percentage_module
+            elif modules[work_module].works[work].work_type == "coursework":
+                completedCoursework += modules[work_module].works[work].percentage_module
+        remainingExam = modules[work_module].exam_percent - completedExam
+        remainingCoursework = modules[work_module].coursework_percent - completedCoursework
+
         if work_module == "":
             self.addwork_error("noModule")
         elif self.addwork_name_entry.get() == "":
@@ -725,14 +738,20 @@ class Application(Frame):
                 score = float(self.addwork_score_entry.get())
                 if self.radiovar.get() != "exam" and self.radiovar.get() != "coursework":
                     self.addwork_error("selectType")
-                elif not 0 <= percent <= 100 or not 0 <= score <= 100:
+                elif percent <= 0:
+                    self.addwork_error("negativePercent")
+                elif not 0 < percent <= 100 or not 0 <= score <= 100:
                     self.addwork_error("%range")
+                elif self.radiovar.get() == "exam" and percent > remainingExam:
+                    self.addwork_error("tooManyExam%", incomplete=remainingExam)
+                elif self.radiovar.get() == "coursework" and percent > remainingCoursework:
+                    self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework)
                 else:
                     self.addwork()
             except ValueError:
                 self.addwork_error("%value")
 
-    def addwork_error(self, errortype):
+    def addwork_error(self, errortype, incomplete=0.0):
         """Displays error message in redtext if validation fails"""
         if errortype == "noModule":
             self.addwork_error_lbl.configure(text="You must select a module")
@@ -746,8 +765,22 @@ class Application(Frame):
             self.addwork_error_lbl.configure(text="Work name cannot exceed 50 characters")
         elif errortype == "%range":
             self.addwork_error_lbl.configure(text="Percentages must be between 0 and 100")
+        elif errortype == "negativePercent":
+            self.addwork_error_lbl.configure(text="The work must be a percentage of the module")
         elif errortype == "%value":
             self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
+        elif errortype == "tooManyExam%":
+            if incomplete != 0.0:
+                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of this module that"
+                                                 + " is incomplete exams")
+            else:
+                self.addwork_error_lbl.configure(text="You have completed all of this module's exams")
+        elif errortype == "tooManyCoursework%":
+            if incomplete != 0.0:
+                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of this module that"
+                                                 + " is incomplete coursework")
+            else:
+                self.addwork_error_lbl.configure(text="You have completed all of this module's coursework")
         self.addwork_error_lbl.grid(row=8, column=3, columnspan=4)
 
     def addwork(self):
