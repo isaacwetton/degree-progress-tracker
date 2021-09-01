@@ -324,7 +324,8 @@ class Application(Frame):
 
         self.course_targetinfo_lbl = Label(self,
                                            font="Helvetica 10",
-                                           text="")
+                                           text="",
+                                           justify=LEFT)
         self.course_targetinfo_lbl.grid(row=5, column=1, columnspan=6, sticky=W)
 
         if targetHit is True:
@@ -336,7 +337,7 @@ class Application(Frame):
             requiredScore = ((targetScore * 100) - (toDateOverallScore * percentageComplete)) / percentageIncomplete
             self.course_targetinfo_lbl.configure(text="This score is currently below your target of a " + target
                                                  + ". To hit your target, you must score an average of "
-                                                 + str(requiredScore) + "% in the remaining "
+                                                 + str(requiredScore) + "%\nin the remaining "
                                                  + str(percentageIncomplete) + "% of the course.")
 
     def courseinfo_home(self):
