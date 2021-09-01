@@ -266,7 +266,7 @@ class Application(Frame):
 
         # Calculate percentage of course complete
 
-        percentageComplete = completedCreds / courseData[1] * 100
+        percentageComplete = round(completedCreds / courseData[1] * 100, 2)
 
         # Display number of completed credits out of maximum
 
@@ -356,6 +356,7 @@ class Application(Frame):
             # Determine the score required on remaining work to hit target grade
             percentageIncomplete = 100 - percentageComplete
             requiredScore = ((targetScore * 100) - (toDateOverallScore * percentageComplete)) / percentageIncomplete
+            requiredScore = round(requiredScore, 2)
             self.course_targetinfo_lbl.configure(text="This score is currently below your target of a " + target
                                                  + ". To hit your target, you must score an average of "
                                                  + str(requiredScore) + "%\nin the remaining "
