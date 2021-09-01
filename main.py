@@ -168,7 +168,7 @@ class Application(Frame):
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=(0, 5))
 
         self.main_courseinfo_bttn = Button(self, text="View Course Stats", font="Helvetica 9", width=42, height=2,
-                                           command=self.course_info_menu)
+                                           command=self.course_info_validate)
         self.main_createmodule_bttn = Button(self, text="Create/Delete Module", font="Helvetica 9", width=42, height=2,
                                              command=self.create_module_menu)
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", font="Helvetica 9", width=42, height=2,
@@ -207,6 +207,24 @@ class Application(Frame):
         self.main_about_bttn.grid_forget()
         self.main_redtext.grid_forget()
 
+    def course_info_validate(self):
+        """Checks to see if there is any completed work before accessing course_info menu"""
+        validated = False
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if len(modules) == 0:
+            self.main_edit_redtext("You must create a module and add completed work first")
+        else:
+            for module in modules:
+                if modules[module].works != {}:
+                    validated = True
+                    break
+            if validated is True:
+                self.course_info_menu()
+            elif validated is False:
+                self.main_edit_redtext("You must add completed work first")
+        
     def course_info_menu(self):
         """Opens course info menu"""
         self.clear_main_menu()
