@@ -101,7 +101,7 @@ class Application(Frame):
         self.course_target_combobox.grid(row=3, column=5, sticky=W)
 
         self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42,
-                                              font="Helvetica 9")
+                                              font="Helvetica 9", cursor="hand2")
         self.submit_course_info_bttn.grid(row=4, column=5, sticky=W)
 
         self.setup_error_lbl = Label(self, font="Helvetica 12", fg="brown")
@@ -168,15 +168,15 @@ class Application(Frame):
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=(0, 5))
 
         self.main_courseinfo_bttn = Button(self, text="View Course Stats", font="Helvetica 9", width=42, height=2,
-                                           command=self.course_info_validate)
+                                           command=self.course_info_validate, cursor="hand2")
         self.main_createmodule_bttn = Button(self, text="Create/Delete Module", font="Helvetica 9", width=42, height=2,
-                                             command=self.create_module_menu)
+                                             command=self.create_module_menu, cursor="hand2")
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", font="Helvetica 9", width=42, height=2,
-                                        command=self.addwork_validate_access)
+                                        command=self.addwork_validate_access, cursor="hand2")
         self.main_viewmodule_bttn = Button(self, text="View a Module's Stats", font="Helvetica 9", width=42, height=2,
-                                           command=self.viewmodule_validate_access)
+                                           command=self.viewmodule_validate_access, cursor="hand2")
         self.main_about_bttn = Button(self, text="About this Application", font="Helvetica 9", width=42, height=2,
-                                      command=self.about_page)
+                                      command=self.about_page, cursor="hand2")
         self.main_courseinfo_bttn.grid(row=2, column=4, pady=5)
         self.main_createmodule_bttn.grid(row=3, column=4, pady=5)
         self.main_addwork_bttn.grid(row=4, column=4, pady=5)
@@ -243,7 +243,7 @@ class Application(Frame):
                                            height=1,
                                            command=self.courseinfo_home
                                            )
-        self.courseinfo_home_bttn.grid(row=0, column=0, padx=10)
+        self.courseinfo_home_bttn.grid(row=0, column=0, padx=10, cursor="hand2")
 
         self.course_title_lbl = Label(self,
                                       text="Course Info",
@@ -383,7 +383,8 @@ class Application(Frame):
                                               font="Helvetica 13 bold",
                                               width=8,
                                               height=1,
-                                              command=self.create_module_home
+                                              command=self.create_module_home,
+                                              cursor="hand2"
                                               )
         self.create_module_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
@@ -424,7 +425,8 @@ class Application(Frame):
                                                 text="Create Module",
                                                 width=42,
                                                 command=self.create_module_validation,
-                                                font="Helvetica 9")
+                                                font="Helvetica 9",
+                                                cursor="hand2")
         self.create_module_submit_bttn.grid(row=5, column=4)
 
         self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
@@ -451,7 +453,7 @@ class Application(Frame):
         self.create_module_delete_combobox.grid(row=8, column=4)
 
         self.create_module_delete_bttn = Button(self, font="Helvetica 9", text="Delete Module", width=42,
-                                                command=self.delete_module_validation)
+                                                command=self.delete_module_validation, cursor="hand2")
         self.create_module_delete_bttn.grid(row=9, column=4)
 
         self.delete_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
@@ -607,7 +609,8 @@ class Application(Frame):
                                         font="Helvetica 13 bold",
                                         width=8,
                                         height=1,
-                                        command=self.addwork_home
+                                        command=self.addwork_home,
+                                        cursor="hand2"
                                         )
         self.addwork_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
@@ -684,7 +687,7 @@ class Application(Frame):
         self.addwork_score_entry.grid(row=6, column=4, columnspan=4)
 
         self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation,
-                                          font="Helvetica 9")
+                                          font="Helvetica 9", cursor="hand2")
         self.addwork_submit_bttn.grid(row=7, column=3, columnspan=5, pady=(30, 5), padx=(50, 0))
 
         self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="brown")
@@ -832,7 +835,8 @@ class Application(Frame):
                                            font="Helvetica 13 bold",
                                            width=8,
                                            height=1,
-                                           command=self.viewmodule_home
+                                           command=self.viewmodule_home,
+                                           cursor="hand2"
                                            )
         self.viewmodule_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
@@ -1044,7 +1048,8 @@ class Application(Frame):
                                       font="Helvetica 13 bold",
                                       width=8,
                                       height=1,
-                                      command=self.about_home
+                                      command=self.about_home,
+                                      cursor="hand2"
                                       )
         self.about_home_bttn.grid(row=0, column=0, padx=10, pady=5)
 
@@ -1069,7 +1074,7 @@ class Application(Frame):
         self.about_text1_lbl.grid(row=1, column=0, columnspan=7, pady=10, padx=50)
 
         self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Repository",
-                                        width=50, height=1, command=self.githublink, font="Helvetica 9")
+                                        width=50, height=1, command=self.githublink, font="Helvetica 9", cursor="hand2")
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
         self.about_contact_lbl = Label(self,
