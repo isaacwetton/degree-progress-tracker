@@ -775,14 +775,14 @@ class Application(Frame):
             self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
         elif errortype == "tooManyExam%":
             if incomplete != 0.0:
-                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of this module that"
-                                                 + " is incomplete exams")
+                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of exams left"
+                                                 + " to complete")
             else:
                 self.addwork_error_lbl.configure(text="You have completed all of this module's exams")
         elif errortype == "tooManyCoursework%":
             if incomplete != 0.0:
-                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of this module that"
-                                                 + " is incomplete coursework")
+                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of coursework left"
+                                                 + " to complete")
             else:
                 self.addwork_error_lbl.configure(text="You have completed all of this module's coursework")
         self.addwork_error_lbl.grid(row=8, column=3, columnspan=4)
