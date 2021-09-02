@@ -747,15 +747,21 @@ class Application(Frame):
                 elif not 0 < percent <= 100 or not 0 <= score <= 100:
                     self.addwork_error("%range")
                 elif self.radiovar.get() == "exam" and percent > remainingExam:
-                    self.addwork_error("tooManyExam%", incomplete=remainingExam)
+                    if modules[work_module].exam_percent == 0.0:
+                        self.addwork_error("tooManyExam%", incomplete=remainingExam, zeroWork=True)
+                    else:
+                        self.addwork_error("tooManyExam%", incomplete=remainingExam)
                 elif self.radiovar.get() == "coursework" and percent > remainingCoursework:
-                    self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework)
+                    if modules[work_module].coursework_percent == 0.0:
+                        self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework, zeroWork=True)
+                    else:
+                        self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework)
                 else:
                     self.addwork()
             except ValueError:
                 self.addwork_error("%value")
 
-    def addwork_error(self, errortype, incomplete=0.0):
+    def addwork_error(self, errortype, incomplete=0.0, zeroWork=False):
         """Displays error message in redtext if validation fails"""
         if errortype == "noModule":
             self.addwork_error_lbl.configure(text="You must select a module")
@@ -777,14 +783,18 @@ class Application(Frame):
             if incomplete != 0.0:
                 self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of exams left"
                                                  + " to complete")
-            else:
+            elif zeroWork is False:
                 self.addwork_error_lbl.configure(text="You have completed all of this module's exams")
+            elif zeroWork is True:
+                self.addwork_error_lbl.configure(text="There are no exams for this module")
         elif errortype == "tooManyCoursework%":
             if incomplete != 0.0:
                 self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of coursework left"
                                                  + " to complete")
-            else:
+            elif zeroWork is False:
                 self.addwork_error_lbl.configure(text="You have completed all of this module's coursework")
+            elif zeroWork is True:
+                self.addwork_error_lbl.configure(text="There is no coursework for this module")
         self.addwork_error_lbl.grid(row=8, column=3, columnspan=4)
 
     def addwork(self):
