@@ -1068,7 +1068,7 @@ class Application(Frame):
                                      justify=LEFT)
         self.about_text1_lbl.grid(row=1, column=0, columnspan=7, pady=10, padx=50)
 
-        self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Project",
+        self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Repository",
                                         width=50, height=1, command=self.githublink, font="Helvetica 9")
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
