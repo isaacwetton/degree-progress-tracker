@@ -15,4 +15,11 @@ If you require assistance with the application, please feel free to open an issu
 
 https://github.com/isaacwetton/degree-progress-tracker/
 
+ROADMAP:
+
+- v1.0.2 - Fix bugs from v1.0.1-alpha, improve error messages and grammar, clean up source code.
+- v1.1.0 - Introduce many new QOL improvements (including ability to reset the program, delete individual pieces of work and sorted module/work lists). Also improve commenting of code
+- v1.1.x - Bug fixes from v1.1.0
+- v1.2.0 - Lots of ambitious features added (possibly including graphing of results and much more detailed statistics)
+
 
