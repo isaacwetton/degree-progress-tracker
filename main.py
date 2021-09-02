@@ -1106,7 +1106,6 @@ try:
     firstTime = False
     f_courseData.close()
 except IOError:
-    # os.remove(direct + "courseData.dat")
     firstTime = True
 
 # Create root and main application window
