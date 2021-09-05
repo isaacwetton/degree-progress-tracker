@@ -721,48 +721,48 @@ class Application(Frame):
 
         # Determine completed  and remaining work and exam percentages
 
-        completedExam = 0.0
-        completedCoursework = 0.0
-        for work in modules[work_module].works:
-            if modules[work_module].works[work].work_type == "exam":
-                completedExam += modules[work_module].works[work].percentage_module
-            elif modules[work_module].works[work].work_type == "coursework":
-                completedCoursework += modules[work_module].works[work].percentage_module
-        remainingExam = modules[work_module].exam_percent - completedExam
-        remainingCoursework = modules[work_module].coursework_percent - completedCoursework
-
         if work_module == "":
             self.addwork_error("noModule")
-        elif self.addwork_name_entry.get() == "":
-            self.addwork_error("nameBlank")
-        elif len(self.addwork_name_entry.get()) > 50:
-            self.addwork_error("nameLength")
-        elif self.addwork_name_entry.get() in modules[work_module].works:
-            self.addwork_error("workExists")
         else:
-            try:
-                percent = float(self.addwork_percent_entry.get())
-                score = float(self.addwork_score_entry.get())
-                if self.radiovar.get() != "exam" and self.radiovar.get() != "coursework":
-                    self.addwork_error("selectType")
-                elif percent <= 0:
-                    self.addwork_error("negativePercent")
-                elif not 0 < percent <= 100 or not 0 <= score <= 100:
-                    self.addwork_error("%range")
-                elif self.radiovar.get() == "exam" and percent > remainingExam:
-                    if modules[work_module].exam_percent == 0.0:
-                        self.addwork_error("tooManyExam%", incomplete=remainingExam, zeroWork=True)
+            completedExam = 0.0
+            completedCoursework = 0.0
+            for work in modules[work_module].works:
+                if modules[work_module].works[work].work_type == "exam":
+                    completedExam += modules[work_module].works[work].percentage_module
+                elif modules[work_module].works[work].work_type == "coursework":
+                    completedCoursework += modules[work_module].works[work].percentage_module
+            remainingExam = modules[work_module].exam_percent - completedExam
+            remainingCoursework = modules[work_module].coursework_percent - completedCoursework
+            if self.addwork_name_entry.get() == "":
+                self.addwork_error("nameBlank")
+            elif len(self.addwork_name_entry.get()) > 50:
+                self.addwork_error("nameLength")
+            elif self.addwork_name_entry.get() in modules[work_module].works:
+                self.addwork_error("workExists")
+            else:
+                try:
+                    percent = float(self.addwork_percent_entry.get())
+                    score = float(self.addwork_score_entry.get())
+                    if self.radiovar.get() != "exam" and self.radiovar.get() != "coursework":
+                        self.addwork_error("selectType")
+                    elif percent <= 0:
+                        self.addwork_error("negativePercent")
+                    elif not 0 < percent <= 100 or not 0 <= score <= 100:
+                        self.addwork_error("%range")
+                    elif self.radiovar.get() == "exam" and percent > remainingExam:
+                        if modules[work_module].exam_percent == 0.0:
+                            self.addwork_error("tooManyExam%", incomplete=remainingExam, zeroWork=True)
+                        else:
+                            self.addwork_error("tooManyExam%", incomplete=remainingExam)
+                    elif self.radiovar.get() == "coursework" and percent > remainingCoursework:
+                        if modules[work_module].coursework_percent == 0.0:
+                            self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework, zeroWork=True)
+                        else:
+                            self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework)
                     else:
-                        self.addwork_error("tooManyExam%", incomplete=remainingExam)
-                elif self.radiovar.get() == "coursework" and percent > remainingCoursework:
-                    if modules[work_module].coursework_percent == 0.0:
-                        self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework, zeroWork=True)
-                    else:
-                        self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework)
-                else:
-                    self.addwork()
-            except ValueError:
-                self.addwork_error("%value")
+                        self.addwork()
+                except ValueError:
+                    self.addwork_error("%value")
 
     def addwork_error(self, errortype, incomplete=0.0, zeroWork=False):
         """Displays error message in redtext if validation fails"""
