@@ -673,7 +673,7 @@ class Application(Frame):
         self.addwork_type_courseworkbttn.grid(row=4, column=5, pady=(2, 0))
 
         self.addwork_percent_lbl = Label(self,
-                                         text="Percentage of module",
+                                         text="Percentage of module (%)",
                                          font="Helvetica 13")
         self.addwork_percent_lbl.grid(row=5, column=3, sticky=E)
         self.addwork_percent_entry = Entry(self, width=50)
