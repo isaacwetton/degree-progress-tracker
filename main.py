@@ -241,9 +241,10 @@ class Application(Frame):
                                            font="Helvetica 13 bold",
                                            width=8,
                                            height=1,
-                                           command=self.courseinfo_home
+                                           command=self.courseinfo_home,
+                                           cursor="hand2"
                                            )
-        self.courseinfo_home_bttn.grid(row=0, column=0, padx=10, cursor="hand2")
+        self.courseinfo_home_bttn.grid(row=0, column=0, padx=10)
 
         self.course_title_lbl = Label(self,
                                       text="Course Info",
