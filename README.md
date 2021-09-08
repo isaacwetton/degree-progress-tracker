@@ -1,4 +1,4 @@
-# degree-progress-tracker v1.0.2
+# degree-progress-tracker v1.1.0
 
 This is a python program designed to assist in tracking university degree progress.
 It should be compatible with most UK degree structures.

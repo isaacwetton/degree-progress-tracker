@@ -187,7 +187,7 @@ class Application(Frame):
         self.main_redtext.grid(row=7, column=4)
 
         self.main_ver_lbl = Label(self,
-                                  text="v1.0.2",
+                                  text="v1.1.0",
                                   font="Helvetica 10")
         self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(750, 0))
 
