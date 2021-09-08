@@ -101,7 +101,7 @@ class Application(Frame):
         self.course_target_combobox.grid(row=3, column=5, sticky=W)
 
         self.submit_course_info_bttn = Button(self, text="Submit", command=self.close_setup, width=42,
-                                              font="Helvetica 9")
+                                              font="Helvetica 9", cursor="hand2")
         self.submit_course_info_bttn.grid(row=4, column=5, sticky=W)
 
         self.setup_error_lbl = Label(self, font="Helvetica 12", fg="brown")
@@ -168,15 +168,15 @@ class Application(Frame):
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=(0, 5))
 
         self.main_courseinfo_bttn = Button(self, text="View Course Stats", font="Helvetica 9", width=42, height=2,
-                                           command=self.course_info_validate)
+                                           command=self.course_info_validate, cursor="hand2")
         self.main_createmodule_bttn = Button(self, text="Create/Delete Module", font="Helvetica 9", width=42, height=2,
-                                             command=self.create_module_menu)
+                                             command=self.create_module_menu, cursor="hand2")
         self.main_addwork_bttn = Button(self, text="Add a Piece of Work", font="Helvetica 9", width=42, height=2,
-                                        command=self.addwork_validate_access)
+                                        command=self.addwork_validate_access, cursor="hand2")
         self.main_viewmodule_bttn = Button(self, text="View a Module's Stats", font="Helvetica 9", width=42, height=2,
-                                           command=self.viewmodule_validate_access)
+                                           command=self.viewmodule_validate_access, cursor="hand2")
         self.main_about_bttn = Button(self, text="About this Application", font="Helvetica 9", width=42, height=2,
-                                      command=self.about_page)
+                                      command=self.about_page, cursor="hand2")
         self.main_courseinfo_bttn.grid(row=2, column=4, pady=5)
         self.main_createmodule_bttn.grid(row=3, column=4, pady=5)
         self.main_addwork_bttn.grid(row=4, column=4, pady=5)
@@ -187,9 +187,9 @@ class Application(Frame):
         self.main_redtext.grid(row=7, column=4)
 
         self.main_ver_lbl = Label(self,
-                                  text="v1.0.1-alpha",
+                                  text="v1.0.2",
                                   font="Helvetica 10")
-        self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(700, 0))
+        self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(750, 0))
 
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
@@ -241,7 +241,8 @@ class Application(Frame):
                                            font="Helvetica 13 bold",
                                            width=8,
                                            height=1,
-                                           command=self.courseinfo_home
+                                           command=self.courseinfo_home,
+                                           cursor="hand2"
                                            )
         self.courseinfo_home_bttn.grid(row=0, column=0, padx=10)
 
@@ -266,7 +267,7 @@ class Application(Frame):
 
         # Calculate percentage of course complete
 
-        percentageComplete = completedCreds / courseData[1] * 100
+        percentageComplete = round(completedCreds / courseData[1] * 100, 2)
 
         # Display number of completed credits out of maximum
 
@@ -356,6 +357,7 @@ class Application(Frame):
             # Determine the score required on remaining work to hit target grade
             percentageIncomplete = 100 - percentageComplete
             requiredScore = ((targetScore * 100) - (toDateOverallScore * percentageComplete)) / percentageIncomplete
+            requiredScore = round(requiredScore, 2)
             self.course_targetinfo_lbl.configure(text="This score is currently below your target of a " + target
                                                  + ". To hit your target, you must score an average of "
                                                  + str(requiredScore) + "%\nin the remaining "
@@ -382,7 +384,8 @@ class Application(Frame):
                                               font="Helvetica 13 bold",
                                               width=8,
                                               height=1,
-                                              command=self.create_module_home
+                                              command=self.create_module_home,
+                                              cursor="hand2"
                                               )
         self.create_module_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
@@ -423,7 +426,8 @@ class Application(Frame):
                                                 text="Create Module",
                                                 width=42,
                                                 command=self.create_module_validation,
-                                                font="Helvetica 9")
+                                                font="Helvetica 9",
+                                                cursor="hand2")
         self.create_module_submit_bttn.grid(row=5, column=4)
 
         self.create_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
@@ -450,7 +454,7 @@ class Application(Frame):
         self.create_module_delete_combobox.grid(row=8, column=4)
 
         self.create_module_delete_bttn = Button(self, font="Helvetica 9", text="Delete Module", width=42,
-                                                command=self.delete_module_validation)
+                                                command=self.delete_module_validation, cursor="hand2")
         self.create_module_delete_bttn.grid(row=9, column=4)
 
         self.delete_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
@@ -606,7 +610,8 @@ class Application(Frame):
                                         font="Helvetica 13 bold",
                                         width=8,
                                         height=1,
-                                        command=self.addwork_home
+                                        command=self.addwork_home,
+                                        cursor="hand2"
                                         )
         self.addwork_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
@@ -669,7 +674,7 @@ class Application(Frame):
         self.addwork_type_courseworkbttn.grid(row=4, column=5, pady=(2, 0))
 
         self.addwork_percent_lbl = Label(self,
-                                         text="Percentage of module",
+                                         text="Percentage of module (%)",
                                          font="Helvetica 13")
         self.addwork_percent_lbl.grid(row=5, column=3, sticky=E)
         self.addwork_percent_entry = Entry(self, width=50)
@@ -683,7 +688,7 @@ class Application(Frame):
         self.addwork_score_entry.grid(row=6, column=4, columnspan=4)
 
         self.addwork_submit_bttn = Button(self, width=40, text="Submit", command=self.addwork_validation,
-                                          font="Helvetica 9")
+                                          font="Helvetica 9", cursor="hand2")
         self.addwork_submit_bttn.grid(row=7, column=3, columnspan=5, pady=(30, 5), padx=(50, 0))
 
         self.addwork_error_lbl = Label(self, font="Helvetica 12", fg="brown")
@@ -717,44 +722,50 @@ class Application(Frame):
 
         # Determine completed  and remaining work and exam percentages
 
-        completedExam = 0.0
-        completedCoursework = 0.0
-        for work in modules[work_module].works:
-            if modules[work_module].works[work].work_type == "exam":
-                completedExam += modules[work_module].works[work].percentage_module
-            elif modules[work_module].works[work].work_type == "coursework":
-                completedCoursework += modules[work_module].works[work].percentage_module
-        remainingExam = modules[work_module].exam_percent - completedExam
-        remainingCoursework = modules[work_module].coursework_percent - completedCoursework
-
         if work_module == "":
             self.addwork_error("noModule")
-        elif self.addwork_name_entry.get() == "":
-            self.addwork_error("nameBlank")
-        elif len(self.addwork_name_entry.get()) > 50:
-            self.addwork_error("nameLength")
-        elif self.addwork_name_entry.get() in modules[work_module].works:
-            self.addwork_error("workExists")
         else:
-            try:
-                percent = float(self.addwork_percent_entry.get())
-                score = float(self.addwork_score_entry.get())
-                if self.radiovar.get() != "exam" and self.radiovar.get() != "coursework":
-                    self.addwork_error("selectType")
-                elif percent <= 0:
-                    self.addwork_error("negativePercent")
-                elif not 0 < percent <= 100 or not 0 <= score <= 100:
-                    self.addwork_error("%range")
-                elif self.radiovar.get() == "exam" and percent > remainingExam:
-                    self.addwork_error("tooManyExam%", incomplete=remainingExam)
-                elif self.radiovar.get() == "coursework" and percent > remainingCoursework:
-                    self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework)
-                else:
-                    self.addwork()
-            except ValueError:
-                self.addwork_error("%value")
+            completedExam = 0.0
+            completedCoursework = 0.0
+            for work in modules[work_module].works:
+                if modules[work_module].works[work].work_type == "exam":
+                    completedExam += modules[work_module].works[work].percentage_module
+                elif modules[work_module].works[work].work_type == "coursework":
+                    completedCoursework += modules[work_module].works[work].percentage_module
+            remainingExam = modules[work_module].exam_percent - completedExam
+            remainingCoursework = modules[work_module].coursework_percent - completedCoursework
+            if self.addwork_name_entry.get() == "":
+                self.addwork_error("nameBlank")
+            elif len(self.addwork_name_entry.get()) > 50:
+                self.addwork_error("nameLength")
+            elif self.addwork_name_entry.get() in modules[work_module].works:
+                self.addwork_error("workExists")
+            else:
+                try:
+                    percent = float(self.addwork_percent_entry.get())
+                    score = float(self.addwork_score_entry.get())
+                    if self.radiovar.get() != "exam" and self.radiovar.get() != "coursework":
+                        self.addwork_error("selectType")
+                    elif percent <= 0:
+                        self.addwork_error("negativePercent")
+                    elif not 0 < percent <= 100 or not 0 <= score <= 100:
+                        self.addwork_error("%range")
+                    elif self.radiovar.get() == "exam" and percent > remainingExam:
+                        if modules[work_module].exam_percent == 0.0:
+                            self.addwork_error("tooManyExam%", incomplete=remainingExam, zeroWork=True)
+                        else:
+                            self.addwork_error("tooManyExam%", incomplete=remainingExam)
+                    elif self.radiovar.get() == "coursework" and percent > remainingCoursework:
+                        if modules[work_module].coursework_percent == 0.0:
+                            self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework, zeroWork=True)
+                        else:
+                            self.addwork_error("tooManyCoursework%", incomplete=remainingCoursework)
+                    else:
+                        self.addwork()
+                except ValueError:
+                    self.addwork_error("%value")
 
-    def addwork_error(self, errortype, incomplete=0.0):
+    def addwork_error(self, errortype, incomplete=0.0, zeroWork=False):
         """Displays error message in redtext if validation fails"""
         if errortype == "noModule":
             self.addwork_error_lbl.configure(text="You must select a module")
@@ -774,16 +785,20 @@ class Application(Frame):
             self.addwork_error_lbl.configure(text="Percentages must be given as numbers")
         elif errortype == "tooManyExam%":
             if incomplete != 0.0:
-                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of this module that"
-                                                 + " is incomplete exams")
-            else:
+                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of exams left"
+                                                 + " to complete")
+            elif zeroWork is False:
                 self.addwork_error_lbl.configure(text="You have completed all of this module's exams")
+            elif zeroWork is True:
+                self.addwork_error_lbl.configure(text="There are no exams for this module")
         elif errortype == "tooManyCoursework%":
             if incomplete != 0.0:
-                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of this module that"
-                                                 + " is incomplete coursework")
-            else:
+                self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of coursework left"
+                                                 + " to complete")
+            elif zeroWork is False:
                 self.addwork_error_lbl.configure(text="You have completed all of this module's coursework")
+            elif zeroWork is True:
+                self.addwork_error_lbl.configure(text="There is no coursework for this module")
         self.addwork_error_lbl.grid(row=8, column=3, columnspan=4)
 
     def addwork(self):
@@ -821,12 +836,13 @@ class Application(Frame):
                                            font="Helvetica 13 bold",
                                            width=8,
                                            height=1,
-                                           command=self.viewmodule_home
+                                           command=self.viewmodule_home,
+                                           cursor="hand2"
                                            )
         self.viewmodule_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
         self.viewmodule_title_lbl = Label(self,
-                                          text="View a module",
+                                          text="View a Module",
                                           font="Helvetica 30")
         self.viewmodule_title_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
 
@@ -1033,7 +1049,8 @@ class Application(Frame):
                                       font="Helvetica 13 bold",
                                       width=8,
                                       height=1,
-                                      command=self.about_home
+                                      command=self.about_home,
+                                      cursor="hand2"
                                       )
         self.about_home_bttn.grid(row=0, column=0, padx=10, pady=5)
 
@@ -1057,8 +1074,8 @@ class Application(Frame):
                                      justify=LEFT)
         self.about_text1_lbl.grid(row=1, column=0, columnspan=7, pady=10, padx=50)
 
-        self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Project",
-                                        width=50, height=1, command=self.githublink, font="Helvetica 9")
+        self.about_github_bttn = Button(self, text="degree-progress-tracker GitHub Repository",
+                                        width=50, height=1, command=self.githublink, font="Helvetica 9", cursor="hand2")
         self.about_github_bttn.grid(row=2, column=2, padx=20)
 
         self.about_contact_lbl = Label(self,
@@ -1095,7 +1112,6 @@ try:
     firstTime = False
     f_courseData.close()
 except IOError:
-    # os.remove(direct + "courseData.dat")
     firstTime = True
 
 # Create root and main application window
