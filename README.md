@@ -17,8 +17,6 @@ https://github.com/isaacwetton/degree-progress-tracker/
 
 ROADMAP:
 
-- v1.0.2 - Fix bugs from v1.0.1-alpha, improve error messages and grammar, clean up source code.
-- v1.0.3 - Possible release to patch any issues that are identified in v1.0.2.
 - v1.1.0 - Introduce many new QOL improvements (including ability to reset the program, delete individual pieces of work and sorted module/work lists). Also improve commenting of code and PEP8 compliance (via linting). Due before October 11, 2021.
 - v1.1.x - Bug fixes from v1.1.0.
 - v1.2.0 - Lots of ambitious features added (possibly including graphing of results and much more detailed statistics).
