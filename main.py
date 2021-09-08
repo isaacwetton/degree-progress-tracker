@@ -197,7 +197,7 @@ class Application(Frame):
         self.main_ver_lbl = Label(self,
                                   text="v1.1.0",
                                   font="Helvetica 10")
-        self.main_ver_lbl.grid(row=9, column=4, pady=(0, 0), padx=(750, 0))
+        self.main_ver_lbl.grid(row=9, column=4, pady=(5, 0), padx=(750, 0))
 
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
