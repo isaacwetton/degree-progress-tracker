@@ -177,19 +177,27 @@ class Application(Frame):
                                            command=self.viewmodule_validate_access, cursor="hand2")
         self.main_about_bttn = Button(self, text="About this Application", font="Helvetica 9", width=42, height=2,
                                       command=self.about_page, cursor="hand2")
-        self.main_courseinfo_bttn.grid(row=2, column=4, pady=5)
-        self.main_createmodule_bttn.grid(row=3, column=4, pady=5)
-        self.main_addwork_bttn.grid(row=4, column=4, pady=5)
-        self.main_viewmodule_bttn.grid(row=5, column=4, pady=5)
-        self.main_about_bttn.grid(row=6, column=4, pady=5)
+        self.main_reset_bttn = Button(self, text="Edit Course Info / Reset Application", font="Helvetica 9",
+                                      width=42, height=2,
+                                      #command=self.reset_page,
+                                      cursor="hand2")
+        self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
+                                             height=2, cursor="hand2")
+        self.main_courseinfo_bttn.grid(row=2, column=4, pady=1)
+        self.main_createmodule_bttn.grid(row=3, column=4, pady=1)
+        self.main_addwork_bttn.grid(row=4, column=4, pady=1)
+        self.main_viewmodule_bttn.grid(row=5, column=4, pady=1)
+        self.main_about_bttn.grid(row=6, column=4, pady=1)
+        self.main_reset_bttn.grid(row=7, column=4, pady=1)
+        self.main_deletework_bttn.grid(row=8, column=4, pady=1)
 
         self.main_redtext = Label(self, font="Helvetica 12", fg="brown", text="")
-        self.main_redtext.grid(row=7, column=4)
+        self.main_redtext.grid(row=9, column=4)
 
         self.main_ver_lbl = Label(self,
                                   text="v1.1.0",
                                   font="Helvetica 10")
-        self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(750, 0))
+        self.main_ver_lbl.grid(row=9, column=4, pady=(0, 0), padx=(750, 0))
 
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
@@ -205,6 +213,8 @@ class Application(Frame):
         self.main_addwork_bttn.grid_forget()
         self.main_viewmodule_bttn.grid_forget()
         self.main_about_bttn.grid_forget()
+        self.main_reset_bttn.grid_forget()
+        self.main_deletework_bttn.grid_forget()
         self.main_redtext.grid_forget()
 
     def course_info_validate(self):
