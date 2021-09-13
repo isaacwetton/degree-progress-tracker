@@ -1143,7 +1143,8 @@ class Application(Frame):
         self.reset_increasecreds_bttn = Button(self,
                                                text="Increase Course Credits",
                                                font="Helvetica 9",
-                                               width=42)
+                                               width=42,
+                                               cursor="hand2")
         self.reset_increasecreds_bttn.grid(row=2, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
 
         # Create label for error messages
@@ -1162,18 +1163,19 @@ class Application(Frame):
         self.reset_target_lbl.grid(row=4, column=3, sticky=E, padx=(0, 0), pady=(20, 0))
 
         self.reset_target_combobox = ttk.Combobox(self,
-                                                   values=["Third",
+                                                  values=["Third",
                                                            "2:2",
                                                            "2:1",
                                                            "First"],
-                                                   width=21,
-                                                   state="readonly")
+                                                  width=21,
+                                                  state="readonly")
         self.reset_target_combobox.grid(row=4, column=4, pady=(20, 0))
 
         self.reset_target_bttn = Button(self,
-                                               text="Change Target Grade",
-                                               font="Helvetica 9",
-                                               width=42)
+                                        text="Change Target Grade",
+                                        font="Helvetica 9",
+                                        width=42,
+                                        cursor="hand2")
         self.reset_target_bttn.grid(row=5, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
 
         # Set combobox value to current target grade
@@ -1212,7 +1214,8 @@ class Application(Frame):
                                        text="Reset the Application",
                                        font="Helvetica 9",
                                        width=22,
-                                       height=2)
+                                       height=2,
+                                       cursor="hand2")
         self.reset_reset_bttn.grid(row=8, column=3, columnspan=4, padx=(30, 0))
 
     def reset_home(self):
