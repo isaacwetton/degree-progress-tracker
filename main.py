@@ -1228,6 +1228,9 @@ class Application(Frame):
         self.reset_target_lbl.grid_forget()
         self.reset_target_combobox.grid_forget()
         self.reset_target_bttn.grid_forget()
+        self.reset_reset_lbl.grid_forget()
+        self.reset_reset_warning_lbl.grid_forget()
+        self.reset_reset_bttn.grid_forget()
         self.main_menu()
 
 # main program
