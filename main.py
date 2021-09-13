@@ -309,6 +309,7 @@ class Application(Frame):
         textbox_content = ""
         toDateCompletedScore = 0.0
         toDateCompletedTotal = 0.0
+        moduleNumber = 1
         for module in modules:
             completedScore = 0.0
             completedTotal = 0.0
@@ -322,7 +323,8 @@ class Application(Frame):
                 overallScore = 0.0
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
-            textbox_content += module + " - " + str(overallScore) + "%\n"
+            textbox_content += str(moduleNumber) + ") " + module + " - " + str(overallScore) + "%\n"
+            moduleNumber += 1
         toDateOverallScore = round((toDateCompletedScore / toDateCompletedTotal) * 100, 2)
         self.course_modules_txt.configure(state=NORMAL)
         self.course_modules_txt.insert(0.0, textbox_content)
