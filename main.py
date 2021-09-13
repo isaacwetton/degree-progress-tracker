@@ -1175,7 +1175,8 @@ class Application(Frame):
                                         text="Change Target Grade",
                                         font="Helvetica 9",
                                         width=42,
-                                        cursor="hand2")
+                                        cursor="hand2",
+                                        command=self.change_target)
         self.reset_target_bttn.grid(row=5, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
 
         # Set combobox value to current target grade
@@ -1233,6 +1234,28 @@ class Application(Frame):
         self.reset_reset_bttn.grid_forget()
         self.main_menu()
 
+    def change_target(self):
+        """Changes the courseData target info to the newly selected target grade"""
+
+        # Retrieve selected target from combobox
+        target = self.reset_target_combobox.get()
+
+        # Load current course data
+        f_courseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_courseData)
+        f_courseData.close()
+
+        # Change course data's target grade to the selected target
+        courseData[2] = target
+
+        # Save course data (overwrite)
+        f_courseData = open(direct + "courseData.dat", "wb")
+        pickle.dump(courseData, f_courseData, True)
+        f_courseData.close()
+
+        # Return to main menu with confirmation message
+        self.reset_home()
+        self.main_edit_redtext("Target grade changed to a " + target)
 
 # main program
 
