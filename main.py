@@ -1269,8 +1269,17 @@ except FileExistsError:
 
 # Determine if first-time use
 try:
-    f_courseData = open(direct + "courseData.dat", "rb+")
+    f_courseData = open(direct + "courseData.dat", "rb")
     firstTime = False
+    data = pickle.load(f_courseData)
+    f_courseData.close()
+
+    # For backwards compatibility, the following converts a tuple into a string.
+    # This is because prior to v1.1.0, courseData.dat stored a tuple.
+
+    newData = [data[0], data[1], data[2]]
+    f_courseData = open(direct + "courseData.dat", "wb")
+    pickle.dump(newData, f_courseData, True)
     f_courseData.close()
 except IOError:
     firstTime = True
