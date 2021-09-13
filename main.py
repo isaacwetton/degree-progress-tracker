@@ -1167,7 +1167,7 @@ class Application(Frame):
                                                            "2:2",
                                                            "2:1",
                                                            "First"],
-                                                  width=21,
+                                                  width=18,
                                                   state="readonly")
         self.reset_target_combobox.grid(row=4, column=4, pady=(20, 0))
 
