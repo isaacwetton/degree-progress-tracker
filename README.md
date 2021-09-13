@@ -21,4 +21,17 @@ ROADMAP:
 - v1.1.x - Bug fixes from v1.1.0.
 - v1.2.0 - Lots of ambitious features added (possibly including graphing of results and much more detailed statistics). May also include Mac compatibility (with a separate setup executable).
 
+Copyright (C) 2021  Isaac Wetton
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see https://www.gnu.org/licenses/.
