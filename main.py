@@ -119,7 +119,7 @@ class Application(Frame):
                     if courseCredits <= 0:
                         self.setup_entry_error("negativecreds_error")
                     else:
-                        courseData = (courseName, courseCredits, courseTarget)
+                        courseData = [courseName, courseCredits, courseTarget]
                         f_writeCourseData = open(direct + "courseData.dat", "wb")
                         pickle.dump(courseData, f_writeCourseData, True)
                         f_writeCourseData.close()
