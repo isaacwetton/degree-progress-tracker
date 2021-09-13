@@ -1146,6 +1146,42 @@ class Application(Frame):
                                                width=42)
         self.reset_increasecreds_bttn.grid(row=2, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
 
+        # Create label, combobox and button for changing target grade
+
+        self.reset_target_lbl = Label(self,
+                                             text="New Target Grade:",
+                                             font="Helvetica 12")
+        self.reset_target_lbl.grid(row=3, column=3, sticky=E, padx=(0, 0), pady=(50, 0))
+
+        self.reset_target_combobox = ttk.Combobox(self,
+                                                   values=["Third",
+                                                           "2:2",
+                                                           "2:1",
+                                                           "First"],
+                                                   width=21,
+                                                   state="readonly")
+        self.reset_target_combobox.grid(row=3, column=4, pady=(50, 0))
+
+        self.reset_target_bttn = Button(self,
+                                               text="Change Target Grade",
+                                               font="Helvetica 9",
+                                               width=42)
+        self.reset_target_bttn.grid(row=4, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
+
+        # Set combobox value to current target grade
+
+        f_courseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_courseData)
+        f_courseData.close()
+        target = courseData[2]
+        if target == "First":
+            self.reset_target_combobox.current(3)
+        elif target == "2:1":
+            self.reset_target_combobox.current(2)
+        elif target == "2:2":
+            self.reset_target_combobox.current(1)
+        else:
+            self.reset_target_combobox.current(0)
 
     def reset_home(self):
         """Clears the reset_page menu and returns to the main menu"""
@@ -1154,6 +1190,9 @@ class Application(Frame):
         self.reset_increasecreds_lbl.grid_forget()
         self.reset_increasecreds_entry.grid_forget()
         self.reset_increasecreds_bttn.grid_forget()
+        self.reset_target_lbl.grid_forget()
+        self.reset_target_combobox.grid_forget()
+        self.reset_target_bttn.grid_forget()
         self.main_menu()
 
 # main program
