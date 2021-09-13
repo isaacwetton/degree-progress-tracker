@@ -5,11 +5,11 @@ from tkinter import *
 from tkinter import ttk
 import pickle
 
+
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
     def __init__(self, name, work_type, score, percentage_module):
-        global works
         self.name = name
         self.work_type = work_type
         self.score = score
@@ -182,7 +182,7 @@ class Application(Frame):
                                       command=self.reset_page,
                                       cursor="hand2")
         self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
-                                             height=2, cursor="hand2")
+                                           height=2, cursor="hand2")
         self.main_courseinfo_bttn.grid(row=2, column=4, pady=1)
         self.main_createmodule_bttn.grid(row=3, column=4, pady=1)
         self.main_addwork_bttn.grid(row=4, column=4, pady=1)
@@ -300,7 +300,7 @@ class Application(Frame):
         # Create textbox for work display
 
         self.course_modules_txt = Text(self.course_modules_frame, width=70, height=8, state=DISABLED,
-                                        yscrollcommand=self.course_modules_scroll.set, font="Helvetica 11")
+                                       yscrollcommand=self.course_modules_scroll.set, font="Helvetica 11")
         self.course_modules_txt.pack(side=LEFT, fill=BOTH)
         self.course_modules_scroll.configure(command=self.course_modules_txt.yview)
 
@@ -315,8 +315,8 @@ class Application(Frame):
             completedTotal = 0.0
             if modules[module].works != {}:
                 for work in modules[module].works:
-                    completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
-                                      * 0.01
+                    completedScore += modules[module].works[work].score * \
+                                      modules[module].works[work].percentage_module * 0.01
                     completedTotal += modules[module].works[work].percentage_module
                 overallScore = round((completedScore / completedTotal) * 100, 2)
             else:
@@ -633,10 +633,10 @@ class Application(Frame):
         self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170)
 
         self.addwork_guide_lbl = Label(self,
-                                        text="Add exams and pieces of coursework after they have been completed "
-                                        + "and marked",
-                                        font="Helvetica 12",
-                                        fg="brown")
+                                       text="Add exams and pieces of coursework after they have been completed "
+                                       + "and marked",
+                                       font="Helvetica 12",
+                                       fg="brown")
         self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
 
         # Create list of module names for combobox
@@ -994,9 +994,9 @@ class Application(Frame):
                                                         + str(completedExamScore) + "%.")
             else:
                 self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                               + "% of the module is exams. "
-                                                               + "You have completed " + str(completedExamPercent)
-                                                               + "% of your exams.")
+                                                          + "% of the module is exams. "
+                                                          + "You have completed " + str(completedExamPercent)
+                                                          + "% of your exams.")
                 self.viewmodule_scoreexam_lbl.configure(text="")
 
         elif noExam is True:
@@ -1126,8 +1126,8 @@ class Application(Frame):
 
         # Create title label for editing course info
         self.reset_edit_lbl = Label(self,
-                                          text="Edit Course Info",
-                                          font="Helvetica 30")
+                                    text="Edit Course Info",
+                                    font="Helvetica 30")
         self.reset_edit_lbl.grid(row=0, column=2, columnspan=7, padx=150, pady=(0, 20))
 
         # Create label, entry and button for increasing course credits
@@ -1158,15 +1158,15 @@ class Application(Frame):
         # Create label, combobox and button for changing target grade
 
         self.reset_target_lbl = Label(self,
-                                             text="New Target Grade:",
-                                             font="Helvetica 12")
+                                      text="New Target Grade:",
+                                      font="Helvetica 12")
         self.reset_target_lbl.grid(row=4, column=3, sticky=E, padx=(0, 0), pady=(20, 0))
 
         self.reset_target_combobox = ttk.Combobox(self,
                                                   values=["Third",
-                                                           "2:2",
-                                                           "2:1",
-                                                           "First"],
+                                                          "2:2",
+                                                          "2:1",
+                                                          "First"],
                                                   width=18,
                                                   state="readonly")
         self.reset_target_combobox.grid(row=4, column=4, pady=(20, 0))
@@ -1196,8 +1196,8 @@ class Application(Frame):
         # Create title label for resetting course data
 
         self.reset_reset_lbl = Label(self,
-                                    text="Reset All Course Info",
-                                    font="Helvetica 30")
+                                     text="Reset All Course Info",
+                                     font="Helvetica 30")
         self.reset_reset_lbl.grid(row=6, column=2, columnspan=7, padx=150, pady=(20, 0))
 
         # Create warning message and button for resetting course info
@@ -1232,6 +1232,7 @@ class Application(Frame):
         self.reset_reset_warning_lbl.grid_forget()
         self.reset_reset_bttn.grid_forget()
         self.main_menu()
+
 
 # main program
 
