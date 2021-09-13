@@ -1150,7 +1150,7 @@ class Application(Frame):
 
         self.reset_increasecreds_error_lbl = Label(self,
                                                    text="",
-                                                   font="Helvetica 12",
+                                                   font="Helvetica 13",
                                                    fg="brown")
         self.reset_increasecreds_error_lbl.grid(row=3, column=3, columnspan=4)
 
@@ -1193,10 +1193,27 @@ class Application(Frame):
 
         # Create title label for resetting course data
 
-        self.reset_edit_lbl = Label(self,
+        self.reset_reset_lbl = Label(self,
                                     text="Reset All Course Info",
                                     font="Helvetica 30")
-        self.reset_edit_lbl.grid(row=6, column=2, columnspan=7, padx=150, pady=(20, 20))
+        self.reset_reset_lbl.grid(row=6, column=2, columnspan=7, padx=150, pady=(20, 0))
+
+        # Create warning message and button for resetting course info
+
+        self.reset_reset_warning_lbl = Label(self,
+                                             text="Here you can reset all program data - all created modules\nand"
+                                             + " pieces of work will be deleted, and you will be\nprovided with"
+                                             + "a fresh version of the application.",
+                                             font="Helvetica 11",
+                                             fg="brown")
+        self.reset_reset_warning_lbl.grid(row=7, column=3, columnspan=4, padx=(30, 0))
+
+        self.reset_reset_bttn = Button(self,
+                                       text="Reset the Application",
+                                       font="Helvetica 9",
+                                       width=22,
+                                       height=2)
+        self.reset_reset_bttn.grid(row=8, column=3, columnspan=4, padx=(30, 0))
 
     def reset_home(self):
         """Clears the reset_page menu and returns to the main menu"""
