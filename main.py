@@ -1144,7 +1144,8 @@ class Application(Frame):
                                                text="Increase Course Credits",
                                                font="Helvetica 9",
                                                width=42,
-                                               cursor="hand2")
+                                               cursor="hand2",
+                                               command=self.increasecreds_validation)
         self.reset_increasecreds_bttn.grid(row=2, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
 
         # Create label for error messages
@@ -1226,6 +1227,7 @@ class Application(Frame):
         self.reset_increasecreds_lbl.grid_forget()
         self.reset_increasecreds_entry.grid_forget()
         self.reset_increasecreds_bttn.grid_forget()
+        self.reset_increasecreds_error_lbl.grid_forget()
         self.reset_target_lbl.grid_forget()
         self.reset_target_combobox.grid_forget()
         self.reset_target_bttn.grid_forget()
@@ -1233,6 +1235,47 @@ class Application(Frame):
         self.reset_reset_warning_lbl.grid_forget()
         self.reset_reset_bttn.grid_forget()
         self.main_menu()
+
+    def increasecreds_validation(self):
+        """Validates that the entered string value is a positive integer"""
+        # Test for integer
+        try:
+            creds = int(self.reset_increasecreds_entry.get())
+            if creds < 0:
+                self.increasecreds_error("You must input a positive value")
+            elif creds == 0:
+                self.increasecreds_error("You cannot increase credits by zero")
+            else:
+                self.increasecreds(creds)
+        except ValueError:
+            self.increasecreds_error("You must input an integer value")
+
+    def increasecreds_error(self, error_msg):
+        """Changes the error message displayed"""
+        self.reset_increasecreds_error_lbl.configure(text=error_msg)
+
+    def increasecreds(self, creds):
+        """Changes maximum course credits, increasing it by the passed creds parameter"""
+
+        # Load course data
+        f_courseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_courseData)
+        f_courseData.close()
+
+        # Increase maximum credits by creds
+
+        courseData[1] += creds
+
+        # Overwrite course data with the new data
+
+        f_courseData = open(direct + "courseData.dat", "wb")
+        pickle.dump(courseData, f_courseData, True)
+        f_courseData.close()
+
+        # Return to main menu with confirmation message
+
+        self.reset_home()
+        self.main_edit_redtext("Maximum course credits increased by " + str(creds))
 
     def change_target(self):
         """Changes the courseData target info to the newly selected target grade"""
