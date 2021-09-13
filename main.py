@@ -179,7 +179,7 @@ class Application(Frame):
                                       command=self.about_page, cursor="hand2")
         self.main_reset_bttn = Button(self, text="Edit Course Info / Reset Application", font="Helvetica 9",
                                       width=42, height=2,
-                                      #command=self.reset_page,
+                                      command=self.reset_page,
                                       cursor="hand2")
         self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
                                              height=2, cursor="hand2")
@@ -1107,6 +1107,35 @@ class Application(Frame):
         """Opens the application's Github repos"""
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
 
+    def reset_page(self):
+        """Opens a menu where the user can edit or reset their course information"""
+
+        # Clear the main menu
+        self.clear_main_menu()
+
+        # Create home button for the menu
+        self.reset_home_bttn = Button(self,
+                                      text="Home",
+                                      font="Helvetica 13 bold",
+                                      width=8,
+                                      height=1,
+                                      command=self.reset_home,
+                                      cursor="hand2"
+                                      )
+        self.reset_home_bttn.grid(row=0, column=0, padx=10)
+
+        # Create title label for editing course info
+        self.reset_edit_lbl = Label(self,
+                                          text="Edit Course Info",
+                                          font="Helvetica 30")
+        self.reset_edit_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
+
+
+    def reset_home(self):
+        """Clears the reset_page menu and returns to the main menu"""
+        self.reset_home_bttn.grid_forget()
+        self.reset_edit_lbl.grid_forget()
+        self.main_menu()
 
 # main program
 
