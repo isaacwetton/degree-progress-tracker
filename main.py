@@ -1151,6 +1151,9 @@ class Application(Frame):
         """Clears the reset_page menu and returns to the main menu"""
         self.reset_home_bttn.grid_forget()
         self.reset_edit_lbl.grid_forget()
+        self.reset_increasecreds_lbl.grid_forget()
+        self.reset_increasecreds_entry.grid_forget()
+        self.reset_increasecreds_bttn.grid_forget()
         self.main_menu()
 
 # main program
