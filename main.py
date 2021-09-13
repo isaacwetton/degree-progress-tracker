@@ -1130,6 +1130,22 @@ class Application(Frame):
                                           font="Helvetica 30")
         self.reset_edit_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
 
+        # Create label, entry and button for increasing course credits
+
+        self.reset_increasecreds_lbl = Label(self,
+                                             text="Increase Course Credits By:",
+                                             font="Helvetica 12")
+        self.reset_increasecreds_lbl.grid(row=1, column=3, sticky=E, padx=(80, 0))
+
+        self.reset_increasecreds_entry = Entry(self, width=21)
+        self.reset_increasecreds_entry.grid(row=1, column=4)
+
+        self.reset_increasecreds_bttn = Button(self,
+                                               text="Increase Course Credits",
+                                               font="Helvetica 9",
+                                               width=42)
+        self.reset_increasecreds_bttn.grid(row=2, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
+
 
     def reset_home(self):
         """Clears the reset_page menu and returns to the main menu"""
