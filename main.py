@@ -1,5 +1,6 @@
 # Import relevant modules
 import os
+import tkinter.messagebox
 import webbrowser
 from tkinter import *
 from tkinter import ttk
@@ -1358,6 +1359,9 @@ class Application(Frame):
         # Initiate first time setup
         self.first_time()
 
+        # Display messagebox confirming program reset
+        tkinter.messagebox.showinfo("Program Reset", "The program has now been reset, and your previous data "
+                                                     "has been erased.")
 # main program
 
 # create directory
