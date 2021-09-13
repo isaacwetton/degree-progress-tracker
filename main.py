@@ -1128,7 +1128,7 @@ class Application(Frame):
         self.reset_edit_lbl = Label(self,
                                           text="Edit Course Info",
                                           font="Helvetica 30")
-        self.reset_edit_lbl.grid(row=0, column=2, columnspan=7, padx=170, pady=(0, 20))
+        self.reset_edit_lbl.grid(row=0, column=2, columnspan=7, padx=150, pady=(0, 20))
 
         # Create label, entry and button for increasing course credits
 
@@ -1146,12 +1146,20 @@ class Application(Frame):
                                                width=42)
         self.reset_increasecreds_bttn.grid(row=2, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
 
+        # Create label for error messages
+
+        self.reset_increasecreds_error_lbl = Label(self,
+                                                   text="",
+                                                   font="Helvetica 12",
+                                                   fg="brown")
+        self.reset_increasecreds_error_lbl.grid(row=3, column=3, columnspan=4)
+
         # Create label, combobox and button for changing target grade
 
         self.reset_target_lbl = Label(self,
                                              text="New Target Grade:",
                                              font="Helvetica 12")
-        self.reset_target_lbl.grid(row=3, column=3, sticky=E, padx=(0, 0), pady=(50, 0))
+        self.reset_target_lbl.grid(row=4, column=3, sticky=E, padx=(0, 0), pady=(20, 0))
 
         self.reset_target_combobox = ttk.Combobox(self,
                                                    values=["Third",
@@ -1160,13 +1168,13 @@ class Application(Frame):
                                                            "First"],
                                                    width=21,
                                                    state="readonly")
-        self.reset_target_combobox.grid(row=3, column=4, pady=(50, 0))
+        self.reset_target_combobox.grid(row=4, column=4, pady=(20, 0))
 
         self.reset_target_bttn = Button(self,
                                                text="Change Target Grade",
                                                font="Helvetica 9",
                                                width=42)
-        self.reset_target_bttn.grid(row=4, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
+        self.reset_target_bttn.grid(row=5, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
 
         # Set combobox value to current target grade
 
@@ -1182,6 +1190,13 @@ class Application(Frame):
             self.reset_target_combobox.current(1)
         else:
             self.reset_target_combobox.current(0)
+
+        # Create title label for resetting course data
+
+        self.reset_edit_lbl = Label(self,
+                                    text="Reset All Course Info",
+                                    font="Helvetica 30")
+        self.reset_edit_lbl.grid(row=6, column=2, columnspan=7, padx=150, pady=(20, 20))
 
     def reset_home(self):
         """Clears the reset_page menu and returns to the main menu"""
