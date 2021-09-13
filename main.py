@@ -300,7 +300,7 @@ class Application(Frame):
         # Create textbox for work display
 
         self.course_modules_txt = Text(self.course_modules_frame, width=70, height=8, state=DISABLED,
-                                        yscrollcommand=self.course_modules_scroll.set)
+                                        yscrollcommand=self.course_modules_scroll.set, font="Helvetica 11")
         self.course_modules_txt.pack(side=LEFT, fill=BOTH)
         self.course_modules_scroll.configure(command=self.course_modules_txt.yview)
 
@@ -888,7 +888,7 @@ class Application(Frame):
         # Create textbox for work display
 
         self.viewmodule_work_txt = Text(self.viewmodule_work_frame, width=70, height=10, state=DISABLED,
-                                        yscrollcommand=self.viewmodule_work_scroll.set)
+                                        yscrollcommand=self.viewmodule_work_scroll.set, font="Helvetica 11")
         self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
         self.viewmodule_work_scroll.configure(command=self.viewmodule_work_txt.yview)
 
