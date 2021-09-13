@@ -1,15 +1,16 @@
 # Import relevant modules
 import os
+import tkinter.messagebox
 import webbrowser
 from tkinter import *
 from tkinter import ttk
 import pickle
 
+
 class Work(object):
     """A piece of university work (Coursework or Exam)"""
 
     def __init__(self, name, work_type, score, percentage_module):
-        global works
         self.name = name
         self.work_type = work_type
         self.score = score
@@ -119,7 +120,7 @@ class Application(Frame):
                     if courseCredits <= 0:
                         self.setup_entry_error("negativecreds_error")
                     else:
-                        courseData = (courseName, courseCredits, courseTarget)
+                        courseData = [courseName, courseCredits, courseTarget]
                         f_writeCourseData = open(direct + "courseData.dat", "wb")
                         pickle.dump(courseData, f_writeCourseData, True)
                         f_writeCourseData.close()
@@ -177,19 +178,27 @@ class Application(Frame):
                                            command=self.viewmodule_validate_access, cursor="hand2")
         self.main_about_bttn = Button(self, text="About this Application", font="Helvetica 9", width=42, height=2,
                                       command=self.about_page, cursor="hand2")
-        self.main_courseinfo_bttn.grid(row=2, column=4, pady=5)
-        self.main_createmodule_bttn.grid(row=3, column=4, pady=5)
-        self.main_addwork_bttn.grid(row=4, column=4, pady=5)
-        self.main_viewmodule_bttn.grid(row=5, column=4, pady=5)
-        self.main_about_bttn.grid(row=6, column=4, pady=5)
+        self.main_reset_bttn = Button(self, text="Edit Course Info / Reset Application", font="Helvetica 9",
+                                      width=42, height=2,
+                                      command=self.reset_page,
+                                      cursor="hand2")
+        self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
+                                           height=2, cursor="hand2")
+        self.main_courseinfo_bttn.grid(row=2, column=4, pady=1)
+        self.main_createmodule_bttn.grid(row=3, column=4, pady=1)
+        self.main_addwork_bttn.grid(row=4, column=4, pady=1)
+        self.main_viewmodule_bttn.grid(row=5, column=4, pady=1)
+        self.main_about_bttn.grid(row=6, column=4, pady=1)
+        self.main_reset_bttn.grid(row=7, column=4, pady=1)
+        self.main_deletework_bttn.grid(row=8, column=4, pady=1)
 
         self.main_redtext = Label(self, font="Helvetica 12", fg="brown", text="")
-        self.main_redtext.grid(row=7, column=4)
+        self.main_redtext.grid(row=9, column=4)
 
         self.main_ver_lbl = Label(self,
-                                  text="v1.0.2",
+                                  text="v1.1.0",
                                   font="Helvetica 10")
-        self.main_ver_lbl.grid(row=8, column=4, pady=(25, 0), padx=(750, 0))
+        self.main_ver_lbl.grid(row=9, column=4, pady=(25, 0), padx=(750, 0))
 
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
@@ -205,6 +214,8 @@ class Application(Frame):
         self.main_addwork_bttn.grid_forget()
         self.main_viewmodule_bttn.grid_forget()
         self.main_about_bttn.grid_forget()
+        self.main_reset_bttn.grid_forget()
+        self.main_deletework_bttn.grid_forget()
         self.main_redtext.grid_forget()
 
     def course_info_validate(self):
@@ -290,7 +301,7 @@ class Application(Frame):
         # Create textbox for work display
 
         self.course_modules_txt = Text(self.course_modules_frame, width=70, height=8, state=DISABLED,
-                                        yscrollcommand=self.course_modules_scroll.set)
+                                       yscrollcommand=self.course_modules_scroll.set, font="Helvetica 11")
         self.course_modules_txt.pack(side=LEFT, fill=BOTH)
         self.course_modules_scroll.configure(command=self.course_modules_txt.yview)
 
@@ -299,20 +310,22 @@ class Application(Frame):
         textbox_content = ""
         toDateCompletedScore = 0.0
         toDateCompletedTotal = 0.0
+        moduleNumber = 1
         for module in modules:
             completedScore = 0.0
             completedTotal = 0.0
             if modules[module].works != {}:
                 for work in modules[module].works:
-                    completedScore += modules[module].works[work].score * modules[module].works[work].percentage_module \
-                                      * 0.01
+                    completedScore += modules[module].works[work].score * \
+                                      modules[module].works[work].percentage_module * 0.01
                     completedTotal += modules[module].works[work].percentage_module
                 overallScore = round((completedScore / completedTotal) * 100, 2)
             else:
                 overallScore = 0.0
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
-            textbox_content += module + " - " + str(overallScore) + "%\n"
+            textbox_content += str(moduleNumber) + ") " + module + " - " + str(overallScore) + "%\n"
+            moduleNumber += 1
         toDateOverallScore = round((toDateCompletedScore / toDateCompletedTotal) * 100, 2)
         self.course_modules_txt.configure(state=NORMAL)
         self.course_modules_txt.insert(0.0, textbox_content)
@@ -621,10 +634,10 @@ class Application(Frame):
         self.addwork_title_lbl.grid(row=0, column=2, columnspan=7, padx=170)
 
         self.addwork_guide_lbl = Label(self,
-                                        text="Add exams and pieces of coursework after they have been completed "
-                                        + "and marked",
-                                        font="Helvetica 12",
-                                        fg="brown")
+                                       text="Add exams and pieces of coursework after they have been completed "
+                                       + "and marked",
+                                       font="Helvetica 12",
+                                       fg="brown")
         self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
 
         # Create list of module names for combobox
@@ -878,7 +891,7 @@ class Application(Frame):
         # Create textbox for work display
 
         self.viewmodule_work_txt = Text(self.viewmodule_work_frame, width=70, height=10, state=DISABLED,
-                                        yscrollcommand=self.viewmodule_work_scroll.set)
+                                        yscrollcommand=self.viewmodule_work_scroll.set, font="Helvetica 11")
         self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
         self.viewmodule_work_scroll.configure(command=self.viewmodule_work_txt.yview)
 
@@ -982,9 +995,9 @@ class Application(Frame):
                                                         + str(completedExamScore) + "%.")
             else:
                 self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                               + "% of the module is exams. "
-                                                               + "You have completed " + str(completedExamPercent)
-                                                               + "% of your exams.")
+                                                          + "% of the module is exams. "
+                                                          + "You have completed " + str(completedExamPercent)
+                                                          + "% of your exams.")
                 self.viewmodule_scoreexam_lbl.configure(text="")
 
         elif noExam is True:
@@ -1095,7 +1108,260 @@ class Application(Frame):
         """Opens the application's Github repos"""
         webbrowser.open_new("https://github.com/isaacwetton/degree-progress-tracker/")
 
+    def reset_page(self):
+        """Opens a menu where the user can edit or reset their course information"""
 
+        # Clear the main menu
+        self.clear_main_menu()
+
+        # Create home button for the menu
+        self.reset_home_bttn = Button(self,
+                                      text="Home",
+                                      font="Helvetica 13 bold",
+                                      width=8,
+                                      height=1,
+                                      command=self.reset_home,
+                                      cursor="hand2"
+                                      )
+        self.reset_home_bttn.grid(row=0, column=0, padx=10)
+
+        # Create title label for editing course info
+        self.reset_edit_lbl = Label(self,
+                                    text="Edit Course Info",
+                                    font="Helvetica 30")
+        self.reset_edit_lbl.grid(row=0, column=2, columnspan=7, padx=150, pady=(0, 20))
+
+        # Create label, entry and button for increasing course credits
+
+        self.reset_increasecreds_lbl = Label(self,
+                                             text="Increase Course Credits By:",
+                                             font="Helvetica 12")
+        self.reset_increasecreds_lbl.grid(row=1, column=3, sticky=E, padx=(80, 0))
+
+        self.reset_increasecreds_entry = Entry(self, width=21)
+        self.reset_increasecreds_entry.grid(row=1, column=4)
+
+        self.reset_increasecreds_bttn = Button(self,
+                                               text="Increase Course Credits",
+                                               font="Helvetica 9",
+                                               width=42,
+                                               cursor="hand2",
+                                               command=self.increasecreds_validation)
+        self.reset_increasecreds_bttn.grid(row=2, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
+
+        # Create label for error messages
+
+        self.reset_increasecreds_error_lbl = Label(self,
+                                                   text="",
+                                                   font="Helvetica 13",
+                                                   fg="brown")
+        self.reset_increasecreds_error_lbl.grid(row=3, column=3, columnspan=4)
+
+        # Create label, combobox and button for changing target grade
+
+        self.reset_target_lbl = Label(self,
+                                      text="New Target Grade:",
+                                      font="Helvetica 12")
+        self.reset_target_lbl.grid(row=4, column=3, sticky=E, padx=(0, 0), pady=(20, 0))
+
+        self.reset_target_combobox = ttk.Combobox(self,
+                                                  values=["Third",
+                                                          "2:2",
+                                                          "2:1",
+                                                          "First"],
+                                                  width=18,
+                                                  state="readonly")
+        self.reset_target_combobox.grid(row=4, column=4, pady=(20, 0))
+
+        self.reset_target_bttn = Button(self,
+                                        text="Change Target Grade",
+                                        font="Helvetica 9",
+                                        width=42,
+                                        cursor="hand2",
+                                        command=self.change_target)
+        self.reset_target_bttn.grid(row=5, column=3, columnspan=2, pady=(5, 0), padx=(100, 0))
+
+        # Set combobox value to current target grade
+
+        f_courseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_courseData)
+        f_courseData.close()
+        target = courseData[2]
+        if target == "First":
+            self.reset_target_combobox.current(3)
+        elif target == "2:1":
+            self.reset_target_combobox.current(2)
+        elif target == "2:2":
+            self.reset_target_combobox.current(1)
+        else:
+            self.reset_target_combobox.current(0)
+
+        # Create title label for resetting course data
+
+        self.reset_reset_lbl = Label(self,
+                                     text="Reset All Course Info",
+                                     font="Helvetica 30")
+        self.reset_reset_lbl.grid(row=6, column=2, columnspan=7, padx=150, pady=(20, 0))
+
+        # Create warning message and button for resetting course info
+
+        self.reset_reset_warning_lbl = Label(self,
+                                             text="Here you can reset all program data - all created modules\nand"
+                                             + " pieces of work will be deleted, and you will be\nprovided with"
+                                             + "a fresh version of the application.",
+                                             font="Helvetica 11",
+                                             fg="brown")
+        self.reset_reset_warning_lbl.grid(row=7, column=3, columnspan=4, padx=(30, 0))
+
+        self.reset_reset_bttn = Button(self,
+                                       text="Reset the Application",
+                                       font="Helvetica 9",
+                                       width=22,
+                                       height=2,
+                                       cursor="hand2",
+                                       command=self.reset_app_confirm)
+        self.reset_reset_bttn.grid(row=8, column=3, columnspan=4, padx=(30, 0))
+
+    def reset_home(self):
+        """Clears the reset_page menu and returns to the main menu"""
+        self.reset_home_bttn.grid_forget()
+        self.reset_edit_lbl.grid_forget()
+        self.reset_increasecreds_lbl.grid_forget()
+        self.reset_increasecreds_entry.grid_forget()
+        self.reset_increasecreds_bttn.grid_forget()
+        self.reset_increasecreds_error_lbl.grid_forget()
+        self.reset_target_lbl.grid_forget()
+        self.reset_target_combobox.grid_forget()
+        self.reset_target_bttn.grid_forget()
+        self.reset_reset_lbl.grid_forget()
+        self.reset_reset_warning_lbl.grid_forget()
+        self.reset_reset_bttn.grid_forget()
+        self.main_menu()
+
+    def increasecreds_validation(self):
+        """Validates that the entered string value is a positive integer"""
+        # Test for integer
+        try:
+            creds = int(self.reset_increasecreds_entry.get())
+            if creds < 0:
+                self.increasecreds_error("You must input a positive value")
+            elif creds == 0:
+                self.increasecreds_error("You cannot increase credits by zero")
+            else:
+                self.increasecreds(creds)
+        except ValueError:
+            self.increasecreds_error("You must input an integer value")
+
+    def increasecreds_error(self, error_msg):
+        """Changes the error message displayed"""
+        self.reset_increasecreds_error_lbl.configure(text=error_msg)
+
+    def increasecreds(self, creds):
+        """Changes maximum course credits, increasing it by the passed creds parameter"""
+
+        # Load course data
+        f_courseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_courseData)
+        f_courseData.close()
+
+        # Increase maximum credits by creds
+
+        courseData[1] += creds
+
+        # Overwrite course data with the new data
+
+        f_courseData = open(direct + "courseData.dat", "wb")
+        pickle.dump(courseData, f_courseData, True)
+        f_courseData.close()
+
+        # Return to main menu with confirmation message
+
+        self.reset_home()
+        self.main_edit_redtext("Maximum course credits increased by " + str(creds))
+
+    def change_target(self):
+        """Changes the courseData target info to the newly selected target grade"""
+
+        # Retrieve selected target from combobox
+        target = self.reset_target_combobox.get()
+
+        # Load current course data
+        f_courseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_courseData)
+        f_courseData.close()
+
+        # Change course data's target grade to the selected target
+        courseData[2] = target
+
+        # Save course data (overwrite)
+        f_courseData = open(direct + "courseData.dat", "wb")
+        pickle.dump(courseData, f_courseData, True)
+        f_courseData.close()
+
+        # Return to main menu with confirmation message
+        self.reset_home()
+        self.main_edit_redtext("Target grade changed to a " + target)
+
+    def reset_app_confirm(self):
+        """Opens page where the user is asked to confirm their decision to reset the program"""
+
+        # Clear all tkinter elements
+        self.reset_home()
+        self.clear_main_menu()
+
+        # Create Label and Yes/No buttons
+        # 'Yes' resets the program. 'No' returns to the previous menu.
+        self.reset_app_confirm_lbl = Label(self,
+                                           text="Are you sure that you want to reset this application?",
+                                           font="Helvetica 18",
+                                           fg="brown")
+        self.reset_app_confirm_lbl.grid(row=0, column=0, pady=(150, 0), padx=(120, 0), columnspan=10)
+
+        self.reset_app_confirm_no_bttn = Button(self,
+                                                text="No",
+                                                font="Helvetica 13 bold",
+                                                width=10,
+                                                height=1,
+                                                cursor="hand2",
+                                                command=self.reset_app_denied)
+        self.reset_app_confirm_no_bttn.grid(row=1, column=4, pady=10)
+
+        self.reset_app_confirm_yes_bttn = Button(self,
+                                                 text="Yes",
+                                                 font="Helvetica 13 bold",
+                                                 width=10,
+                                                 height=1,
+                                                 cursor="hand2",
+                                                 command=self.reset_app)
+        self.reset_app_confirm_yes_bttn.grid(row=1, column=7, pady=10)
+
+    def reset_app_denied(self):
+        """Returns the user to the edit/reset course info menu"""
+        self.reset_app_confirm_lbl.grid_forget()
+        self.reset_app_confirm_no_bttn.grid_forget()
+        self.reset_app_confirm_yes_bttn.grid_forget()
+        self.reset_page()
+
+    def reset_app(self):
+        """Resets the program and returns the user to the first time setup screen. Displays messagebox"""
+
+        # Remove displayed tkinter elements
+        self.reset_app_confirm_lbl.grid_forget()
+        self.reset_app_confirm_no_bttn.grid_forget()
+        self.reset_app_confirm_yes_bttn.grid_forget()
+
+        # Delete saved program data
+        # Checks that modulesData.dat exists before attempting deletion to prevent error
+        os.remove(direct + "courseData.dat")
+        if os.path.exists(direct + "modulesData.dat"):
+            os.remove(direct + "modulesData.dat")
+
+        # Initiate first time setup
+        self.first_time()
+
+        # Display messagebox confirming program reset
+        tkinter.messagebox.showinfo("Program Reset", "The program has now been reset, and your previous data "
+                                                     "has been erased.")
 # main program
 
 # create directory
@@ -1108,8 +1374,17 @@ except FileExistsError:
 
 # Determine if first-time use
 try:
-    f_courseData = open(direct + "courseData.dat", "rb+")
+    f_courseData = open(direct + "courseData.dat", "rb")
     firstTime = False
+    data = pickle.load(f_courseData)
+    f_courseData.close()
+
+    # For backwards compatibility, the following converts a tuple into a string.
+    # This is because prior to v1.1.0, courseData.dat stored a tuple.
+
+    newData = [data[0], data[1], data[2]]
+    f_courseData = open(direct + "courseData.dat", "wb")
+    pickle.dump(newData, f_courseData, True)
     f_courseData.close()
 except IOError:
     firstTime = True
@@ -1117,7 +1392,7 @@ except IOError:
 # Create root and main application window
 root = Tk()
 root.title("Degree Progress Tracker")
-root.geometry("800x400")
+root.geometry("800x420")
 root.resizable(False, False)
 mainApp = Application(root)
 
