@@ -1217,7 +1217,8 @@ class Application(Frame):
                                        font="Helvetica 9",
                                        width=22,
                                        height=2,
-                                       cursor="hand2")
+                                       cursor="hand2",
+                                       command=self.reset_app_confirm)
         self.reset_reset_bttn.grid(row=8, column=3, columnspan=4, padx=(30, 0))
 
     def reset_home(self):
@@ -1299,6 +1300,45 @@ class Application(Frame):
         # Return to main menu with confirmation message
         self.reset_home()
         self.main_edit_redtext("Target grade changed to a " + target)
+
+    def reset_app_confirm(self):
+        """Opens page where the user is asked to confirm their decision to reset the program"""
+
+        # Clear all tkinter elements
+        self.reset_home()
+        self.clear_main_menu()
+
+        # Create Label and Yes/No buttons
+        # 'Yes' resets the program. 'No' returns to the previous menu.
+        self.reset_app_confirm_lbl = Label(self,
+                                           text="Are you sure that you want to reset this application?",
+                                           font="Helvetica 18",
+                                           fg="brown")
+        self.reset_app_confirm_lbl.grid(row=0, column=0, pady=(150, 0), padx=(120, 0), columnspan=10)
+
+        self.reset_app_confirm_no_bttn = Button(self,
+                                                text="No",
+                                                font="Helvetica 13 bold",
+                                                width=10,
+                                                height=1,
+                                                cursor="hand2",
+                                                command=self.reset_app_denied)
+        self.reset_app_confirm_no_bttn.grid(row=1, column=4, pady=10)
+
+        self.reset_app_confirm_yes_bttn = Button(self,
+                                                 text="Yes",
+                                                 font="Helvetica 13 bold",
+                                                 width=10,
+                                                 height=1,
+                                                 cursor="hand2")
+        self.reset_app_confirm_yes_bttn.grid(row=1, column=7, pady=10)
+
+    def reset_app_denied(self):
+        """Returns the user to the edit/reset course info menu"""
+        self.reset_app_confirm_lbl.grid_forget()
+        self.reset_app_confirm_no_bttn.grid_forget()
+        self.reset_app_confirm_yes_bttn.grid_forget()
+        self.reset_page()
 
 # main program
 
