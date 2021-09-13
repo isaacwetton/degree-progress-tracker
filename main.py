@@ -1330,7 +1330,8 @@ class Application(Frame):
                                                  font="Helvetica 13 bold",
                                                  width=10,
                                                  height=1,
-                                                 cursor="hand2")
+                                                 cursor="hand2",
+                                                 command=self.reset_app)
         self.reset_app_confirm_yes_bttn.grid(row=1, column=7, pady=10)
 
     def reset_app_denied(self):
@@ -1339,6 +1340,23 @@ class Application(Frame):
         self.reset_app_confirm_no_bttn.grid_forget()
         self.reset_app_confirm_yes_bttn.grid_forget()
         self.reset_page()
+
+    def reset_app(self):
+        """Resets the program and returns the user to the first time setup screen. Displays messagebox"""
+
+        # Remove displayed tkinter elements
+        self.reset_app_confirm_lbl.grid_forget()
+        self.reset_app_confirm_no_bttn.grid_forget()
+        self.reset_app_confirm_yes_bttn.grid_forget()
+
+        # Delete saved program data
+        # Checks that modulesData.dat exists before attempting deletion to prevent error
+        os.remove(direct + "courseData.dat")
+        if os.path.exists(direct + "modulesData.dat"):
+            os.remove(direct + "modulesData.dat")
+
+        # Initiate first time setup
+        self.first_time()
 
 # main program
 
