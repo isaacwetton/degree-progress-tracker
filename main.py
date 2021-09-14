@@ -938,7 +938,6 @@ class Application(Frame):
         # Sort the dictionary of works
 
         sortedWorksList = sorted(moduleWorks.items(), reverse=True, key=self.worksSortFunc)
-        print(sortedWorksList)
         sortedWorks = {}
         for work in sortedWorksList:
             sortedWorks[work[0]] = work[1]
