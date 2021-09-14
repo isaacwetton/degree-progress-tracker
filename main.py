@@ -957,7 +957,7 @@ class Application(Frame):
 
         self.deletework_listbox = Listbox(self.deletework_frame, width=70, height=10, state=NORMAL,
                                           yscrollcommand=self.deletework_scroll.set, font="Helvetica 11",
-                                          selectmode=SINGLE)
+                                          selectmode=SINGLE, relief=FLAT, activestyle=NONE)
         self.deletework_listbox.pack(side=LEFT, fill=BOTH)
         self.deletework_scroll.configure(command=self.deletework_listbox.yview)
 
