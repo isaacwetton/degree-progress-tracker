@@ -200,13 +200,13 @@ class Application(Frame):
                                       cursor="hand2")
         self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
                                            height=2, cursor="hand2")
-        self.main_courseinfo_bttn.grid(row=2, column=4, pady=1)
-        self.main_createmodule_bttn.grid(row=3, column=4, pady=1)
-        self.main_addwork_bttn.grid(row=4, column=4, pady=1)
+        self.main_courseinfo_bttn.grid(row=6, column=4, pady=1)
+        self.main_createmodule_bttn.grid(row=2, column=4, pady=1)
+        self.main_addwork_bttn.grid(row=3, column=4, pady=1)
         self.main_viewmodule_bttn.grid(row=5, column=4, pady=1)
-        self.main_about_bttn.grid(row=6, column=4, pady=1)
+        self.main_about_bttn.grid(row=8, column=4, pady=1)
         self.main_reset_bttn.grid(row=7, column=4, pady=1)
-        self.main_deletework_bttn.grid(row=8, column=4, pady=1)
+        self.main_deletework_bttn.grid(row=4, column=4, pady=1)
 
         self.main_redtext = Label(self, font="Helvetica 12", fg="brown", text="")
         self.main_redtext.grid(row=9, column=4)
@@ -321,12 +321,16 @@ class Application(Frame):
         self.course_modules_txt.pack(side=LEFT, fill=BOTH)
         self.course_modules_scroll.configure(command=self.course_modules_txt.yview)
 
-        # Insert list of modules and their respective scores into the textbox
+        # Initialise variables used for loading modules into textbox
 
         textbox_content = ""
         toDateCompletedScore = 0.0
         toDateCompletedTotal = 0.0
         moduleNumber = 1
+        moduleScores = {}
+
+        # Create dictionary of modules and their respective scores
+
         for module in modules:
             completedScore = 0.0
             completedTotal = 0.0
@@ -340,9 +344,24 @@ class Application(Frame):
                 overallScore = 0.0
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
-            textbox_content += str(moduleNumber) + ") " + module + " - " + str(overallScore) + "%\n"
+            moduleScores[module] = overallScore
+
+        # Sort moduleScores dictionary into list from highest to lowest score
+
+        moduleScores = sorted(moduleScores.items(), key=self.modulesSortFunc, reverse=True)
+
+        # Create textbox content
+
+        for module in moduleScores:
+            textbox_content += str(moduleNumber) + ") " + module[0] + " - " + str(module[1]) + "%\n"
             moduleNumber += 1
+
+        # Calculate overall score of all completed work
+
         toDateOverallScore = round((toDateCompletedScore / toDateCompletedTotal) * 100, 2)
+
+        # Insert textbox content
+
         self.course_modules_txt.configure(state=NORMAL)
         self.course_modules_txt.insert(0.0, textbox_content)
         self.course_modules_txt.configure(state=DISABLED)
@@ -391,6 +410,9 @@ class Application(Frame):
                                                  + ". To hit your target, you must score an average of "
                                                  + str(requiredScore) + "%\nin the remaining "
                                                  + str(percentageIncomplete) + "% of the course.")
+
+    def modulesSortFunc(self, module):
+        return module[1]
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
@@ -929,12 +951,22 @@ class Application(Frame):
         f_modulesData.close()
         module = self.viewmodule_combobox.get()
 
-        # Load worksheets into textbox
+        # Initiate variables used in loading worksheet data
 
         textbox_content = ""
         workNumber = 1
-        moduleWorks = modules[module].works
-        for work in moduleWorks:
+        moduleWorks = modules[module].works  # Dictionary of module's works
+
+        # Sort the dictionary of works
+
+        sortedWorksList = sorted(moduleWorks.items(), reverse=True, key=self.worksSortFunc)
+        sortedWorks = {}
+        for work in sortedWorksList:
+            sortedWorks[work[0]] = work[1]
+
+        # Load data into textbox
+
+        for work in sortedWorks:
             textbox_content += str(workNumber) + ") " + moduleWorks[work].name + " - " + moduleWorks[work].work_type \
                                + " - " + str(moduleWorks[work].score) + "%\n"
             workNumber += 1
@@ -1053,6 +1085,10 @@ class Application(Frame):
         self.viewmodule_percentcoursework_lbl.grid(row=5, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scorecoursework_lbl.grid(row=6, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scoretotal_lbl.grid(row=7, column=2, columnspan=6, sticky=W, padx=(50, 0))
+
+    def worksSortFunc(self, work):
+        """Function used when sorting a module's worksheets by score. It simply returns the score of the work"""
+        return work[1].score
 
     def viewmodule_home(self):
         """Returns to the main menu from the module viewing menu"""
