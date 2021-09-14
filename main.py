@@ -499,6 +499,10 @@ class Application(Frame):
         for module in modules:
             moduleList.append(module)
 
+        # Sort moduleList alphabetically
+
+        moduleList = sorted(moduleList, key=self.moduleListSortFunc)
+
         # Create combobox
 
         self.create_module_delete_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
@@ -510,6 +514,10 @@ class Application(Frame):
 
         self.delete_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
         self.delete_module_error_lbl.grid(row=10, column=3, pady=(5, 0), columnspan=2)
+
+    def moduleListSortFunc(self, module):
+        """Returns an uppercase name to the sorted function, for alphabetical sorting"""
+        return module.upper()
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
@@ -686,6 +694,10 @@ class Application(Frame):
         moduleList = []
         for module in modules:
             moduleList.append(module)
+
+        # Sort list of modules alphabetically
+
+        moduleList = sorted(moduleList, key=self.moduleListSortFunc)
 
         # Create combobox
 
@@ -905,6 +917,10 @@ class Application(Frame):
         moduleList = []
         for module in modules:
             moduleList.append(module)
+
+        # Sort list of modules alphabetically
+
+        moduleList = sorted(moduleList, key=self.moduleListSortFunc)
 
         # Create combobox
 
