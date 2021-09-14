@@ -929,12 +929,23 @@ class Application(Frame):
         f_modulesData.close()
         module = self.viewmodule_combobox.get()
 
-        # Load worksheets into textbox
+        # Initiate variables used in loading worksheet data
 
         textbox_content = ""
         workNumber = 1
-        moduleWorks = modules[module].works
-        for work in moduleWorks:
+        moduleWorks = modules[module].works  # Dictionary of module's works
+
+        # Sort the dictionary of works
+
+        sortedWorksList = sorted(moduleWorks.items(), reverse=True, key=self.worksSortFunc)
+        print(sortedWorksList)
+        sortedWorks = {}
+        for work in sortedWorksList:
+            sortedWorks[work[0]] = work[1]
+
+        # Load data into textbox
+
+        for work in sortedWorks:
             textbox_content += str(workNumber) + ") " + moduleWorks[work].name + " - " + moduleWorks[work].work_type \
                                + " - " + str(moduleWorks[work].score) + "%\n"
             workNumber += 1
@@ -1053,6 +1064,10 @@ class Application(Frame):
         self.viewmodule_percentcoursework_lbl.grid(row=5, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scorecoursework_lbl.grid(row=6, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scoretotal_lbl.grid(row=7, column=2, columnspan=6, sticky=W, padx=(50, 0))
+
+    def worksSortFunc(self, work):
+        """Function used when sorting a module's worksheets by score. It simply returns the score of the work"""
+        return work[1].score
 
     def viewmodule_home(self):
         """Returns to the main menu from the module viewing menu"""
