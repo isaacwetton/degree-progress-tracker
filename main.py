@@ -920,10 +920,61 @@ class Application(Frame):
                                        font="Helvetica 30")
         self.deletework_title_lbl.grid(row=0, column=2, columnspan=7, padx=120)
 
+        # Create list of module names for combobox
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        moduleList = []
+        for module in modules:
+            moduleList.append(module)
+
+        # Sort list of modules alphabetically
+
+        moduleList = sorted(moduleList, key=self.moduleListSortFunc)
+
+        # Create combobox
+
+        self.deletework_combobox_lbl = Label(self,
+                                             text="Select Module",
+                                             font="Helvetica 13")
+        self.deletework_combobox_lbl.grid(row=1, column=2, sticky=E, padx=(50, 5), pady=(50, 0))
+        self.deletework_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
+        self.deletework_combobox.grid(row=1, column=3, columnspan=4, pady=(50, 0))
+        # self.deletework_combobox.bind("<<ComboboxSelected>>", self.deletework_loadWorks)
+
+        # Create frame to contain textbox and scrollbar
+
+        self.deletework_frame = Frame(self, width=80, height=10)
+        self.deletework_frame.grid(row=2, column=2, columnspan=6, padx=30)
+
+        # Create scrollbar
+
+        self.deletework_scroll = Scrollbar(self.deletework_frame, width=20)
+        self.deletework_scroll.pack(side=RIGHT, fill=Y)
+
+        # Create listbox for work selection
+
+        self.deletework_listbox = Listbox(self.deletework_frame, width=70, height=10, state=DISABLED,
+                                          yscrollcommand=self.deletework_scroll.set, font="Helvetica 11",
+                                          selectmode=SINGLE)
+        self.deletework_listbox.pack(side=LEFT, fill=BOTH)
+        self.deletework_scroll.configure(command=self.deletework_listbox.yview)
+
+        # Create button for confirming work deletion
+
+        self.deletework_submit_bttn = Button(self,
+                                             font="Helvetica 9",
+                                             text="Delete piece of work",
+                                             width=42)
+        self.deletework_submit_bttn.grid(row=3, column=2, columnspan=3, padx=(150, 0), pady=(20, 0))
+
     def deletework_home(self):
         """Returns to the main menu from the work deletion menu"""
         self.deletework_home_bttn.grid_forget()
         self.deletework_title_lbl.grid_forget()
+        self.deletework_combobox.grid_forget()
+        self.deletework_combobox_lbl.grid_forget()
         self.main_menu()
 
     def viewmodule_validate_access(self):
