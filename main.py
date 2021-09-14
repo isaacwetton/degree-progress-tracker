@@ -321,12 +321,16 @@ class Application(Frame):
         self.course_modules_txt.pack(side=LEFT, fill=BOTH)
         self.course_modules_scroll.configure(command=self.course_modules_txt.yview)
 
-        # Insert list of modules and their respective scores into the textbox
+        # Initialise variables used for loading modules into textbox
 
         textbox_content = ""
         toDateCompletedScore = 0.0
         toDateCompletedTotal = 0.0
         moduleNumber = 1
+        moduleScores = {}
+
+        # Create dictionary of modules and their respective scores
+
         for module in modules:
             completedScore = 0.0
             completedTotal = 0.0
@@ -340,9 +344,25 @@ class Application(Frame):
                 overallScore = 0.0
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
-            textbox_content += str(moduleNumber) + ") " + module + " - " + str(overallScore) + "%\n"
+            # textbox_content += str(moduleNumber) + ") " + module + " - " + str(overallScore) + "%\n"
+            moduleScores[module] = overallScore
+
+        # Sort moduleScores dictionary into list from highest to lowest score
+
+        moduleScores = sorted(moduleScores.items(), key=self.modulesSortFunc, reverse=True)
+
+        # Create textbox content
+
+        for module in moduleScores:
+            textbox_content += str(moduleNumber) + ") " + module[0] + " - " + str(module[1]) + "%\n"
             moduleNumber += 1
+
+        # Calculate overall score of all completed work
+
         toDateOverallScore = round((toDateCompletedScore / toDateCompletedTotal) * 100, 2)
+
+        # Insert textbox content
+
         self.course_modules_txt.configure(state=NORMAL)
         self.course_modules_txt.insert(0.0, textbox_content)
         self.course_modules_txt.configure(state=DISABLED)
@@ -391,6 +411,9 @@ class Application(Frame):
                                                  + ". To hit your target, you must score an average of "
                                                  + str(requiredScore) + "%\nin the remaining "
                                                  + str(percentageIncomplete) + "% of the course.")
+
+    def modulesSortFunc(self, module):
+        return module[1]
 
     def courseinfo_home(self):
         """Goes back to main menu from course info page"""
