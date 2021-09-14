@@ -200,13 +200,13 @@ class Application(Frame):
                                       cursor="hand2")
         self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
                                            height=2, cursor="hand2")
-        self.main_courseinfo_bttn.grid(row=2, column=4, pady=1)
-        self.main_createmodule_bttn.grid(row=3, column=4, pady=1)
-        self.main_addwork_bttn.grid(row=4, column=4, pady=1)
+        self.main_courseinfo_bttn.grid(row=6, column=4, pady=1)
+        self.main_createmodule_bttn.grid(row=2, column=4, pady=1)
+        self.main_addwork_bttn.grid(row=3, column=4, pady=1)
         self.main_viewmodule_bttn.grid(row=5, column=4, pady=1)
-        self.main_about_bttn.grid(row=6, column=4, pady=1)
+        self.main_about_bttn.grid(row=8, column=4, pady=1)
         self.main_reset_bttn.grid(row=7, column=4, pady=1)
-        self.main_deletework_bttn.grid(row=8, column=4, pady=1)
+        self.main_deletework_bttn.grid(row=4, column=4, pady=1)
 
         self.main_redtext = Label(self, font="Helvetica 12", fg="brown", text="")
         self.main_redtext.grid(row=9, column=4)
