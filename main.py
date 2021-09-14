@@ -941,7 +941,7 @@ class Application(Frame):
         self.deletework_combobox_lbl.grid(row=1, column=2, sticky=E, padx=(50, 5), pady=(50, 0))
         self.deletework_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
         self.deletework_combobox.grid(row=1, column=3, columnspan=4, pady=(50, 0))
-        # self.deletework_combobox.bind("<<ComboboxSelected>>", self.deletework_loadWorks)
+        self.deletework_combobox.bind("<<ComboboxSelected>>", self.deletework_loadWorks)
 
         # Create frame to contain textbox and scrollbar
 
@@ -955,7 +955,7 @@ class Application(Frame):
 
         # Create listbox for work selection
 
-        self.deletework_listbox = Listbox(self.deletework_frame, width=70, height=10, state=DISABLED,
+        self.deletework_listbox = Listbox(self.deletework_frame, width=70, height=10, state=NORMAL,
                                           yscrollcommand=self.deletework_scroll.set, font="Helvetica 11",
                                           selectmode=SINGLE)
         self.deletework_listbox.pack(side=LEFT, fill=BOTH)
@@ -975,7 +975,31 @@ class Application(Frame):
         self.deletework_title_lbl.grid_forget()
         self.deletework_combobox.grid_forget()
         self.deletework_combobox_lbl.grid_forget()
+        self.deletework_frame.grid_forget()
+        self.deletework_listbox.pack_forget()
+        self.deletework_scroll.pack_forget()
+        self.deletework_submit_bttn.grid_forget()
         self.main_menu()
+
+    def deletework_loadWorks(self, event):
+        """Load all work from the selected module into the listbox on the deletework menu"""
+
+        # Retrieve saved modules data
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+
+        # Delete current listbox content
+
+        self.deletework_listbox.delete(0, END)
+
+        # Insert works form selected module into listbox
+
+        module = self.deletework_combobox.get()
+        moduleWorks = modules[module].works
+        for work in moduleWorks:
+            self.deletework_listbox.insert(END, work)
 
     def viewmodule_validate_access(self):
         """Check if any modules exist, and if so allow access to the view modules menu"""
