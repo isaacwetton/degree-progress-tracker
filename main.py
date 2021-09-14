@@ -344,7 +344,6 @@ class Application(Frame):
                 overallScore = 0.0
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
-            # textbox_content += str(moduleNumber) + ") " + module + " - " + str(overallScore) + "%\n"
             moduleScores[module] = overallScore
 
         # Sort moduleScores dictionary into list from highest to lowest score
