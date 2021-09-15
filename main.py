@@ -1016,14 +1016,46 @@ class Application(Frame):
     def deletework_validate(self):
         """Validates that a worksheet has been selected for deletion"""
 
-        # Retrieve selected line number
+        # If no line is selected, return an error, otherwise delete the selected work
+
+        if self.deletework_listbox.curselection() == ():
+            self.deletework_error_lbl.configure(text="You must select a piece of work to be deleted")
+        else:
+            self.deletework()
+
+    def deletework(self):
+        """Deletes the selected piece of work and returns to the main menu with a confirmation message"""
+
+        # Retrieve selected line number and module
 
         selectedLine = self.deletework_listbox.curselection()
+        module = self.deletework_combobox.get()
 
-        # If no line is selected, return an error, else delete the selected work
+        # Retrieve name of work at that line
 
-        if selectedLine == ():
-            self.deletework_error_lbl.configure(text="You must select a piece of work to be deleted")
+        workName = self.deletework_listbox.get(selectedLine)
+
+        # Load module data
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+
+        # Delete selected piece of work
+
+        moduleWorks = modules[module].works
+        del moduleWorks[workName]
+
+        # Save new data with selected work omitted
+
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
+
+        # Return to main menu with confirmation message
+
+        self.deletework_home()
+        self.main_edit_redtext(workName + " in " + module + " successfully deleted")
 
     def viewmodule_validate_access(self):
         """Check if any modules exist, and if so allow access to the view modules menu"""
