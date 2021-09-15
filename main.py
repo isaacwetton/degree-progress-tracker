@@ -437,6 +437,7 @@ class Application(Frame):
                                                  + str(percentageIncomplete) + "% of the course.")
 
     def modulesSortFunc(self, module):
+        """Returns the score of each module for sorting"""
         return module[1]
 
     def courseinfo_home(self):
@@ -559,6 +560,8 @@ class Application(Frame):
 
     def create_module_validation(self):
         """Validates inputted information when creating a module"""
+
+        # Load module and course data
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
@@ -571,6 +574,7 @@ class Application(Frame):
         for module in modules:
             unassignedCreds -= modules[module].max_credits
 
+        # Validate inputs
         if self.create_module_name_entry.get() in modules:
             self.create_module_error("moduleExists")
         else:
@@ -630,17 +634,24 @@ class Application(Frame):
 
     def create_module(self):
         """Creates a module object using the given info and stores it in the file system"""
+        # Get relevant inputs for creating module
         moduleName = self.create_module_name_entry.get()
         examPercent = round(float(self.create_module_examcreds_entry.get()), 1)
         courseworkPercent = round(float(self.create_module_courseworkcreds_entry.get()), 1)
         maxCreds = int(self.create_module_maxcreds_entry.get())
+
+        # Load module data
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
+
+        # Write new module object into file
         f_modulesData = open(direct + "modulesData.dat", "wb")
         modules[moduleName] = Module(moduleName, maxCreds, examPercent, courseworkPercent)
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
+
+        # Return to main menu with confirmation message
         self.create_module_home()
         self.main_edit_redtext("Module " + moduleName + " created")
 
@@ -879,18 +890,25 @@ class Application(Frame):
 
     def addwork(self):
         """Creates a piece of work object using the info inputted into the addwork menu"""
+        # Get relevant inputs for creating work
         workName = self.addwork_name_entry.get()
         workModule = self.addwork_combobox.get()
         workType = self.radiovar.get()
         workPercent = round(float(self.addwork_percent_entry.get()), 1)
         workScore = round(float(self.addwork_score_entry.get()), 1)
+
+        # Load current module and work data
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
+
+        # Write new data (with new work) to file
         f_modulesData = open(direct + "modulesData.dat", "wb")
         modules[workModule].works[workName] = Work(workName, workType, workScore, workPercent)
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
+
+        # Return to main menu with confirmation message
         self.addwork_home()
         self.main_edit_redtext(workName + " in module " + workModule + " created")
 
@@ -1002,13 +1020,15 @@ class Application(Frame):
 
         # Calculate values for displaying stats
 
+        # Determine if module has no coursework or no exams
         noExam = False
         noCoursework = False
         if modules[module].exam_percent == 0.0:
             noExam = True
         if modules[module].coursework_percent == 0.0:
             noCoursework = True
-        
+
+        # Calculate completed coursework and exam percentages of module
         completedExamTotal = 0.0
         completedCourseworkTotal = 0.0
         for work in moduleWorks:
@@ -1017,16 +1037,19 @@ class Application(Frame):
             elif moduleWorks[work].work_type == "coursework":
                 completedCourseworkTotal += moduleWorks[work].percentage_module
 
+        # Calculate completed exams as a percentage of total exams
         if modules[module].exam_percent != 0:
             completedExamPercent = (completedExamTotal / modules[module].exam_percent) * 100
         else:
             completedExamPercent = 0.0
 
+        # Calculate completed coursework as a percentage of total coursework
         if modules[module].coursework_percent != 0:
             completedCourseworkPercent = (completedCourseworkTotal / modules[module].coursework_percent) * 100
         else:
             completedCourseworkPercent = 0.0
 
+        # Calculate current achieved exam and coursework percentage scores
         completedExamScore = 0.0
         completedCourseworkScore = 0.0
         for work in moduleWorks:
@@ -1035,14 +1058,17 @@ class Application(Frame):
             elif moduleWorks[work].work_type == "coursework":
                 completedCourseworkScore += (moduleWorks[work].score / 100) * moduleWorks[work].percentage_module
 
+        # Calculate average score of completed exams
         completedExamScoreModule = completedExamScore
         if completedExamTotal != 0.0:
             completedExamScore /= (completedExamTotal / 100)
 
+        # Calculate average score of completed coursework
         completedCourseworkScoreModule = completedCourseworkScore
         if completedCourseworkTotal != 0.0:
             completedCourseworkScore /= (completedCourseworkTotal / 100)
 
+        # Calculate average score of all completed work
         completedModuleScore = completedCourseworkScoreModule + completedExamScoreModule
         completedModuleTotal = completedExamTotal + completedCourseworkTotal
         if completedModuleTotal != 0.0:
@@ -1439,6 +1465,8 @@ class Application(Frame):
         # Display messagebox confirming program reset
         tkinter.messagebox.showinfo("Program Reset", "The program has now been reset, and your previous data "
                                                      "has been erased.")
+
+
 # main program
 
 # create directory
@@ -1479,6 +1507,8 @@ if firstTime is True:
     mainApp.first_time()
 else:
     mainApp.main_menu()
+
+# Set window icon and start the program
 
 root.iconbitmap('degreetrackericon.ico')
 root.mainloop()
