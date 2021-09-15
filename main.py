@@ -325,14 +325,23 @@ class Application(Frame):
 
         self.course_creds_lbl = Label(self,
                                       text="Completed Credits: " + str(completedCreds) + " out of "
-                                      + str(courseData[1]) + " (" + str(percentageComplete) + "%)",
+                                           + str(courseData[1]) + " (" + str(percentageComplete) + "%)",
                                       font="Helvetica 13")
         self.course_creds_lbl.grid(row=2, column=1, columnspan=6, sticky=W)
+
+        # Add information label describing the textbox content
+
+        self.course_modulelistinfo_lbl = Label(self,
+                                               text="The displayed module scores are calculated using completed work "
+                                                    "only",
+                                               font="Helvetica 12",
+                                               fg="brown")
+        self.course_modulelistinfo_lbl.grid(row=3, column=1, columnspan=6, sticky=W)
 
         # Create frame to contain textbox and scrollbar
 
         self.course_modules_frame = Frame(self, width=80, height=10)
-        self.course_modules_frame.grid(row=3, column=2, columnspan=6)
+        self.course_modules_frame.grid(row=4, column=2, columnspan=6)
 
         # Create scrollbar
 
@@ -392,10 +401,10 @@ class Application(Frame):
         self.course_modules_txt.configure(state=DISABLED)
 
         self.course_overallcomplete_score_lbl = Label(self,
-                                                      font="Helvetica 10",
+                                                      font="Helvetica 13",
                                                       text="From your completed work, your current overall score is "
-                                                      + str(toDateOverallScore) + "%")
-        self.course_overallcomplete_score_lbl.grid(row=4, column=1, columnspan=6, sticky=W)
+                                                           + str(toDateOverallScore) + "%")
+        self.course_overallcomplete_score_lbl.grid(row=5, column=1, columnspan=6, sticky=W)
 
         # Determine target score based on inputted target
 
@@ -418,23 +427,23 @@ class Application(Frame):
         # Display label describing target info
 
         self.course_targetinfo_lbl = Label(self,
-                                           font="Helvetica 10",
+                                           font="Helvetica 13",
                                            text="",
                                            justify=LEFT)
-        self.course_targetinfo_lbl.grid(row=5, column=1, columnspan=6, sticky=W)
+        self.course_targetinfo_lbl.grid(row=6, column=1, columnspan=6, sticky=W)
 
         if targetHit is True:
             self.course_targetinfo_lbl.configure(text="This overall score exceeds your target grade of a "
-                                                 + target + ". Keep it up!")
+                                                      + target + ". Keep it up!")
         elif targetHit is False and percentageComplete != 100.0:
             # Determine the score required on remaining work to hit target grade
             percentageIncomplete = 100 - percentageComplete
             requiredScore = ((targetScore * 100) - (toDateOverallScore * percentageComplete)) / percentageIncomplete
             requiredScore = round(requiredScore, 2)
             self.course_targetinfo_lbl.configure(text="This score is currently below your target of a " + target
-                                                 + ". To hit your target, you must score an average of "
-                                                 + str(requiredScore) + "%\nin the remaining "
-                                                 + str(percentageIncomplete) + "% of the course.")
+                                                      + ". To hit your target, you must score\nan average of "
+                                                      + str(requiredScore) + "% in the remaining "
+                                                      + str(percentageIncomplete) + "% of the course.")
 
     def modulesSortFunc(self, module):
         """Returns the score of each module for sorting"""
@@ -451,6 +460,7 @@ class Application(Frame):
         self.course_modules_txt.pack_forget()
         self.course_overallcomplete_score_lbl.grid_forget()
         self.course_targetinfo_lbl.grid_forget()
+        self.course_modulelistinfo_lbl.grid_forget()
         self.main_menu()
 
     def create_module_menu(self):
@@ -635,7 +645,7 @@ class Application(Frame):
             self.create_module_error_lbl.configure(text="A module of that name already exists")
         elif errortype == "tooManyCreds" and unassigned != 0:
             self.create_module_error_lbl.configure(text="There are only " + str(unassigned)
-                                                   + " unassigned credits remaining")
+                                                        + " unassigned credits remaining")
         elif errortype == "tooManyCreds" and unassigned == 0:
             self.create_module_error_lbl.configure(text="There are no unassigned credits remaining")
         self.create_module_error_lbl.grid(row=6, column=3, pady=(5, 0), columnspan=2)
@@ -717,7 +727,7 @@ class Application(Frame):
 
         self.addwork_guide_lbl = Label(self,
                                        text="Add exams and pieces of coursework after they have been completed "
-                                       + "and marked",
+                                            + "and marked",
                                        font="Helvetica 12",
                                        fg="brown")
         self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
@@ -885,7 +895,7 @@ class Application(Frame):
         elif errortype == "tooManyExam%":
             if incomplete != 0.0:
                 self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of exams left"
-                                                 + " to complete")
+                                                      + " to complete")
             elif zeroWork is False:
                 self.addwork_error_lbl.configure(text="You have completed all of this module's exams")
             elif zeroWork is True:
@@ -893,7 +903,7 @@ class Application(Frame):
         elif errortype == "tooManyCoursework%":
             if incomplete != 0.0:
                 self.addwork_error_lbl.configure(text="There is only " + str(incomplete) + "% of coursework left"
-                                                 + " to complete")
+                                                      + " to complete")
             elif zeroWork is False:
                 self.addwork_error_lbl.configure(text="You have completed all of this module's coursework")
             elif zeroWork is True:
@@ -949,18 +959,18 @@ class Application(Frame):
         # Create title label and home button
 
         self.deletework_home_bttn = Button(self,
-                                        text="Home",
-                                        font="Helvetica 13 bold",
-                                        width=8,
-                                        height=1,
-                                        command=self.deletework_home,
-                                        cursor="hand2"
-                                        )
+                                           text="Home",
+                                           font="Helvetica 13 bold",
+                                           width=8,
+                                           height=1,
+                                           command=self.deletework_home,
+                                           cursor="hand2"
+                                           )
         self.deletework_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
 
         self.deletework_title_lbl = Label(self,
-                                       text="Delete Piece of Work",
-                                       font="Helvetica 30")
+                                          text="Delete Piece of Work",
+                                          font="Helvetica 30")
         self.deletework_title_lbl.grid(row=0, column=2, columnspan=7, padx=120)
 
         # Create list of module names for combobox
@@ -1020,8 +1030,6 @@ class Application(Frame):
                                              width=42,
                                              command=self.deletework_validate)
         self.deletework_submit_bttn.grid(row=3, column=2, columnspan=3, padx=(150, 0), pady=(20, 0))
-
-
 
     def deletework_home(self):
         """Returns to the main menu from the work deletion menu"""
@@ -1168,13 +1176,14 @@ class Application(Frame):
         self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
         self.viewmodule_work_scroll.configure(command=self.viewmodule_work_txt.yview)
 
-        # Create percentage exam and coursework in labels
+        # Create percentage exam and coursework labels
 
         self.viewmodule_percentexam_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_percentcoursework_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_scoreexam_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_scorecoursework_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_scoretotal_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_credits_lbl = Label(self, font="Helvetica 10")
 
     def viewmodule_loadData(self, event):
         """Loads module data when a module is selected"""
@@ -1274,21 +1283,32 @@ class Application(Frame):
         completedCourseworkScore = round(completedCourseworkScore, 2)
         completedModuleScore = round(completedModuleScore, 2)
 
+        # Load course data and retrieve maximum course credits
+
+        f_courseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_courseData)
+        f_courseData.close()
+        maxCourseCreds = courseData[1]
+
+        # Calculate module percentage worth of overall course
+
+        percentageCourse = round((modules[module].max_credits / maxCourseCreds) * 100, 2)
+
         # Display percentage exam and coursework in labels
 
         if noExam is False:
             if completedExamTotal != 0:
                 self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                          + "% of the module is exams. "
-                                                          + "You have completed " + str(completedExamPercent)
-                                                          + "% of your exams.")
+                                                               + "% of the module is exams. "
+                                                               + "You have completed " + str(completedExamPercent)
+                                                               + "% of your exams.")
                 self.viewmodule_scoreexam_lbl.configure(text="In your completed exams, you have scored an overall "
-                                                        + str(completedExamScore) + "%.")
+                                                             + str(completedExamScore) + "%.")
             else:
                 self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                          + "% of the module is exams. "
-                                                          + "You have completed " + str(completedExamPercent)
-                                                          + "% of your exams.")
+                                                               + "% of the module is exams. "
+                                                               + "You have completed " + str(completedExamPercent)
+                                                               + "% of your exams.")
                 self.viewmodule_scoreexam_lbl.configure(text="")
 
         elif noExam is True:
@@ -1298,17 +1318,17 @@ class Application(Frame):
         if noCoursework is False:
             if completedCourseworkTotal != 0:
                 self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                                + "% of the module is coursework. You have completed "
-                                                                + str(completedCourseworkPercent)
-                                                                + "% of your coursework.")
+                                                                     + "% of the module is coursework. You have completed "
+                                                                     + str(completedCourseworkPercent)
+                                                                     + "% of your coursework.")
                 self.viewmodule_scorecoursework_lbl.configure(text="In your completed coursework, "
-                                                              + "you have scored an overall "
-                                                              + str(completedCourseworkScore) + "%.")
+                                                                   + "you have scored an overall "
+                                                                   + str(completedCourseworkScore) + "%.")
             else:
                 self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                                + "% of the module is coursework. You have completed "
-                                                                + str(completedCourseworkPercent)
-                                                                + "% of your coursework.")
+                                                                     + "% of the module is coursework. You have completed "
+                                                                     + str(completedCourseworkPercent)
+                                                                     + "% of your coursework.")
                 self.viewmodule_scorecoursework_lbl.configure(text="")
 
         elif noCoursework is True:
@@ -1317,17 +1337,21 @@ class Application(Frame):
 
         if completedModuleTotal != 0 and noExam is False and noCoursework is False:
             self.viewmodule_scoretotal_lbl.configure(text="In all your completed work so far in this module, you have "
-                                                     + "an overall score of " + str(completedModuleScore) + "%.")
+                                                          + "an overall score of " + str(completedModuleScore) + "%.")
         elif completedModuleTotal != 0 and (noCoursework is True or noExam is True):
             self.viewmodule_scoretotal_lbl.configure(text="")
         else:
             self.viewmodule_scoretotal_lbl.configure(text="You have not created any work for this module yet.")
+
+        self.viewmodule_credits_lbl.configure(text="This module is worth " + str(modules[module].max_credits)
+                                                   + " credits (" + str(percentageCourse) + "% of the course).")
 
         self.viewmodule_percentexam_lbl.grid(row=3, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scoreexam_lbl.grid(row=4, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_percentcoursework_lbl.grid(row=5, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scorecoursework_lbl.grid(row=6, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scoretotal_lbl.grid(row=7, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_credits_lbl.grid(row=8, column=2, columnspan=6, sticky=W, padx=(50, 0))
 
     def worksSortFunc(self, work):
         """Function used when sorting a module's worksheets by score. It simply returns the score of the work"""
@@ -1347,6 +1371,7 @@ class Application(Frame):
         self.viewmodule_scoreexam_lbl.grid_forget()
         self.viewmodule_scorecoursework_lbl.grid_forget()
         self.viewmodule_scoretotal_lbl.grid_forget()
+        self.viewmodule_credits_lbl.grid_forget()
         self.main_menu()
 
     def about_page(self):
@@ -1502,8 +1527,8 @@ class Application(Frame):
 
         self.reset_reset_warning_lbl = Label(self,
                                              text="Here you can reset all program data - all created modules\nand"
-                                             + " pieces of work will be deleted, and you will be\nprovided with"
-                                             + "a fresh version of the application.",
+                                                  + " pieces of work will be deleted, and you will be\nprovided with"
+                                                  + "a fresh version of the application.",
                                              font="Helvetica 11",
                                              fg="brown")
         self.reset_reset_warning_lbl.grid(row=7, column=3, columnspan=4, padx=(30, 0))
