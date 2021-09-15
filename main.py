@@ -199,7 +199,7 @@ class Application(Frame):
                                       command=self.reset_page,
                                       cursor="hand2")
         self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
-                                           height=2, cursor="hand2")
+                                           height=2, cursor="hand2", command=self.deletework_validate_access)
         self.main_courseinfo_bttn.grid(row=6, column=4, pady=1)
         self.main_createmodule_bttn.grid(row=2, column=4, pady=1)
         self.main_addwork_bttn.grid(row=3, column=4, pady=1)
@@ -499,6 +499,10 @@ class Application(Frame):
         for module in modules:
             moduleList.append(module)
 
+        # Sort moduleList alphabetically
+
+        moduleList = sorted(moduleList, key=self.moduleListSortFunc)
+
         # Create combobox
 
         self.create_module_delete_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
@@ -510,6 +514,10 @@ class Application(Frame):
 
         self.delete_module_error_lbl = Label(self, font="Helvetica 12", fg="brown", text="")
         self.delete_module_error_lbl.grid(row=10, column=3, pady=(5, 0), columnspan=2)
+
+    def moduleListSortFunc(self, module):
+        """Returns an uppercase name to the sorted function, for alphabetical sorting"""
+        return module.upper()
 
     def create_module_home(self):
         """Goes back to main menu from module creation menu"""
@@ -686,6 +694,10 @@ class Application(Frame):
         moduleList = []
         for module in modules:
             moduleList.append(module)
+
+        # Sort list of modules alphabetically
+
+        moduleList = sorted(moduleList, key=self.moduleListSortFunc)
 
         # Create combobox
 
@@ -869,6 +881,182 @@ class Application(Frame):
         self.addwork_home()
         self.main_edit_redtext(workName + " in module " + workModule + " created")
 
+    def deletework_validate_access(self):
+        """Checks to see if there is any completed work before accessing deletework menu"""
+        validated = False
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        if len(modules) == 0:
+            self.main_edit_redtext("There is no work to delete")
+        else:
+            for module in modules:
+                if modules[module].works != {}:
+                    validated = True
+                    break
+            if validated is True:
+                self.deletework_menu()
+            elif validated is False:
+                self.main_edit_redtext("There is no work to delete")
+
+    def deletework_menu(self):
+        """Opens menu for deleting a piece of work"""
+        self.clear_main_menu()
+
+        # Create title label and home button
+
+        self.deletework_home_bttn = Button(self,
+                                        text="Home",
+                                        font="Helvetica 13 bold",
+                                        width=8,
+                                        height=1,
+                                        command=self.deletework_home,
+                                        cursor="hand2"
+                                        )
+        self.deletework_home_bttn.grid(row=0, column=0, padx=10, sticky=N, pady=10)
+
+        self.deletework_title_lbl = Label(self,
+                                       text="Delete Piece of Work",
+                                       font="Helvetica 30")
+        self.deletework_title_lbl.grid(row=0, column=2, columnspan=7, padx=120)
+
+        # Create list of module names for combobox
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+        moduleList = []
+        for module in modules:
+            moduleList.append(module)
+
+        # Sort list of modules alphabetically
+
+        moduleList = sorted(moduleList, key=self.moduleListSortFunc)
+
+        # Create combobox
+
+        self.deletework_combobox_lbl = Label(self,
+                                             text="Select Module",
+                                             font="Helvetica 13")
+        self.deletework_combobox_lbl.grid(row=1, column=2, sticky=E, padx=(50, 5), pady=(50, 0))
+        self.deletework_combobox = ttk.Combobox(self, values=moduleList, width=47, state="readonly")
+        self.deletework_combobox.grid(row=1, column=3, columnspan=4, pady=(50, 0))
+        self.deletework_combobox.bind("<<ComboboxSelected>>", self.deletework_loadWorks)
+
+        # Create frame to contain textbox and scrollbar
+
+        self.deletework_frame = Frame(self, width=80, height=10)
+        self.deletework_frame.grid(row=2, column=2, columnspan=6, padx=30)
+
+        # Create scrollbar
+
+        self.deletework_scroll = Scrollbar(self.deletework_frame, width=20)
+        self.deletework_scroll.pack(side=RIGHT, fill=Y)
+
+        # Create listbox for work selection
+
+        self.deletework_listbox = Listbox(self.deletework_frame, width=70, height=10, state=NORMAL,
+                                          yscrollcommand=self.deletework_scroll.set, font="Helvetica 11",
+                                          selectmode=SINGLE, relief=FLAT, activestyle=NONE)
+        self.deletework_listbox.pack(side=LEFT, fill=BOTH)
+        self.deletework_scroll.configure(command=self.deletework_listbox.yview)
+
+        # Add error message label
+
+        self.deletework_error_lbl = Label(self,
+                                          text="",
+                                          font="Helvetica 12",
+                                          fg="brown")
+        self.deletework_error_lbl.grid(row=4, column=2, columnspan=5, padx=(20, 0), pady=(5, 0))
+
+        # Create button for confirming work deletion
+
+        self.deletework_submit_bttn = Button(self,
+                                             font="Helvetica 9",
+                                             text="Delete piece of work",
+                                             width=42,
+                                             command=self.deletework_validate)
+        self.deletework_submit_bttn.grid(row=3, column=2, columnspan=3, padx=(150, 0), pady=(20, 0))
+
+
+
+    def deletework_home(self):
+        """Returns to the main menu from the work deletion menu"""
+        self.deletework_home_bttn.grid_forget()
+        self.deletework_title_lbl.grid_forget()
+        self.deletework_combobox.grid_forget()
+        self.deletework_combobox_lbl.grid_forget()
+        self.deletework_frame.grid_forget()
+        self.deletework_listbox.pack_forget()
+        self.deletework_scroll.pack_forget()
+        self.deletework_submit_bttn.grid_forget()
+        self.deletework_error_lbl.grid_forget()
+        self.main_menu()
+
+    def deletework_loadWorks(self, event):
+        """Load all work from the selected module into the listbox on the deletework menu"""
+
+        # Retrieve saved modules data
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+
+        # Delete current listbox content
+
+        self.deletework_listbox.delete(0, END)
+
+        # Insert works form selected module into listbox
+
+        module = self.deletework_combobox.get()
+        moduleWorks = modules[module].works
+        for work in moduleWorks:
+            self.deletework_listbox.insert(END, work)
+
+    def deletework_validate(self):
+        """Validates that a worksheet has been selected for deletion"""
+
+        # If no line is selected, return an error, otherwise delete the selected work
+
+        if self.deletework_listbox.curselection() == ():
+            self.deletework_error_lbl.configure(text="You must select a piece of work to be deleted")
+        else:
+            self.deletework()
+
+    def deletework(self):
+        """Deletes the selected piece of work and returns to the main menu with a confirmation message"""
+
+        # Retrieve selected line number and module
+
+        selectedLine = self.deletework_listbox.curselection()
+        module = self.deletework_combobox.get()
+
+        # Retrieve name of work at that line
+
+        workName = self.deletework_listbox.get(selectedLine)
+
+        # Load module data
+
+        f_modulesData = open(direct + "modulesData.dat", "rb")
+        modules = pickle.load(f_modulesData)
+        f_modulesData.close()
+
+        # Delete selected piece of work
+
+        moduleWorks = modules[module].works
+        del moduleWorks[workName]
+
+        # Save new data with selected work omitted
+
+        f_modulesData = open(direct + "modulesData.dat", "wb")
+        pickle.dump(modules, f_modulesData, True)
+        f_modulesData.close()
+
+        # Return to main menu with confirmation message
+
+        self.deletework_home()
+        self.main_edit_redtext(workName + " in " + module + " successfully deleted")
+
     def viewmodule_validate_access(self):
         """Check if any modules exist, and if so allow access to the view modules menu"""
         f_modulesData = open(direct + "modulesData.dat", "rb")
@@ -905,6 +1093,10 @@ class Application(Frame):
         moduleList = []
         for module in modules:
             moduleList.append(module)
+
+        # Sort list of modules alphabetically
+
+        moduleList = sorted(moduleList, key=self.moduleListSortFunc)
 
         # Create combobox
 
