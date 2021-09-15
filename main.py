@@ -14,7 +14,7 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# Import relevant modules
+# Import modules
 import os
 import tkinter.messagebox
 import webbrowser
@@ -77,7 +77,7 @@ class Application(Frame):
         self.grid()
 
     def first_time(self):
-        """Initiates first time setup menu"""
+        """Initiates first time setup menu. Menu asks for course name, maximum credits, and target grade"""
 
         self.wel_lbl = Label(self,
                              text="I've noticed this is your first time using my Degree Progress Tracker.\n" +
@@ -125,25 +125,38 @@ class Application(Frame):
 
     def close_setup(self):
         """Validates inputs, saves data and closes setup menu"""
+        # Check coursename length is 40 character or less
         if len(self.course_name_entry.get()) < 41:
+            # Check that coursename isn't blank
             if self.course_name_entry.get() == "":
                 self.setup_entry_error("nameblank_error")
             else:
+                # Ensure that credits are inputted as an integer
                 try:
                     courseName = self.course_name_entry.get()
                     courseCredits = int(self.course_maxcreds_entry.get())
                     courseTarget = self.course_target_combobox.get()
+                    # Check that credits aren't negative
                     if courseCredits <= 0:
                         self.setup_entry_error("negativecreds_error")
                     else:
+
+                        # Write inputted course data to file
+
                         courseData = [courseName, courseCredits, courseTarget]
                         f_writeCourseData = open(direct + "courseData.dat", "wb")
                         pickle.dump(courseData, f_writeCourseData, True)
                         f_writeCourseData.close()
+
+                        # Initiate modulesData.dat with an empty dict
+
                         f_modulesData = open(direct + "modulesData.dat", "wb")
                         modules = {}
                         pickle.dump(modules, f_modulesData, True)
                         f_modulesData.close()
+
+                        # Remove all initial setup tkinter elements and open main menu
+
                         self.wel_lbl.grid_remove()
                         self.course_name_entry.grid_remove()
                         self.course_name_entry_lbl.grid_remove()
@@ -184,6 +197,8 @@ class Application(Frame):
                                      font="Helvetica 12")
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=(0, 5))
 
+        # Create main menu buttons
+
         self.main_courseinfo_bttn = Button(self, text="View Course Stats", font="Helvetica 9", width=42, height=2,
                                            command=self.course_info_validate, cursor="hand2")
         self.main_createmodule_bttn = Button(self, text="Create/Delete Module", font="Helvetica 9", width=42, height=2,
@@ -200,6 +215,9 @@ class Application(Frame):
                                       cursor="hand2")
         self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
                                            height=2, cursor="hand2", command=self.deletework_validate_access)
+
+        # Position main menu buttons on the menu
+
         self.main_courseinfo_bttn.grid(row=6, column=4, pady=1)
         self.main_createmodule_bttn.grid(row=2, column=4, pady=1)
         self.main_addwork_bttn.grid(row=3, column=4, pady=1)
@@ -237,12 +255,19 @@ class Application(Frame):
     def course_info_validate(self):
         """Checks to see if there is any completed work before accessing course_info menu"""
         validated = False
+
+        # Load modules data
+
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
+
+        # Return an error if no modules exist
+
         if len(modules) == 0:
             self.main_edit_redtext("You must create a module and add completed work first")
         else:
+            # Check that at least one module has completed work, otherwise return an error
             for module in modules:
                 if modules[module].works != {}:
                     validated = True
@@ -412,6 +437,7 @@ class Application(Frame):
                                                  + str(percentageIncomplete) + "% of the course.")
 
     def modulesSortFunc(self, module):
+        """Returns the score of each module for sorting"""
         return module[1]
 
     def courseinfo_home(self):
@@ -542,6 +568,8 @@ class Application(Frame):
 
     def create_module_validation(self):
         """Validates inputted information when creating a module"""
+
+        # Load module and course data
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
@@ -554,6 +582,7 @@ class Application(Frame):
         for module in modules:
             unassignedCreds -= modules[module].max_credits
 
+        # Validate inputs
         if self.create_module_name_entry.get() in modules:
             self.create_module_error("moduleExists")
         else:
@@ -613,17 +642,24 @@ class Application(Frame):
 
     def create_module(self):
         """Creates a module object using the given info and stores it in the file system"""
+        # Get relevant inputs for creating module
         moduleName = self.create_module_name_entry.get()
         examPercent = round(float(self.create_module_examcreds_entry.get()), 1)
         courseworkPercent = round(float(self.create_module_courseworkcreds_entry.get()), 1)
         maxCreds = int(self.create_module_maxcreds_entry.get())
+
+        # Load module data
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
+
+        # Write new module object into file
         f_modulesData = open(direct + "modulesData.dat", "wb")
         modules[moduleName] = Module(moduleName, maxCreds, examPercent, courseworkPercent)
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
+
+        # Return to main menu with confirmation message
         self.create_module_home()
         self.main_edit_redtext("Module " + moduleName + " created")
 
@@ -866,18 +902,25 @@ class Application(Frame):
 
     def addwork(self):
         """Creates a piece of work object using the info inputted into the addwork menu"""
+        # Get relevant inputs for creating work
         workName = self.addwork_name_entry.get()
         workModule = self.addwork_combobox.get()
         workType = self.radiovar.get()
         workPercent = round(float(self.addwork_percent_entry.get()), 1)
         workScore = round(float(self.addwork_score_entry.get()), 1)
+
+        # Load current module and work data
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
+
+        # Write new data (with new work) to file
         f_modulesData = open(direct + "modulesData.dat", "wb")
         modules[workModule].works[workName] = Work(workName, workType, workScore, workPercent)
         pickle.dump(modules, f_modulesData, True)
         f_modulesData.close()
+
+        # Return to main menu with confirmation message
         self.addwork_home()
         self.main_edit_redtext(workName + " in module " + workModule + " created")
 
@@ -1169,13 +1212,15 @@ class Application(Frame):
 
         # Calculate values for displaying stats
 
+        # Determine if module has no coursework or no exams
         noExam = False
         noCoursework = False
         if modules[module].exam_percent == 0.0:
             noExam = True
         if modules[module].coursework_percent == 0.0:
             noCoursework = True
-        
+
+        # Calculate completed coursework and exam percentages of module
         completedExamTotal = 0.0
         completedCourseworkTotal = 0.0
         for work in moduleWorks:
@@ -1184,16 +1229,19 @@ class Application(Frame):
             elif moduleWorks[work].work_type == "coursework":
                 completedCourseworkTotal += moduleWorks[work].percentage_module
 
+        # Calculate completed exams as a percentage of total exams
         if modules[module].exam_percent != 0:
             completedExamPercent = (completedExamTotal / modules[module].exam_percent) * 100
         else:
             completedExamPercent = 0.0
 
+        # Calculate completed coursework as a percentage of total coursework
         if modules[module].coursework_percent != 0:
             completedCourseworkPercent = (completedCourseworkTotal / modules[module].coursework_percent) * 100
         else:
             completedCourseworkPercent = 0.0
 
+        # Calculate current achieved exam and coursework percentage scores
         completedExamScore = 0.0
         completedCourseworkScore = 0.0
         for work in moduleWorks:
@@ -1202,14 +1250,17 @@ class Application(Frame):
             elif moduleWorks[work].work_type == "coursework":
                 completedCourseworkScore += (moduleWorks[work].score / 100) * moduleWorks[work].percentage_module
 
+        # Calculate average score of completed exams
         completedExamScoreModule = completedExamScore
         if completedExamTotal != 0.0:
             completedExamScore /= (completedExamTotal / 100)
 
+        # Calculate average score of completed coursework
         completedCourseworkScoreModule = completedCourseworkScore
         if completedCourseworkTotal != 0.0:
             completedCourseworkScore /= (completedCourseworkTotal / 100)
 
+        # Calculate average score of all completed work
         completedModuleScore = completedCourseworkScoreModule + completedExamScoreModule
         completedModuleTotal = completedExamTotal + completedCourseworkTotal
         if completedModuleTotal != 0.0:
@@ -1606,6 +1657,8 @@ class Application(Frame):
         # Display messagebox confirming program reset
         tkinter.messagebox.showinfo("Program Reset", "The program has now been reset, and your previous data "
                                                      "has been erased.")
+
+
 # main program
 
 # create directory
@@ -1646,6 +1699,8 @@ if firstTime is True:
     mainApp.first_time()
 else:
     mainApp.main_menu()
+
+# Set window icon and start the program
 
 root.iconbitmap('degreetrackericon.ico')
 root.mainloop()
