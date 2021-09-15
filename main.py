@@ -1168,13 +1168,14 @@ class Application(Frame):
         self.viewmodule_work_txt.pack(side=LEFT, fill=BOTH)
         self.viewmodule_work_scroll.configure(command=self.viewmodule_work_txt.yview)
 
-        # Create percentage exam and coursework in labels
+        # Create percentage exam and coursework labels
 
         self.viewmodule_percentexam_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_percentcoursework_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_scoreexam_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_scorecoursework_lbl = Label(self, font="Helvetica 10")
         self.viewmodule_scoretotal_lbl = Label(self, font="Helvetica 10")
+        self.viewmodule_credits_lbl = Label(self, font="Helvetica 10")
 
     def viewmodule_loadData(self, event):
         """Loads module data when a module is selected"""
@@ -1274,6 +1275,17 @@ class Application(Frame):
         completedCourseworkScore = round(completedCourseworkScore, 2)
         completedModuleScore = round(completedModuleScore, 2)
 
+        # Load course data and retrieve maximum course credits
+
+        f_courseData = open(direct + "courseData.dat", "rb")
+        courseData = pickle.load(f_courseData)
+        f_courseData.close()
+        maxCourseCreds = courseData[1]
+
+        # Calculate module percentage worth of overall course
+
+        percentageCourse = round((modules[module].max_credits / maxCourseCreds) * 100, 2)
+
         # Display percentage exam and coursework in labels
 
         if noExam is False:
@@ -1323,11 +1335,15 @@ class Application(Frame):
         else:
             self.viewmodule_scoretotal_lbl.configure(text="You have not created any work for this module yet.")
 
+        self.viewmodule_credits_lbl.configure(text="This module is worth " + str(modules[module].max_credits)
+                                              + " credits (" + str(percentageCourse) + "% of the course).")
+
         self.viewmodule_percentexam_lbl.grid(row=3, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scoreexam_lbl.grid(row=4, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_percentcoursework_lbl.grid(row=5, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scorecoursework_lbl.grid(row=6, column=2, columnspan=6, sticky=W, padx=(50, 0))
         self.viewmodule_scoretotal_lbl.grid(row=7, column=2, columnspan=6, sticky=W, padx=(50, 0))
+        self.viewmodule_credits_lbl.grid(row=8, column=2, columnspan=6, sticky=W, padx=(50, 0))
 
     def worksSortFunc(self, work):
         """Function used when sorting a module's worksheets by score. It simply returns the score of the work"""
@@ -1347,6 +1363,7 @@ class Application(Frame):
         self.viewmodule_scoreexam_lbl.grid_forget()
         self.viewmodule_scorecoursework_lbl.grid_forget()
         self.viewmodule_scoretotal_lbl.grid_forget()
+        self.viewmodule_credits_lbl.grid_forget()
         self.main_menu()
 
     def about_page(self):
