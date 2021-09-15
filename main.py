@@ -961,13 +961,24 @@ class Application(Frame):
         self.deletework_listbox.pack(side=LEFT, fill=BOTH)
         self.deletework_scroll.configure(command=self.deletework_listbox.yview)
 
+        # Add error message label
+
+        self.deletework_error_lbl = Label(self,
+                                          text="",
+                                          font="Helvetica 12",
+                                          fg="brown")
+        self.deletework_error_lbl.grid(row=4, column=2, columnspan=5, padx=(20, 0), pady=(5, 0))
+
         # Create button for confirming work deletion
 
         self.deletework_submit_bttn = Button(self,
                                              font="Helvetica 9",
                                              text="Delete piece of work",
-                                             width=42)
+                                             width=42,
+                                             command=self.deletework_validate)
         self.deletework_submit_bttn.grid(row=3, column=2, columnspan=3, padx=(150, 0), pady=(20, 0))
+
+
 
     def deletework_home(self):
         """Returns to the main menu from the work deletion menu"""
@@ -979,6 +990,7 @@ class Application(Frame):
         self.deletework_listbox.pack_forget()
         self.deletework_scroll.pack_forget()
         self.deletework_submit_bttn.grid_forget()
+        self.deletework_error_lbl.grid_forget()
         self.main_menu()
 
     def deletework_loadWorks(self, event):
@@ -1000,6 +1012,18 @@ class Application(Frame):
         moduleWorks = modules[module].works
         for work in moduleWorks:
             self.deletework_listbox.insert(END, work)
+
+    def deletework_validate(self):
+        """Validates that a worksheet has been selected for deletion"""
+
+        # Retrieve selected line number
+
+        selectedLine = self.deletework_listbox.curselection()
+
+        # If no line is selected, return an error, else delete the selected work
+
+        if selectedLine == ():
+            self.deletework_error_lbl.configure(text="You must select a piece of work to be deleted")
 
     def viewmodule_validate_access(self):
         """Check if any modules exist, and if so allow access to the view modules menu"""
