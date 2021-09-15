@@ -14,7 +14,7 @@
 #     You should have received a copy of the GNU General Public License
 #     along with this program.  If not, see https://www.gnu.org/licenses/.
 
-# Import relevant modules
+# Import modules
 import os
 import tkinter.messagebox
 import webbrowser
@@ -77,7 +77,7 @@ class Application(Frame):
         self.grid()
 
     def first_time(self):
-        """Initiates first time setup menu"""
+        """Initiates first time setup menu. Menu asks for course name, maximum credits, and target grade"""
 
         self.wel_lbl = Label(self,
                              text="I've noticed this is your first time using my Degree Progress Tracker.\n" +
@@ -125,25 +125,38 @@ class Application(Frame):
 
     def close_setup(self):
         """Validates inputs, saves data and closes setup menu"""
+        # Check coursename length is 40 character or less
         if len(self.course_name_entry.get()) < 41:
+            # Check that coursename isn't blank
             if self.course_name_entry.get() == "":
                 self.setup_entry_error("nameblank_error")
             else:
+                # Ensure that credits are inputted as an integer
                 try:
                     courseName = self.course_name_entry.get()
                     courseCredits = int(self.course_maxcreds_entry.get())
                     courseTarget = self.course_target_combobox.get()
+                    # Check that credits aren't negative
                     if courseCredits <= 0:
                         self.setup_entry_error("negativecreds_error")
                     else:
+
+                        # Write inputted course data to file
+
                         courseData = [courseName, courseCredits, courseTarget]
                         f_writeCourseData = open(direct + "courseData.dat", "wb")
                         pickle.dump(courseData, f_writeCourseData, True)
                         f_writeCourseData.close()
+
+                        # Initiate modulesData.dat with an empty dict
+
                         f_modulesData = open(direct + "modulesData.dat", "wb")
                         modules = {}
                         pickle.dump(modules, f_modulesData, True)
                         f_modulesData.close()
+
+                        # Remove all initial setup tkinter elements and open main menu
+                        
                         self.wel_lbl.grid_remove()
                         self.course_name_entry.grid_remove()
                         self.course_name_entry_lbl.grid_remove()
