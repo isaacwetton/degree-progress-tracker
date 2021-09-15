@@ -156,7 +156,7 @@ class Application(Frame):
                         f_modulesData.close()
 
                         # Remove all initial setup tkinter elements and open main menu
-                        
+
                         self.wel_lbl.grid_remove()
                         self.course_name_entry.grid_remove()
                         self.course_name_entry_lbl.grid_remove()
@@ -197,6 +197,8 @@ class Application(Frame):
                                      font="Helvetica 12")
         self.main_credit_lbl.grid(row=1, column=3, columnspan=4, pady=(0, 5))
 
+        # Create main menu buttons
+
         self.main_courseinfo_bttn = Button(self, text="View Course Stats", font="Helvetica 9", width=42, height=2,
                                            command=self.course_info_validate, cursor="hand2")
         self.main_createmodule_bttn = Button(self, text="Create/Delete Module", font="Helvetica 9", width=42, height=2,
@@ -213,6 +215,9 @@ class Application(Frame):
                                       cursor="hand2")
         self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
                                            height=2, cursor="hand2")
+
+        # Position main menu buttons on the menu
+
         self.main_courseinfo_bttn.grid(row=6, column=4, pady=1)
         self.main_createmodule_bttn.grid(row=2, column=4, pady=1)
         self.main_addwork_bttn.grid(row=3, column=4, pady=1)
@@ -250,12 +255,19 @@ class Application(Frame):
     def course_info_validate(self):
         """Checks to see if there is any completed work before accessing course_info menu"""
         validated = False
+
+        # Load modules data
+
         f_modulesData = open(direct + "modulesData.dat", "rb")
         modules = pickle.load(f_modulesData)
         f_modulesData.close()
+
+        # Return an error if no modules exist
+
         if len(modules) == 0:
             self.main_edit_redtext("You must create a module and add completed work first")
         else:
+            # Check that at least one module has completed work, otherwise return an error
             for module in modules:
                 if modules[module].works != {}:
                     validated = True
