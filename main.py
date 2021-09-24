@@ -1736,7 +1736,8 @@ if firstTime is True:
 else:
     mainApp.main_menu()
 
-# Set window icon and start the program
+# Set window icon (if using Windows) and start the program
 
-root.iconbitmap('degreetrackericon.ico')
+if operatingSystem == "Windows":
+    root.iconbitmap('degreetrackericon.ico')
 root.mainloop()
