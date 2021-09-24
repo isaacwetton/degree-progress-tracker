@@ -1689,10 +1689,10 @@ class Application(Frame):
 # create directory
 direct = ""
 try:
-    os.mkdir(os.path.expanduser("~/Documents/"))
-    direct = os.path.expanduser("~/Documents/")
+    os.mkdir(os.path.expanduser("~/Documents/DegreeTracker/"))
+    direct = os.path.expanduser("~/Documents/DegreeTracker/")
 except FileExistsError:
-    direct = os.path.expanduser("~/Documents/")
+    direct = os.path.expanduser("~/Documents/DegreeTracker/")
 
 # Determine if first-time use
 try:
