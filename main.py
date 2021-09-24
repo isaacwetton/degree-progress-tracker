@@ -1689,10 +1689,10 @@ class Application(Frame):
 # create directory
 direct = ""
 try:
-    os.mkdir(os.environ['USERPROFILE'] + "\\Documents\\DegreeTracker\\")
-    direct = os.environ['USERPROFILE'] + "\\Documents\\DegreeTracker\\"
+    os.mkdir(os.path.expanduser("~/Documents/"))
+    direct = os.path.expanduser("~/Documents/")
 except FileExistsError:
-    direct = os.environ['USERPROFILE'] + "\\Documents\\DegreeTracker\\"
+    direct = os.path.expanduser("~/Documents/")
 
 # Determine if first-time use
 try:
