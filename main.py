@@ -21,6 +21,7 @@ import webbrowser
 from tkinter import *
 from tkinter import ttk
 import pickle
+from platform import system
 
 
 class Work(object):
@@ -1686,13 +1687,23 @@ class Application(Frame):
 
 # main program
 
+# Determine operating system
+operatingSystem = system()
+
 # create directory
 direct = ""
-try:
-    os.mkdir(os.path.expanduser("~/Documents/DegreeTracker/"))
-    direct = os.path.expanduser("~/Documents/DegreeTracker/")
-except FileExistsError:
-    direct = os.path.expanduser("~/Documents/DegreeTracker/")
+if operatingSystem == "Darwin":
+    try:
+        os.mkdir(os.path.expanduser("~/Documents/DegreeTracker/"))
+        direct = os.path.expanduser("~/Documents/DegreeTracker/")
+    except FileExistsError:
+        direct = os.path.expanduser("~/Documents/DegreeTracker/")
+elif operatingSystem == "Windows":
+    try:
+        os.mkdir(os.path.expanduser("~\\Documents\\DegreeTracker\\"))
+        direct = os.path.expanduser("~\\Documents\\DegreeTracker\\")
+    except FileExistsError:
+        direct = os.path.expanduser("~\\Documents\\DegreeTracker\\")
 
 # Determine if first-time use
 try:
