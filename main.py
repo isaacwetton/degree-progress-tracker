@@ -1612,7 +1612,11 @@ class Application(Frame):
         f_courseData.close()
 
         # Change course data's target grade to the selected target
-        courseData[2] = target
+        if courseData[2] != target:
+            courseData[2] = target
+            targetChanged = True
+        else:
+            targetChanged = False
 
         # Save course data (overwrite)
         f_courseData = open(direct + "courseData.dat", "wb")
@@ -1621,7 +1625,10 @@ class Application(Frame):
 
         # Return to main menu with confirmation message
         self.reset_home()
-        self.main_edit_redtext("Target grade changed to a " + target)
+        if targetChanged:
+            self.main_edit_redtext("Target grade changed to a " + target)
+        else:
+            self.main_edit_redtext("Target grade is already a " + target)
 
     def reset_app_confirm(self):
         """Opens page where the user is asked to confirm their decision to reset the program"""
