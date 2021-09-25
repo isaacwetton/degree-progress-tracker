@@ -731,7 +731,7 @@ class Application(Frame):
                                             + "and marked",
                                        font="Helvetica 12",
                                        fg="brown")
-        self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
+        self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=(50, 20))
 
         # Create list of module names for combobox
 
