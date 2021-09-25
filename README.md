@@ -17,7 +17,7 @@ https://github.com/isaacwetton/degree-progress-tracker/
 
 ROADMAP:
 
-- v1.1.1 - Introduced macOS compatibility, small changes in code to accommodate this.
+- v1.1.1 - Introduced macOS compatibility, with small changes in code to accommodate this. Added new displayed message when attempting to change the target grade to the existing target grade (e.g. 2:1 to 2:1).
 - v1.1.x - Bug fixes from v1.1.1.
 - v1.2.0 - New features such as ability to save/load profiles and create special modules consisting of only one exam.  
 - v1.3.0 - Lots of ambitious features added (possibly including graphing of results and much more detailed statistics).
