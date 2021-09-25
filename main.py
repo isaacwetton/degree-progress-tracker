@@ -363,6 +363,7 @@ class Application(Frame):
         toDateCompletedTotal = 0.0
         moduleNumber = 1
         moduleScores = {}
+        moduleEmpty = {}
 
         # Create dictionary of modules and their respective scores
 
@@ -375,8 +376,10 @@ class Application(Frame):
                                       modules[module].works[work].percentage_module * 0.01
                     completedTotal += modules[module].works[work].percentage_module
                 overallScore = round((completedScore / completedTotal) * 100, 2)
+                moduleEmpty[module] = False
             else:
                 overallScore = 0.0
+                moduleEmpty[module] = True
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
             moduleScores[module] = overallScore
@@ -388,8 +391,13 @@ class Application(Frame):
         # Create textbox content
 
         for module in moduleScores:
-            textbox_content += str(moduleNumber) + ") " + module[0] + " - " + str(module[1]) + "%\n"
-            moduleNumber += 1
+            if moduleEmpty[module[0]] == False:
+                textbox_content += str(moduleNumber) + ") " + module[0] + " - " + str(module[1]) + "%\n"
+                moduleNumber += 1
+        for module in moduleScores:
+            if moduleEmpty[module[0]] == True and module[1] == 0.0:
+                textbox_content += str(moduleNumber) + ") " + module[0] + " - " + "No Work Completed\n"
+                moduleNumber += 1
 
         # Calculate overall score of all completed work
 
