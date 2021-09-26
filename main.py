@@ -21,6 +21,7 @@ import webbrowser
 from tkinter import *
 from tkinter import ttk
 import pickle
+from platform import system
 
 
 class Work(object):
@@ -230,7 +231,7 @@ class Application(Frame):
         self.main_redtext.grid(row=9, column=4)
 
         self.main_ver_lbl = Label(self,
-                                  text="v1.1.0",
+                                  text="v1.1.1",
                                   font="Helvetica 10")
         self.main_ver_lbl.grid(row=9, column=4, pady=(25, 0), padx=(750, 0))
 
@@ -362,6 +363,7 @@ class Application(Frame):
         toDateCompletedTotal = 0.0
         moduleNumber = 1
         moduleScores = {}
+        moduleEmpty = {}
 
         # Create dictionary of modules and their respective scores
 
@@ -374,8 +376,10 @@ class Application(Frame):
                                       modules[module].works[work].percentage_module * 0.01
                     completedTotal += modules[module].works[work].percentage_module
                 overallScore = round((completedScore / completedTotal) * 100, 2)
+                moduleEmpty[module] = False
             else:
                 overallScore = 0.0
+                moduleEmpty[module] = True
             toDateCompletedScore += completedScore * 0.01 * modules[module].max_credits
             toDateCompletedTotal += completedTotal * 0.01 * modules[module].max_credits
             moduleScores[module] = overallScore
@@ -387,8 +391,13 @@ class Application(Frame):
         # Create textbox content
 
         for module in moduleScores:
-            textbox_content += str(moduleNumber) + ") " + module[0] + " - " + str(module[1]) + "%\n"
-            moduleNumber += 1
+            if moduleEmpty[module[0]] == False:
+                textbox_content += str(moduleNumber) + ") " + module[0] + " - " + str(module[1]) + "%\n"
+                moduleNumber += 1
+        for module in moduleScores:
+            if moduleEmpty[module[0]] == True and module[1] == 0.0:
+                textbox_content += str(moduleNumber) + ") " + module[0] + " - " + "No Work Completed\n"
+                moduleNumber += 1
 
         # Calculate overall score of all completed work
 
@@ -730,7 +739,7 @@ class Application(Frame):
                                             + "and marked",
                                        font="Helvetica 12",
                                        fg="brown")
-        self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=20)
+        self.addwork_guide_lbl.grid(row=1, column=1, columnspan=7, pady=(50, 20))
 
         # Create list of module names for combobox
 
@@ -1299,16 +1308,16 @@ class Application(Frame):
         if noExam is False:
             if completedExamTotal != 0:
                 self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                               + "% of the module is exams. "
-                                                               + "You have completed " + str(completedExamPercent)
-                                                               + "% of your exams.")
+                                                          + "% of the module is exams. "
+                                                          + "You have completed " + str(completedExamPercent)
+                                                          + "% of your exams.")
                 self.viewmodule_scoreexam_lbl.configure(text="In your completed exams, you have scored an overall "
                                                              + str(completedExamScore) + "%.")
             else:
                 self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                               + "% of the module is exams. "
-                                                               + "You have completed " + str(completedExamPercent)
-                                                               + "% of your exams.")
+                                                          + "% of the module is exams. "
+                                                          + "You have completed " + str(completedExamPercent)
+                                                          + "% of your exams.")
                 self.viewmodule_scoreexam_lbl.configure(text="")
 
         elif noExam is True:
@@ -1318,17 +1327,17 @@ class Application(Frame):
         if noCoursework is False:
             if completedCourseworkTotal != 0:
                 self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                                     + "% of the module is coursework. You have completed "
-                                                                     + str(completedCourseworkPercent)
-                                                                     + "% of your coursework.")
+                                                                + "% of the module is coursework. You have completed "
+                                                                + str(completedCourseworkPercent)
+                                                                + "% of your coursework.")
                 self.viewmodule_scorecoursework_lbl.configure(text="In your completed coursework, "
-                                                                   + "you have scored an overall "
-                                                                   + str(completedCourseworkScore) + "%.")
+                                                              + "you have scored an overall "
+                                                              + str(completedCourseworkScore) + "%.")
             else:
                 self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                                     + "% of the module is coursework. You have completed "
-                                                                     + str(completedCourseworkPercent)
-                                                                     + "% of your coursework.")
+                                                                + "% of the module is coursework. You have completed "
+                                                                + str(completedCourseworkPercent)
+                                                                + "% of your coursework.")
                 self.viewmodule_scorecoursework_lbl.configure(text="")
 
         elif noCoursework is True:
@@ -1611,7 +1620,11 @@ class Application(Frame):
         f_courseData.close()
 
         # Change course data's target grade to the selected target
-        courseData[2] = target
+        if courseData[2] != target:
+            courseData[2] = target
+            targetChanged = True
+        else:
+            targetChanged = False
 
         # Save course data (overwrite)
         f_courseData = open(direct + "courseData.dat", "wb")
@@ -1620,7 +1633,10 @@ class Application(Frame):
 
         # Return to main menu with confirmation message
         self.reset_home()
-        self.main_edit_redtext("Target grade changed to a " + target)
+        if targetChanged:
+            self.main_edit_redtext("Target grade changed to a " + target)
+        else:
+            self.main_edit_redtext("Target grade is already a " + target)
 
     def reset_app_confirm(self):
         """Opens page where the user is asked to confirm their decision to reset the program"""
@@ -1686,13 +1702,23 @@ class Application(Frame):
 
 # main program
 
+# Determine operating system
+operatingSystem = system()
+
 # create directory
 direct = ""
-try:
-    os.mkdir(os.environ['USERPROFILE'] + "\\Documents\\DegreeTracker\\")
-    direct = os.environ['USERPROFILE'] + "\\Documents\\DegreeTracker\\"
-except FileExistsError:
-    direct = os.environ['USERPROFILE'] + "\\Documents\\DegreeTracker\\"
+if operatingSystem == "Darwin":
+    try:
+        os.mkdir(os.path.expanduser("~/Documents/DegreeTracker/"))
+        direct = os.path.expanduser("~/Documents/DegreeTracker/")
+    except FileExistsError:
+        direct = os.path.expanduser("~/Documents/DegreeTracker/")
+elif operatingSystem == "Windows":
+    try:
+        os.mkdir(os.path.expanduser("~\\Documents\\DegreeTracker\\"))
+        direct = os.path.expanduser("~\\Documents\\DegreeTracker\\")
+    except FileExistsError:
+        direct = os.path.expanduser("~\\Documents\\DegreeTracker\\")
 
 # Determine if first-time use
 try:
@@ -1725,7 +1751,8 @@ if firstTime is True:
 else:
     mainApp.main_menu()
 
-# Set window icon and start the program
+# Set window icon (if using Windows) and start the program
 
-root.iconbitmap('degreetrackericon.ico')
+if operatingSystem == "Windows":
+    root.iconbitmap('degreetrackericon.ico')
 root.mainloop()
