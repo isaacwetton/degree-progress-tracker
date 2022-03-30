@@ -1536,7 +1536,7 @@ class Application(Frame):
 
         self.reset_reset_warning_lbl = Label(self,
                                              text="Here you can reset all program data - all created modules\nand"
-                                                  + " pieces of work will be deleted, and you will be\nprovided with"
+                                                  + " pieces of work will be deleted, and you will be\nprovided with "
                                                   + "a fresh version of the application.",
                                              font="Helvetica 11",
                                              fg="brown")
