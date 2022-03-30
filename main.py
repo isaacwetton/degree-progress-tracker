@@ -442,14 +442,22 @@ class Application(Frame):
         self.course_targetinfo_lbl.grid(row=6, column=1, columnspan=6, sticky=W)
 
         if targetHit is True:
-            self.course_targetinfo_lbl.configure(text="This overall score exceeds your target grade of a "
-                                                      + target + ". Keep it up!")
+            # Determine the score required in remaining work to remain on target
+            percentageIncomplete = 100 - percentageComplete
+            requiredScore = ((targetScore * 100) - (toDateOverallScore * percentageComplete)) / percentageIncomplete
+            requiredScore = round(requiredScore, 2)
+            self.course_targetinfo_lbl.configure(text="This score exceeds your target of a " + target.lower()
+                                                      + ". Well done! To remain above your target,\nyou must score "
+                                                      + "an average of "
+                                                      + str(requiredScore) + "% in the remaining "
+                                                      + str(percentageIncomplete) + "% of the course.")
+
         elif targetHit is False and percentageComplete != 100.0:
             # Determine the score required on remaining work to hit target grade
             percentageIncomplete = 100 - percentageComplete
             requiredScore = ((targetScore * 100) - (toDateOverallScore * percentageComplete)) / percentageIncomplete
             requiredScore = round(requiredScore, 2)
-            self.course_targetinfo_lbl.configure(text="This score is currently below your target of a " + target
+            self.course_targetinfo_lbl.configure(text="This score is currently below your target of a " + target.lower()
                                                       + ". To hit your target, you must score\nan average of "
                                                       + str(requiredScore) + "% in the remaining "
                                                       + str(percentageIncomplete) + "% of the course.")
