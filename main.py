@@ -216,6 +216,8 @@ class Application(Frame):
                                       cursor="hand2")
         self.main_deletework_bttn = Button(self, text="Delete a Piece of Work", font="Helvetica 9", width=42,
                                            height=2, cursor="hand2", command=self.deletework_validate_access)
+        self.main_save_bttn = Button(self, text="Save/Load Profiles", font="Helvetica 9", width=42,
+                                     height=2, cursor="hand2", command=self.save_page)
 
         # Position main menu buttons on the menu
 
@@ -223,17 +225,18 @@ class Application(Frame):
         self.main_createmodule_bttn.grid(row=2, column=4, pady=1)
         self.main_addwork_bttn.grid(row=3, column=4, pady=1)
         self.main_viewmodule_bttn.grid(row=5, column=4, pady=1)
-        self.main_about_bttn.grid(row=8, column=4, pady=1)
+        self.main_about_bttn.grid(row=9, column=4, pady=1)
         self.main_reset_bttn.grid(row=7, column=4, pady=1)
         self.main_deletework_bttn.grid(row=4, column=4, pady=1)
+        self.main_save_bttn.grid(row=8, column=4, pady=1)
 
         self.main_redtext = Label(self, font="Helvetica 12", fg="brown", text="")
-        self.main_redtext.grid(row=9, column=4)
+        self.main_redtext.grid(row=10, column=4)
 
         self.main_ver_lbl = Label(self,
                                   text="v1.1.1",
                                   font="Helvetica 10")
-        self.main_ver_lbl.grid(row=9, column=4, pady=(25, 0), padx=(750, 0))
+        self.main_ver_lbl.grid(row=10, column=4, pady=(25, 0), padx=(750, 0))
 
     def main_edit_redtext(self, displaytext):
         """Edits and displays the red text on the main menu"""
@@ -251,6 +254,7 @@ class Application(Frame):
         self.main_about_bttn.grid_forget()
         self.main_reset_bttn.grid_forget()
         self.main_deletework_bttn.grid_forget()
+        self.main_save_bttn.grid_forget()
         self.main_redtext.grid_forget()
 
     def course_info_validate(self):
@@ -1316,16 +1320,16 @@ class Application(Frame):
         if noExam is False:
             if completedExamTotal != 0:
                 self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                          + "% of the module is exams. "
-                                                          + "You have completed " + str(completedExamPercent)
-                                                          + "% of your exams.")
+                                                               + "% of the module is exams. "
+                                                               + "You have completed " + str(completedExamPercent)
+                                                               + "% of your exams.")
                 self.viewmodule_scoreexam_lbl.configure(text="In your completed exams, you have scored an overall "
                                                              + str(completedExamScore) + "%.")
             else:
                 self.viewmodule_percentexam_lbl.configure(text=str(modules[module].exam_percent)
-                                                          + "% of the module is exams. "
-                                                          + "You have completed " + str(completedExamPercent)
-                                                          + "% of your exams.")
+                                                               + "% of the module is exams. "
+                                                               + "You have completed " + str(completedExamPercent)
+                                                               + "% of your exams.")
                 self.viewmodule_scoreexam_lbl.configure(text="")
 
         elif noExam is True:
@@ -1335,17 +1339,17 @@ class Application(Frame):
         if noCoursework is False:
             if completedCourseworkTotal != 0:
                 self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                                + "% of the module is coursework. You have completed "
-                                                                + str(completedCourseworkPercent)
-                                                                + "% of your coursework.")
+                                                                     + "% of the module is coursework. You have completed "
+                                                                     + str(completedCourseworkPercent)
+                                                                     + "% of your coursework.")
                 self.viewmodule_scorecoursework_lbl.configure(text="In your completed coursework, "
-                                                              + "you have scored an overall "
-                                                              + str(completedCourseworkScore) + "%.")
+                                                                   + "you have scored an overall "
+                                                                   + str(completedCourseworkScore) + "%.")
             else:
                 self.viewmodule_percentcoursework_lbl.configure(text=str(modules[module].coursework_percent)
-                                                                + "% of the module is coursework. You have completed "
-                                                                + str(completedCourseworkPercent)
-                                                                + "% of your coursework.")
+                                                                     + "% of the module is coursework. You have completed "
+                                                                     + str(completedCourseworkPercent)
+                                                                     + "% of your coursework.")
                 self.viewmodule_scorecoursework_lbl.configure(text="")
 
         elif noCoursework is True:
@@ -1707,6 +1711,8 @@ class Application(Frame):
         tkinter.messagebox.showinfo("Program Reset", "The program has now been reset, and your previous data "
                                                      "has been erased.")
 
+    def save_page(self):
+        return None
 
 # main program
 
@@ -1748,7 +1754,7 @@ except IOError:
 # Create root and main application window
 root = Tk()
 root.title("Degree Progress Tracker")
-root.geometry("800x420")
+root.geometry("800x465")
 root.resizable(False, False)
 mainApp = Application(root)
 
