@@ -1712,7 +1712,27 @@ class Application(Frame):
                                                      "has been erased.")
 
     def save_page(self):
-        return None
+        """Opens a menu where the user can edit or reset their course information"""
+
+        # Clear the main menu
+        self.clear_main_menu()
+
+        # Create home button for the menu
+        self.save_home_bttn = Button(self,
+                                      text="Home",
+                                      font="Helvetica 13 bold",
+                                      width=8,
+                                      height=1,
+                                      #command=self.save_home,
+                                      cursor="hand2"
+                                      )
+        self.save_home_bttn.grid(row=0, column=0, padx=10)
+
+        # Create title label for editing course info
+        self.save_title_lbl = Label(self,
+                                    text="Save/Load Profile",
+                                    font="Helvetica 30")
+        self.save_title_lbl.grid(row=0, column=2, columnspan=7, padx=150, pady=(0, 20))
 
 # main program
 
